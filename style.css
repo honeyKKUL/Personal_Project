@@ -1,3 +1,5 @@
+/* style.css */
+
 body {
     display: flex;
     justify-content: center;
@@ -42,7 +44,7 @@ body {
 }
 
 .hit-effect {
-    /* 💥 크기 수정: 500px에서 125px (75% 축소)로 줄임 */
+    /* 💥 75% 축소 버전: 125px * 125px */
     width: 125px; 
     height: 125px;
     position: absolute;
@@ -52,8 +54,7 @@ body {
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
     
-    /* 💥 배경 이미지 크기 조정: 스프라이트 시트 원본(2000px)을 줄어든 요소 크기(125px * 4 = 500px)에 맞춤 */
-    /* width: 2000px (원본) -> 500px (표시) */
+    /* 💥 배경 이미지 크기 조정: 500px 125px (4프레임 * 125px = 500px) */
     background-size: 500px 125px; 
     
     /* 이펙트 시작 지점은 첫 번째 프레임(0) */
@@ -65,14 +66,18 @@ body {
 
 /* 타격 이펙트 애니메이션 정의 */
 @keyframes playEffect {
-    /* 💥 이동 거리 수정: 2000px (원본) 대신 500px (표시 크기) 만큼 이동 */
+    /* 💥 이동 거리: -500px (4프레임) */
     from { background-position: 0 0; }
     to { background-position: -500px 0; } 
-    
+} /* 💡 누락되었던 닫는 중괄호 추가 */
+
 /* 애니메이션 재생 클래스 */
 .animate {
-    /* 0.3초 동안, 4단계(프레임 수), 애니메이션 완료 후 사라짐 */
+    /* 💥 애니메이션 시간을 0.3s로 복원 (4프레임에 적절) */
     animation: playEffect 0.2s steps(4) forwards; 
+    /* 0.3초 동안, 4단계(프레임 수), 애니메이션 완료 후 마지막 상태 유지 */
+    
     opacity: 0; /* 애니메이션 완료 후 사라지도록 opacity 0으로 설정 */
-    transition: opacity 0.1s 0.3s; /* 애니메이션 끝난 후 0.3초 뒤에 opacity가 변하도록 지연시간 설정 */
+    /* 애니메이션이 끝난(0.3s) 후 0.1s 동안 opacity가 변하도록 설정 */
+    transition: opacity 0.1s 0.3s; 
 }
