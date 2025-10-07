@@ -1,43 +1,40 @@
 body {
-    /* 기존 스타일 유지 */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #2c3e50; 
+    background-color: #282c34; /* 어두운 배경 */
     color: white;
     font-family: sans-serif;
     text-align: center;
 }
 
 .game-container {
-    /* 기존 스타일 유지 */
     padding: 20px;
     border-radius: 10px;
-    background-color: #FFFFFF;
+    background-color: #3c4048;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
 }
 
-h1 {
-    /* 기존 스타일 유지 */
+/* 타격 횟수 카운터 스타일 */
+#hit-count {
     margin-bottom: 20px;
-    color: #61dafb; 
+    color: #61dafb; /* 밝은 색상 */
+    font-size: 4em; /* 숫자를 매우 크게 설정 */
+    font-weight: bold;
 }
 
-/* 이미지 스타일: 기본 커서(cursor.png) 설정 */
+/* 이미지 스타일: 기본 커서(cursor.png) 설정 및 테두리 제거 */
 #monster {
-    width: 80%;
-    max-width: 500px;
+    width: 80%; /* 컨테이너에 맞게 크기 조절 */
+    max-width: 500px; /* 최대 크기 설정 */
     
     /* 🖱️ 기본 커서 이미지 설정 */
     cursor: url('cursor.png'), pointer;
     
-    transition: transform 0.1s ease-out;
+    transition: transform 0.1s ease-out; /* 부드러운 효과를 위한 트랜지션 */
 }
-
-    
-
 
 /* 이미지 클릭 시 약간의 애니메이션 효과 */
 #monster:active {
