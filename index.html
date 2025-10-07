@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>클릭 타격 게임</title>
-    <link rel="stylesheet" href="style.css">
+    <title>클릭 타격 게임</title> <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
@@ -18,22 +17,59 @@
             <p>화면을 클릭하여 몬스터에게 대미지를 입히세요!</p>
         </div>
 
-        <div class="cursor-selector">
-            <div class="button-group">
-                <button class="cursor-button selected" data-cursor="cursor01">
-                    <img src="cursor01_icon.png" alt="커서 1">
-                </button>
-                <button class="cursor-button" data-cursor="cursor02">
-                    <img src="cursor02_icon.png" alt="커서 2">
-                </button>
-                <button class="cursor-button" data-cursor="cursor03">
-                    <img src="cursor03_icon.png" alt="커서 3">
-                </button>
-                <button class="cursor-button" data-cursor="cursor04">
-                    <img src="cursor04_icon.png" alt="커서 4">
-                </button>
+        <div class="cursor-controls"> 
+            <div class="cursor-selector">
+                <div class="button-group">
+                    <button class="cursor-button selected" data-cursor="cursor01" data-damage="1">
+                        <img src="cursor01_icon.png" alt="커서 1">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor02" data-damage="2">
+                        <img src="cursor02_icon.png" alt="커서 2">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor03" data-damage="3">
+                        <img src="cursor03_icon.png" alt="커서 3">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor04" data-damage="4">
+                        <img src="cursor04_icon.png" alt="커서 4">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor05" data-damage="5">
+                        <img src="cursor05_icon.png" alt="커서 5">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor06" data-damage="6">
+                        <img src="cursor06_icon.png" alt="커서 6">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor07" data-damage="7">
+                        <img src="cursor07_icon.png" alt="커서 7">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor08" data-damage="8">
+                        <img src="cursor08_icon.png" alt="커서 8">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor09" data-damage="9">
+                        <img src="cursor09_icon.png" alt="커서 9">
+                    </button>
+                    <button class="cursor-button locked" data-cursor="cursor10" data-damage="10">
+                        <img src="cursor10_icon.png" alt="커서 10">
+                    </button>
+                </div>
             </div>
+            
+            <button id="settings-button">설정 (업적 보기)</button>
         </div>
-    </div> <script src="script.js"></script>
+    </div>
+    
+    <div id="achievement-banner">
+        <p id="achievement-text">업적 달성: [업적 이름]</p>
+    </div>
+
+    <div id="achievement-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>업적 목록</h2>
+            <ul id="achievement-list">
+                </ul>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
 </body>
 </html>
