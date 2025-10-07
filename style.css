@@ -40,3 +40,36 @@ body {
 #monster:active {
     transform: scale(0.98);
 }
+
+.hit-effect {
+    /* 단일 프레임 크기 (500px * 500px 가정) */
+    width: 500px;
+    height: 500px;
+    position: absolute; /* 클릭 위치에 정확히 배치하기 위해 absolute 사용 */
+    pointer-events: none; /* 이펙트가 몬스터 클릭을 방해하지 않도록 설정 */
+    
+    /* 스프라이트 시트 배경 설정 */
+    background-image: url('hit_effect.png');
+    background-repeat: no-repeat;
+    
+    /* 이펙트 시작 지점은 첫 번째 프레임(0) */
+    background-position: 0 0;
+    
+    /* 이미지 중심이 클릭 위치에 오도록 조정 (선택 사항) */
+    transform: translate(-50%, -50%); 
+}
+
+/* 타격 이펙트 애니메이션 정의 */
+@keyframes playEffect {
+    /* 2000px 너비의 스프라이트를 4단계(4프레임)로 이동 */
+    from { background-position: 0 0; }
+    to { background-position: -2000px 0; } 
+}
+
+/* 애니메이션 재생 클래스 */
+.animate {
+    /* 0.3초 동안, 4단계(프레임 수), 애니메이션 완료 후 사라짐 */
+    animation: playEffect 0.3s steps(4) forwards; 
+    opacity: 0; /* 애니메이션 완료 후 사라지도록 opacity 0으로 설정 */
+    transition: opacity 0.1s 0.3s; /* 애니메이션 끝난 후 0.3초 뒤에 opacity가 변하도록 지연시간 설정 */
+}
