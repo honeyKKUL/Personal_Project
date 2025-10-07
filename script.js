@@ -1,259 +1,199 @@
-/* style.css */
+// script.js (전체 코드)
 
-body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    margin: 0;
-    background-color: #282c34;
-    color: white;
-    font-family: sans-serif;
-    text-align: center;
+// DOM 요소
+const monsterImage = document.getElementById('monster');
+const counterDisplay = document.getElementById('hit-count');
+const body = document.body;
+const cursorButtons = document.querySelectorAll('.cursor-button');
+
+// 💥 업적 관련 DOM 요소
+const settingsButton = document.getElementById('settings-button');
+const modal = document.getElementById('achievement-modal');
+const closeButton = document.querySelector('.close-button');
+const achievementList = document.getElementById('achievement-list');
+const achievementBanner = document.getElementById('achievement-banner');
+const achievementText = document.getElementById('achievement-text');
+
+
+// 💥 업적 데이터 정의
+const ACHIEVEMENTS = {
+    'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount' },
+    'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount' },
+    'pro_striker': { title: '프로 타격가', condition: 100, achieved: false, type: 'hitCount' },
+    'cursor_collector': { title: '커서 수집가', condition: 5, achieved: false, type: 'cursorCount' },
+    'master_striker': { title: '타격의 달인', condition: 500, achieved: false, type: 'hitCount' },
+    'unlock_cursor02': { title: '첫 해금!', condition: 50, achieved: false, type: 'unlock' },
+
+    // 단일 커서 사용 업적 (10개)
+    'single_cursor_01': { title: '01', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01' },
+    'single_cursor_02': { title: '02', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02' },
+    'single_cursor_03': { title: '03', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03' },
+    'single_cursor_04': { title: '04', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04' },
+    'single_cursor_05': { title: '05', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05' },
+    'single_cursor_06': { title: '06', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor06' },
+    'single_cursor_07': { title: '07', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor07' },
+    'single_cursor_08': { title: '08', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor08' },
+    'single_cursor_09': { title: '09', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09' },
+    'single_cursor_10': { title: '10', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10' },
+};
+
+
+// 각 커서별 단일 타격 횟수를 저장하는 객체
+let singleCursorHitCounts = {
+    'cursor01': 0, 'cursor02': 0, 'cursor03': 0, 'cursor04': 0, 'cursor05': 0, 
+    'cursor06': 0, 'cursor07': 0, 'cursor08': 0, 'cursor09': 0, 'cursor10': 0, 
+};
+
+// 해금 설정 및 상태 변수
+const UNLOCK_INTERVAL = 50;
+const UNLOCK_THRESHOLDS = {};
+for (let i = 2; i <= 10; i++) {
+    const key = `cursor${i.toString().padStart(2, '0')}`;
+    UNLOCK_THRESHOLDS[key] = (i - 1) * UNLOCK_INTERVAL;
 }
 
-.main-content {
-    display: flex;
-    flex-direction: row; 
-    align-items: flex-start;
-    gap: 50px; 
+let hitCount = 0;
+let currentCursor = 'cursor01'; 
+let currentDamage = 1; 
+
+
+// 이미지 및 애니메이션 설정
+const normalImage = 'Hit_01.png';
+const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png'];
+const displayTime = 150; 
+const effectDuration = 300; 
+
+
+// 커서 파일 경로를 생성하는 함수
+function getCursorPaths(cursorName) {
+    return {
+        normal: `url('${cursorName}.png'), pointer`,
+        hit: `url('${cursorName}_hit.png'), pointer`
+    };
 }
 
-.game-container {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-}
-
-/* 타격 횟수 카운터 스타일 */
-#hit-count {
-    margin-bottom: 20px;
-    color: #c0392b;
-    font-size: 4em;
-    font-weight: bold;
-}
-
-/* 이미지 스타일 */
-#monster {
-    width: 80%;
-    max-width: 500px;
-    /* JS에서 커서가 설정되지만, 기본값으로 유지 */
-    cursor: url('cursor.png'), pointer;
-    transition: transform 0.1s ease-out;
-}
-
-#monster:active {
-    transform: scale(0.98);
-}
-
-/* ------------------------------------ */
-/* 커서 컨트롤 및 설정 버튼 스타일 */
-/* ------------------------------------ */
-
-.cursor-controls {
-    display: flex;
-    flex-direction: column;
-    gap: 15px; 
-    align-items: center;
-}
-
-.cursor-selector {
-    padding: 20px;
-    border-radius: 10px;
-    background-color: #ffffff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    color: #333;
-    width: 50px; 
-}
-
-#settings-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    cursor: pointer;
-    background-color: #3498db;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    transition: background-color 0.2s;
-}
-#settings-button:hover {
-    background-color: #2980b9;
+// 몬스터 이미지의 기본 커서를 업데이트하는 함수
+function updateMonsterCursor() {
+    const cursorPath = getCursorPaths(currentCursor).normal;
+    monsterImage.style.cursor = cursorPath; 
 }
 
 
-/* ------------------------------------ */
-/* 커서 버튼 그룹 스타일 */
-/* ------------------------------------ */
+// 타격 이펙트 생성 및 재생 함수
+function createHitEffect(x, y) {
+    const effect = document.createElement('div');
+    effect.className = 'hit-effect';
+    
+    effect.style.left = `${x}px`;
+    effect.style.top = `${y}px`;
 
-.button-group {
-    display: flex;
-    flex-direction: column; 
-    gap: 10px;
-    align-items: center;
+    const randomRotation = Math.random() * 360; 
+    effect.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
+    
+    body.appendChild(effect);
+    
+    requestAnimationFrame(() => {
+        effect.classList.add('animate');
+    });
+
+    setTimeout(() => {
+        effect.remove();
+    }, effectDuration + 100); 
 }
 
-.cursor-button {
-    background-color: #f0f0f0;
-    border: 2px solid #ccc;
-    border-radius: 8px;
-    padding: 5px;
-    cursor: pointer;
-    transition: all 0.2s;
-    width: 50px; 
-    height: 50px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.cursor-button:hover {
-    border-color: #c0392b;
-    box-shadow: 0 0 5px rgba(192, 57, 43, 0.5);
-}
-
-.cursor-button.selected {
-    border-color: #c0392b; 
-    background-color: #c0392b;
-    box-shadow: 0 0 8px rgba(192, 57, 43, 0.8);
-}
-
-.cursor-button img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-/* 잠금된 커서 스타일 */
-.cursor-button.locked {
-    opacity: 0.35; 
-    cursor: not-allowed; 
-    background-color: #777; 
-    border-color: #aaa;
-}
-
-.cursor-button.locked:hover {
-    border-color: #aaa; 
-    box-shadow: none;
+// 업적 달성 배너 표시 함수
+function showAchievementBanner(title) {
+    achievementText.textContent = `업적 달성: ${title}`;
+    achievementBanner.classList.add('show');
+    
+    // 2.5초 후 배너를 숨깁니다.
+    setTimeout(() => {
+        achievementBanner.classList.remove('show');
+    }, 2500);
 }
 
 
-/* ------------------------------------ */
-/* 업적 달성 배너 스타일 */
-/* ------------------------------------ */
-#achievement-banner {
-    position: fixed;
-    bottom: -100px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 300px;
-    padding: 15px;
-    background-color: #2ecc71;
-    color: white;
-    text-align: center;
-    font-weight: bold;
-    border-radius: 10px 10px 0 0;
-    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
-    z-index: 1000;
-    transition: bottom 0.5s ease-out;
+// 업적 확인 함수
+function checkAchievements() {
+    // 1. Hit Count & Cursor Collector Achievements (기존 로직 유지)
+    for (const key in ACHIEVEMENTS) {
+        const achievement = ACHIEVEMENTS[key];
+        
+        if (achievement.achieved) continue;
+
+        if (achievement.type === 'hitCount') {
+            if (hitCount >= achievement.condition) {
+                achievement.achieved = true;
+                showAchievementBanner(achievement.title);
+            }
+        } else if (achievement.type === 'cursorCount') {
+            const unlockedCount = Array.from(cursorButtons).filter(btn => !btn.classList.contains('locked')).length;
+            if (unlockedCount >= achievement.condition) {
+                achievement.achieved = true;
+                showAchievementBanner(achievement.title);
+            }
+        }
+    }
+    
+    // 2. Single Cursor Hit Achievements (단일 커서 업적)
+    for (let i = 1; i <= 10; i++) {
+        const cursorKey = `cursor${i.toString().padStart(2, '0')}`;
+        const achievementKey = `single_cursor_${i.toString().padStart(2, '0')}`;
+        const ach = ACHIEVEMENTS[achievementKey];
+
+        if (ach && !ach.achieved && singleCursorHitCounts[cursorKey] >= ach.condition) {
+            ach.achieved = true;
+            showAchievementBanner(ach.title);
+        }
+    }
 }
 
-#achievement-banner.show {
-    bottom: 0;
+
+// 커서 해금 상태를 확인하고 UI를 업데이트하는 함수
+function checkUnlocks() {
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        
+        if (cursorName === 'cursor01') return;
+
+        const unlockHitCount = UNLOCK_THRESHOLDS[cursorName];
+
+        if (hitCount >= unlockHitCount && button.classList.contains('locked')) {
+            button.classList.remove('locked');
+            console.log(`🎉 ${cursorName}이(가) ${hitCount}타로 해금되었습니다!`);
+
+            // 해금 시 커서 아이콘을 _off 상태로 업데이트
+            const iconImg = button.querySelector('img');
+            if (iconImg) {
+                iconImg.src = `${cursorName}_icon_off.png`;
+            }
+
+            if (cursorName === 'cursor02' && !ACHIEVEMENTS['unlock_cursor02'].achieved) {
+                 ACHIEVEMENTS['unlock_cursor02'].achieved = true;
+                 showAchievementBanner(ACHIEVEMENTS['unlock_cursor02'].title);
+            }
+        }
+    });
 }
 
 
-/* ------------------------------------ */
-/* 모달 (팝업) 스타일 */
-/* ------------------------------------ */
-.modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1001; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.7); 
-}
+// 클릭 이벤트를 처리하는 함수 (handleHit)
+function handleHit(event) {
+    // 이펙트 생성 및 재생
+    createHitEffect(event.clientX, event.clientY);
+    
+    // 1. 타격 횟수를 currentDamage 값만큼 증가시키고 화면을 업데이트합니다.
+    hitCount += currentDamage;
+    counterDisplay.textContent = hitCount;
+    
+    // 현재 커서의 단일 타격 횟수를 증가시킵니다.
+    singleCursorHitCounts[currentCursor] += 1; 
+    
+    // 2. 해금 상태를 확인합니다.
+    checkUnlocks();
+    
+    // 3. 업적 상태를 확인합니다.
+    checkAchievements();
 
-.modal-content {
-    background-color: #fefefe;
-    margin: 15% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; 
-    max-width: 400px;
-    border-radius: 10px;
-    color: #333;
-}
-
-.close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-button:hover,
-.close-button:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
-}
-
-/* 업적 목록 스타일 */
-#achievement-list {
-    list-style: none;
-    padding: 0;
-}
-.achievement-item {
-    margin: 10px 0;
-    padding: 10px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-left: 5px solid;
-    transition: opacity 0.3s;
-}
-.achievement-item.unlocked {
-    background-color: #e8f5e9; 
-    border-color: #4caf50;
-    font-weight: bold;
-}
-.achievement-item.locked {
-    background-color: #f8f8f8;
-    border-color: #999;
-    opacity: 0.7;
-    font-style: italic;
-}
-
-/* ------------------------------------ */
-/* 타격 이펙트 스타일 */
-/* ------------------------------------ */
-
-.hit-effect {
-    width: 125px; 
-    height: 125px;
-    position: absolute;
-    pointer-events: none;
-    background-image: url('hit_effect.png');
-    background-repeat: no-repeat;
-    background-size: 500px 125px; 
-    background-position: 0 0;
-    transform: translate(-50%, -50%);
-}
-
-@keyframes playEffect {
-    from { background-position: 0 0; }
-    to { background-position: -500px 0; } 
-}
-
-.animate {
-    animation: playEffect 0.2s steps(4) forwards; /* 0.2s 대신 0.3s로 변경 (이전 답변 코드와 통일) */
-    opacity: 0;
-    transition: opacity 0.1s 0.2s; 
-}
+    // 4. 랜덤 타격 이미지 변경
+    const randomIndex
