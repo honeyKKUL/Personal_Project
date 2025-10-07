@@ -1,5 +1,6 @@
 /* style.css */
 
+/* style.css */
 body {
     display: flex;
     justify-content: center;
@@ -10,6 +11,13 @@ body {
     color: white;
     font-family: sans-serif;
     text-align: center;
+    
+    /* 💥 모바일 클릭 시 이미지 선택/하이라이트 방지 */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 .main-content {
