@@ -1,10 +1,9 @@
 /* style.css */
 
 body {
-    /* 💥 화면 중앙에 'main-content'를 배치하도록 설정 */
     display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
+    justify-content: center;
+    align-items: center;
     min-height: 100vh;
     margin: 0;
     background-color: #282c34;
@@ -13,12 +12,11 @@ body {
     text-align: center;
 }
 
-/* 💥 새로운 컨테이너 스타일 추가: 게임 컨테이너와 버튼을 가로로 묶습니다. */
 .main-content {
     display: flex;
-    flex-direction: row; /* 컨테이너들을 가로로 나열 */
-    align-items: flex-start; /* 컨테이너들의 상단 라인을 맞춥니다. */
-    gap: 30px; /* 컨테이너 사이 간격 추가 */
+    flex-direction: row; 
+    align-items: flex-start;
+    gap: 30px;
 }
 
 .game-container {
@@ -36,7 +34,7 @@ body {
     font-weight: bold;
 }
 
-/* 이미지 스타일: 기본 커서(cursor.png) 설정 및 테두리 제거 */
+/* 이미지 스타일 */
 #monster {
     width: 80%;
     max-width: 500px;
@@ -44,13 +42,12 @@ body {
     transition: transform 0.1s ease-out;
 }
 
-/* 이미지 클릭 시 약간의 애니메이션 효과 */
 #monster:active {
     transform: scale(0.98);
 }
 
 /* ------------------------------------ */
-/* 💥 커서 선택기 스타일 */
+/* 💥 커서 선택기 스타일 (텍스트 관련 스타일 제거) */
 /* ------------------------------------ */
 
 .cursor-selector {
@@ -59,24 +56,19 @@ body {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     color: #333;
-    width: 250px; 
+    width: 100px; /* 💥 버튼이 세로로만 나열되므로 컨테이너 너비를 줄입니다. */
+    /* text-align: center; (필요하면 추가) */
 }
 
-.selector-title {
-    font-weight: bold;
-    margin-top: 0;
-    color: #333;
-    font-size: 1.1em;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
-    margin-bottom: 15px;
-}
+/* 💥 .selector-title 관련 스타일 제거 */
+/* .selector-title 클래스가 HTML에서 제거되었으므로, 이 스타일은 더 이상 필요 없습니다. */
 
 .button-group {
     display: flex;
-    flex-wrap: wrap; 
+    /* 💥 버튼을 수직으로 나열하도록 설정 */
+    flex-direction: column; 
     gap: 10px;
-    justify-content: center;
+    align-items: center; /* 버튼들을 중앙 정렬합니다. */
 }
 
 .cursor-button {
@@ -109,6 +101,7 @@ body {
     height: 100%;
     object-fit: contain;
 }
+
 
 /* ------------------------------------ */
 /* 💥 타격 이펙트 스타일 (75% 축소 버전) */
