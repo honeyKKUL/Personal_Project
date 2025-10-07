@@ -42,9 +42,9 @@ body {
 }
 
 .hit-effect {
-    /* 💥 크기 수정: 500px에서 250px로 줄임 */
-    width: 250px; 
-    height: 250px;
+    /* 💥 크기 수정: 500px에서 125px (75% 축소)로 줄임 */
+    width: 125px; 
+    height: 125px;
     position: absolute;
     pointer-events: none;
     
@@ -52,9 +52,9 @@ body {
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
     
-    /* 💥 배경 이미지 크기 조정: 스프라이트 시트 원본(2000px)을 줄어든 요소 크기(250px * 4 = 1000px)에 맞춤 */
-    /* width: 2000px (원본) -> 1000px (표시) */
-    background-size: 1000px 250px; 
+    /* 💥 배경 이미지 크기 조정: 스프라이트 시트 원본(2000px)을 줄어든 요소 크기(125px * 4 = 500px)에 맞춤 */
+    /* width: 2000px (원본) -> 500px (표시) */
+    background-size: 500px 125px; 
     
     /* 이펙트 시작 지점은 첫 번째 프레임(0) */
     background-position: 0 0;
@@ -65,11 +65,10 @@ body {
 
 /* 타격 이펙트 애니메이션 정의 */
 @keyframes playEffect {
-    /* 💥 이동 거리 수정: 2000px (원본) 대신 1000px (표시 크기) 만큼 이동 */
+    /* 💥 이동 거리 수정: 2000px (원본) 대신 500px (표시 크기) 만큼 이동 */
     from { background-position: 0 0; }
-    to { background-position: -1000px 0; } 
-}
-
+    to { background-position: -500px 0; } 
+    
 /* 애니메이션 재생 클래스 */
 .animate {
     /* 0.3초 동안, 4단계(프레임 수), 애니메이션 완료 후 사라짐 */
