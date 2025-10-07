@@ -16,8 +16,6 @@ body {
     display: flex;
     flex-direction: row; 
     align-items: flex-start;
-    
-    /* 💥 50px 간격을 확실하게 적용 */
     gap: 50px; 
 }
 
@@ -49,8 +47,15 @@ body {
 }
 
 /* ------------------------------------ */
-/* 💥 커서 선택기 스타일 (텍스트 관련 스타일 제거) */
+/* 커서 컨트롤 (래퍼) 및 설정 버튼 스타일 */
 /* ------------------------------------ */
+
+.cursor-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 15px; /* 커서 선택기와 설정 버튼 사이 간격 */
+    align-items: center;
+}
 
 .cursor-selector {
     padding: 20px;
@@ -58,19 +63,34 @@ body {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     color: #333;
-    width: 50px; /* 💥 버튼이 세로로만 나열되므로 컨테이너 너비를 줄입니다. */
-    /* text-align: center; (필요하면 추가) */
+    width: 50px; 
 }
 
-/* 💥 .selector-title 관련 스타일 제거 */
-/* .selector-title 클래스가 HTML에서 제거되었으므로, 이 스타일은 더 이상 필요 없습니다. */
+#settings-button {
+    padding: 10px 20px;
+    font-size: 1em;
+    cursor: pointer;
+    background-color: #3498db;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.2s;
+}
+#settings-button:hover {
+    background-color: #2980b9;
+}
+
+
+/* ------------------------------------ */
+/* 커서 버튼 그룹 스타일 */
+/* ------------------------------------ */
 
 .button-group {
     display: flex;
-    /* 💥 버튼을 수직으로 나열하도록 설정 */
     flex-direction: column; 
     gap: 10px;
-    align-items: center; /* 버튼들을 중앙 정렬합니다. */
+    align-items: center;
 }
 
 .cursor-button {
@@ -104,6 +124,111 @@ body {
     object-fit: contain;
 }
 
+/* 💥 잠금된 커서 스타일 */
+.cursor-button.locked {
+    opacity: 0.35; 
+    cursor: not-allowed; 
+    background-color: #777; 
+    border-color: #aaa;
+}
+
+.cursor-button.locked:hover {
+    border-color: #aaa; 
+    box-shadow: none;
+}
+
+
+/* ------------------------------------ */
+/* 💥 업적 달성 배너 스타일 */
+/* ------------------------------------ */
+#achievement-banner {
+    position: fixed;
+    bottom: -100px; /* 초기 위치: 화면 아래에 숨김 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 300px;
+    padding: 15px;
+    background-color: #2ecc71; /* 성공 시 초록색 */
+    color: white;
+    text-align: center;
+    font-weight: bold;
+    border-radius: 10px 10px 0 0;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    transition: bottom 0.5s ease-out; /* 슬라이드 애니메이션 */
+}
+
+#achievement-banner.show {
+    bottom: 0; /* 슬라이드 업 */
+}
+
+
+/* ------------------------------------ */
+/* 💥 모달 (팝업) 스타일 */
+/* ------------------------------------ */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1001; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); 
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 400px;
+    border-radius: 10px;
+    color: #333;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-button:hover,
+.close-button:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* 업적 목록 스타일 */
+#achievement-list {
+    list-style: none;
+    padding: 0;
+}
+.achievement-item {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 5px solid;
+    transition: opacity 0.3s;
+}
+.achievement-item.unlocked {
+    background-color: #e8f5e9; 
+    border-color: #4caf50;
+    font-weight: bold;
+}
+.achievement-item.locked {
+    background-color: #f8f8f8;
+    border-color: #999;
+    opacity: 0.7;
+    font-style: italic;
+}
 
 /* ------------------------------------ */
 /* 💥 타격 이펙트 스타일 (75% 축소 버전) */
