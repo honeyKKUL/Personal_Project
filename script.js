@@ -356,3 +356,4 @@ window.addEventListener('click', (event) => {
 
 // 페이지 로드 시 초기화 함수 실행
 initializeCursors();
+
