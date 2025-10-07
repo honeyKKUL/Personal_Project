@@ -25,15 +25,19 @@ h1 {
     color: #61dafb; 
 }
 
-/* 이미지 스타일: 테두리(border) 속성 완전히 제거 */
+/* 이미지 스타일: 기본 커서(cursor.png) 설정 */
 #monster {
     width: 80%;
-    max-width: 500px; 
-    cursor: pointer;
-    transition: transform 0.1s ease-out;
+    max-width: 500px;
     
-    /* 이전 코드에 포함되었던 border와 border-radius 속성이 없습니다. */
+    /* 🖱️ 기본 커서 이미지 설정 */
+    cursor: url('cursor.png'), pointer;
+    
+    transition: transform 0.1s ease-out;
 }
+
+    
+
 
 /* 이미지 클릭 시 약간의 애니메이션 효과 */
 #monster:active {
