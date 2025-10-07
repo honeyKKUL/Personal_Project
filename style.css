@@ -38,6 +38,7 @@ body {
 #monster {
     width: 80%;
     max-width: 500px;
+    /* JS에서 커서가 설정되지만, 기본값으로 유지 */
     cursor: url('cursor.png'), pointer;
     transition: transform 0.1s ease-out;
 }
@@ -47,13 +48,13 @@ body {
 }
 
 /* ------------------------------------ */
-/* 커서 컨트롤 (래퍼) 및 설정 버튼 스타일 */
+/* 커서 컨트롤 및 설정 버튼 스타일 */
 /* ------------------------------------ */
 
 .cursor-controls {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* 커서 선택기와 설정 버튼 사이 간격 */
+    gap: 15px; 
     align-items: center;
 }
 
@@ -114,7 +115,7 @@ body {
 
 .cursor-button.selected {
     border-color: #c0392b; 
-    background-color: #c0392b;
+    background-color: #c0392b; /* 선택 시 배경 색상 변화는 유지 */
     box-shadow: 0 0 8px rgba(192, 57, 43, 0.8);
 }
 
@@ -124,7 +125,7 @@ body {
     object-fit: contain;
 }
 
-/* 💥 잠금된 커서 스타일 */
+/* 잠금된 커서 스타일 */
 .cursor-button.locked {
     opacity: 0.35; 
     cursor: not-allowed; 
@@ -139,32 +140,32 @@ body {
 
 
 /* ------------------------------------ */
-/* 💥 업적 달성 배너 스타일 */
+/* 업적 달성 배너 스타일 */
 /* ------------------------------------ */
 #achievement-banner {
     position: fixed;
-    bottom: -100px; /* 초기 위치: 화면 아래에 숨김 */
+    bottom: -100px;
     left: 50%;
     transform: translateX(-50%);
     width: 300px;
     padding: 15px;
-    background-color: #2ecc71; /* 성공 시 초록색 */
+    background-color: #2ecc71;
     color: white;
     text-align: center;
     font-weight: bold;
     border-radius: 10px 10px 0 0;
     box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.5);
     z-index: 1000;
-    transition: bottom 0.5s ease-out; /* 슬라이드 애니메이션 */
+    transition: bottom 0.5s ease-out;
 }
 
 #achievement-banner.show {
-    bottom: 0; /* 슬라이드 업 */
+    bottom: 0;
 }
 
 
 /* ------------------------------------ */
-/* 💥 모달 (팝업) 스타일 */
+/* 모달 (팝업) 스타일 */
 /* ------------------------------------ */
 .modal {
     display: none; 
@@ -231,7 +232,7 @@ body {
 }
 
 /* ------------------------------------ */
-/* 💥 타격 이펙트 스타일 (75% 축소 버전) */
+/* 타격 이펙트 스타일 */
 /* ------------------------------------ */
 
 .hit-effect {
@@ -243,19 +244,16 @@ body {
     background-repeat: no-repeat;
     background-size: 500px 125px; 
     background-position: 0 0;
-    /* transform은 JS에서 설정되므로 translate(-50%, -50%)를 초기값으로 유지 */
     transform: translate(-50%, -50%);
 }
 
-/* 타격 이펙트 애니메이션 정의 */
 @keyframes playEffect {
     from { background-position: 0 0; }
     to { background-position: -500px 0; } 
 }
 
-/* 애니메이션 재생 클래스 */
 .animate {
-    animation: playEffect 0.2s steps(4) forwards; 
+    animation: playEffect 0.3s steps(4) forwards; 
     opacity: 0;
-    transition: opacity 0.1s 0.2s; 
+    transition: opacity 0.1s 0.3s; 
 }
