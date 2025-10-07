@@ -196,4 +196,160 @@ function handleHit(event) {
     checkAchievements();
 
     // 4. 랜덤 타격 이미지 변경
-    const randomIndex
+    const randomIndex = Math.floor(Math.random() * hitImages.length);
+    monsterImage.src = hitImages[randomIndex];
+    
+    // 5. 🖱️ 커서를 선택된 타격 커서로 변경
+    const hitCursorPath = getCursorPaths(currentCursor).hit;
+    monsterImage.style.cursor = hitCursorPath; 
+
+    // 6. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
+    setTimeout(() => {
+        monsterImage.src = normalImage;
+        updateMonsterCursor(); 
+    }, displayTime);
+}
+
+/**
+ * 💥 커서 버튼 클릭 핸들러 (커서 아이콘 이미지 변경 로직 추가)
+ */
+function handleCursorChange(event) {
+    const clickedButton = event.currentTarget;
+    const newCursorName = clickedButton.dataset.cursor;
+    
+    if (clickedButton.classList.contains('locked')) {
+        console.log("잠금 해제 후 선택할 수 있습니다.");
+        return; 
+    }
+    
+    const newDamage = parseInt(clickedButton.dataset.damage); 
+    
+    // 1. 이전 커서의 아이콘을 _off 상태로 변경
+    // 현재 선택된 커서 버튼을 찾아 _on -> _off로 변경
+    const previouslySelectedButton = document.querySelector('.cursor-button.selected');
+    if (previouslySelectedButton) {
+        previouslySelectedButton.classList.remove('selected');
+        const oldCursorName = previouslySelectedButton.dataset.cursor;
+        const oldIconImg = previouslySelectedButton.querySelector('img');
+        if (oldIconImg) {
+            oldIconImg.src = `${oldCursorName}_icon_off.png`;
+        }
+    }
+    
+    // 2. 새 커서의 아이콘을 _on 상태로 변경
+    clickedButton.classList.add('selected');
+    const newIconImg = clickedButton.querySelector('img');
+    if (newIconImg) {
+        newIconImg.src = `${newCursorName}_icon_on.png`;
+    }
+
+    // 3. 게임 상태 업데이트
+    currentCursor = newCursorName;
+    currentDamage = newDamage; 
+    
+    updateMonsterCursor();
+}
+
+
+// ------------------------------------
+// 모달 (팝업) 기능
+// ------------------------------------
+
+// 업적 목록을 모달에 렌더링하는 함수 (단일 커서 업적 표시 로직 추가)
+function renderAchievements() {
+    achievementList.innerHTML = ''; // 목록 초기화
+    
+    // 모든 업적을 정렬하여 표시하기 위해 배열로 변환
+    const sortedAchievements = Object.entries(ACHIEVEMENTS).sort(([, a], [, b]) => {
+        if (a.type === 'singleHit' && b.type === 'singleHit') {
+            return a.cursor.localeCompare(b.cursor);
+        }
+        return 0;
+    });
+
+
+    for (const [key, ach] of sortedAchievements) {
+        const li = document.createElement('li');
+        
+        let statusText;
+        if (ach.type === 'hitCount') {
+            statusText = ach.achieved ? '달성 완료!' : `(${hitCount}/${ach.condition} 타격)`;
+        } else if (ach.type === 'unlock') {
+            statusText = ach.achieved ? '달성 완료!' : `(커서 02 해금 필요)`;
+        } else if (ach.type === 'cursorCount') {
+            const unlockedCount = Array.from(cursorButtons).filter(btn => !btn.classList.contains('locked')).length;
+            statusText = ach.achieved ? '달성 완료!' : `(${unlockedCount}/${ach.condition} 개 해금)`;
+        } else if (ach.type === 'singleHit') {
+            const currentHits = singleCursorHitCounts[ach.cursor];
+            statusText = ach.achieved ? '달성 완료!' : `(${currentHits}/${ach.condition} 타격)`;
+        }
+
+        li.className = `achievement-item ${ach.achieved ? 'unlocked' : 'locked'}`;
+        li.innerHTML = `
+            <span>${ach.title}</span>
+            <span class="achievement-status">${statusText}</span>
+        `;
+        achievementList.appendChild(li);
+    }
+}
+
+function openModal() {
+    renderAchievements(); // 모달 열기 전에 업적 목록을 최신화합니다.
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+
+/**
+ * 💥 초기화 함수
+ * (페이지 로드 시 커서 버튼의 초기 상태를 설정하고 모든 버튼 아이콘을 _off로 설정)
+ */
+function initializeCursors() {
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        const iconImg = button.querySelector('img');
+
+        if (button.classList.contains('selected')) {
+            // 초기 선택된 커서 (cursor01)는 _on 상태로 시작
+            if (iconImg) {
+                iconImg.src = `${cursorName}_icon_on.png`;
+            }
+        } else if (iconImg) {
+             // 나머지 커서는 모두 _off 상태로 시작
+            iconImg.src = `${cursorName}_icon_off.png`;
+        }
+    });
+
+    // 페이지 로드 시 몬스터 커서를 초기값으로 설정
+    updateMonsterCursor(); 
+}
+
+
+// ------------------------------------
+// 이벤트 리스너 설정
+// ------------------------------------
+
+// 몬스터 이미지에 클릭 이벤트 리스너 추가
+monsterImage.addEventListener('mousedown', handleHit);
+
+// 커서 버튼들에 클릭 이벤트 리스너 추가
+cursorButtons.forEach(button => {
+    button.addEventListener('click', handleCursorChange);
+});
+
+// 설정 버튼 및 모달 리스너 추가
+settingsButton.addEventListener('click', openModal);
+closeButton.addEventListener('click', closeModal);
+
+// 모달 외부 클릭 시 닫기
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        closeModal();
+    }
+});
+
+// 페이지 로드 시 초기화 함수 실행
+initializeCursors();
