@@ -1,17 +1,23 @@
 /* style.css */
 
 body {
+    /* 💥 화면 중앙에 'main-content'를 배치하도록 설정 */
     display: flex;
-    /* justify-content: center; (필요하면 주석 해제) */
-    align-items: center;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
     min-height: 100vh;
     margin: 0;
     background-color: #282c34;
     color: white;
     font-family: sans-serif;
     text-align: center;
-    /* 💡 게임 컨테이너와 커서 선택기를 가로로 나열 */
-    flex-direction: row; 
+}
+
+/* 💥 새로운 컨테이너 스타일 추가: 게임 컨테이너와 버튼을 가로로 묶습니다. */
+.main-content {
+    display: flex;
+    flex-direction: row; /* 컨테이너들을 가로로 나열 */
+    align-items: flex-start; /* 컨테이너들의 상단 라인을 맞춥니다. */
     gap: 30px; /* 컨테이너 사이 간격 추가 */
 }
 
@@ -25,65 +31,27 @@ body {
 /* 타격 횟수 카운터 스타일 */
 #hit-count {
     margin-bottom: 20px;
-    color: #c0392b; /* 밝은 색상 */
-    font-size: 4em; /* 숫자를 매우 크게 설정 */
+    color: #c0392b;
+    font-size: 4em;
     font-weight: bold;
 }
 
 /* 이미지 스타일: 기본 커서(cursor.png) 설정 및 테두리 제거 */
 #monster {
-    width: 80%; /* 컨테이너에 맞게 크기 조절 */
-    max-width: 500px; /* 최대 크기 설정 */
-    
-    /* 🖱️ 기본 커서 이미지 설정 */
+    width: 80%;
+    max-width: 500px;
     cursor: url('cursor.png'), pointer;
-    
-    transition: transform 0.1s ease-out; /* 부드러운 효과를 위한 트랜지션 */
+    transition: transform 0.1s ease-out;
 }
 
 /* 이미지 클릭 시 약간의 애니메이션 효과 */
 #monster:active {
-    transform: scale(0.93);
+    transform: scale(0.98);
 }
 
-.hit-effect {
-    /* 💥 75% 축소 버전: 125px * 125px */
-    width: 125px; 
-    height: 125px;
-    position: absolute;
-    pointer-events: none;
-    
-    /* 스프라이트 시트 배경 설정 */
-    background-image: url('hit_effect.png');
-    background-repeat: no-repeat;
-    
-    /* 💥 배경 이미지 크기 조정: 500px 125px (4프레임 * 125px = 500px) */
-    background-size: 500px 125px; 
-    
-    /* 이펙트 시작 지점은 첫 번째 프레임(0) */
-    background-position: 0 0;
-    
-    /* 이미지 중심이 클릭 위치에 오도록 조정 */
-    transform: translate(-50%, -50%); 
-}
-
-/* 타격 이펙트 애니메이션 정의 */
-@keyframes playEffect {
-    /* 💥 이동 거리: -500px (4프레임) */
-    from { background-position: 0 0; }
-    to { background-position: -500px 0; } 
-} /* 💡 누락되었던 닫는 중괄호 추가 */
-
-/* 애니메이션 재생 클래스 */
-.animate {
-    /* 💥 애니메이션 시간을 0.3s로 복원 (4프레임에 적절) */
-    animation: playEffect 0.2s steps(4) forwards; 
-    /* 0.3초 동안, 4단계(프레임 수), 애니메이션 완료 후 마지막 상태 유지 */
-    
-    opacity: 0; /* 애니메이션 완료 후 사라지도록 opacity 0으로 설정 */
-    /* 애니메이션이 끝난(0.3s) 후 0.1s 동안 opacity가 변하도록 설정 */
-    transition: opacity 0.1s 0.3s; 
-}
+/* ------------------------------------ */
+/* 💥 커서 선택기 스타일 */
+/* ------------------------------------ */
 
 .cursor-selector {
     padding: 20px;
@@ -91,7 +59,7 @@ body {
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     color: #333;
-    width: 250px; /* 너비 지정 */
+    width: 250px; 
 }
 
 .selector-title {
@@ -106,7 +74,7 @@ body {
 
 .button-group {
     display: flex;
-    flex-wrap: wrap; /* 버튼이 여러 줄로 감싸지도록 허용 */
+    flex-wrap: wrap; 
     gap: 10px;
     justify-content: center;
 }
@@ -118,7 +86,7 @@ body {
     padding: 5px;
     cursor: pointer;
     transition: all 0.2s;
-    width: 50px; /* 버튼 크기 */
+    width: 50px; 
     height: 50px;
     display: flex;
     justify-content: center;
@@ -131,7 +99,7 @@ body {
 }
 
 .cursor-button.selected {
-    border-color: #c0392b; /* 선택된 버튼은 강조 색상 */
+    border-color: #c0392b; 
     background-color: #c0392b;
     box-shadow: 0 0 8px rgba(192, 57, 43, 0.8);
 }
@@ -140,4 +108,34 @@ body {
     width: 100%;
     height: 100%;
     object-fit: contain;
+}
+
+/* ------------------------------------ */
+/* 💥 타격 이펙트 스타일 (75% 축소 버전) */
+/* ------------------------------------ */
+
+.hit-effect {
+    width: 125px; 
+    height: 125px;
+    position: absolute;
+    pointer-events: none;
+    background-image: url('hit_effect.png');
+    background-repeat: no-repeat;
+    background-size: 500px 125px; 
+    background-position: 0 0;
+    /* transform은 JS에서 설정되므로 translate(-50%, -50%)를 초기값으로 유지 */
+    transform: translate(-50%, -50%);
+}
+
+/* 타격 이펙트 애니메이션 정의 */
+@keyframes playEffect {
+    from { background-position: 0 0; }
+    to { background-position: -500px 0; } 
+}
+
+/* 애니메이션 재생 클래스 */
+.animate {
+    animation: playEffect 0.2s steps(4) forwards; 
+    opacity: 0;
+    transition: opacity 0.1s 0.2s; 
 }
