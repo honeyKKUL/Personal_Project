@@ -3,21 +3,22 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🎉🎉</title>
+    <title>클릭 타격 게임</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="game-container">
-        
-        <h2 id="hit-count">0</h2>
-        
-        <img id="monster" src="Hit_01.png" alt="타격 대상 몬스터">
-        
-        <p>화면을 클릭하여 몬스터에게 대미지를 입히세요!</p>
-    </div>
+    <div class="main-content"> 
+        <div class="game-container">
+            
+            <h2 id="hit-count">0</h2>
+            
+            <img id="monster" src="Hit_01.png" alt="타격 대상 몬스터">
+            
+            <p>화면을 클릭하여 몬스터에게 대미지를 입히세요!</p>
+        </div>
 
-    <div class="cursor-selector">
+        <div class="cursor-selector">
             <div class="button-group">
                 <button class="cursor-button selected" data-cursor="cursor01">
                     <img src="cursor01_icon.png" alt="커서 1">
@@ -33,8 +34,6 @@
                 </button>
             </div>
         </div>
-    </div>
-
-    <script src="script.js"></script>
+    </div> <script src="script.js"></script>
 </body>
 </html>
