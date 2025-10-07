@@ -1,27 +1,36 @@
+// script.js
+
 // 몬스터 이미지 요소를 가져옵니다.
 const monsterImage = document.getElementById('monster');
 
-// 타격 이미지 파일 경로
+// 타격 이미지 파일 경로 (몬스터 이미지)
 const hitImage = 'Hit_02.png';
-// 기본 이미지 파일 경로
+// 기본 이미지 파일 경로 (몬스터 이미지)
 const normalImage = 'Hit_01.png';
-// 이미지 유지 시간 (밀리초) - 너무 짧으면 시각적으로 인지하기 어려울 수 있어요.
-const displayTime = 150; // 0.15초
+// 이미지/커서 유지 시간 (밀리초)
+const displayTime = 150; 
+
+// ✨ 타격 시 사용할 커서 이미지 정의
+const hitCursor = "url('cursor_hit.png'), pointer";
 
 // 클릭 이벤트를 처리하는 함수
 function handleHit() {
-    // 1. 이미지를 'Hit_02.png' (타격 이미지)로 변경합니다.
+    // 1. 몬스터 이미지를 'Hit_02.png'로 변경합니다.
     monsterImage.src = hitImage;
 
-    // 2. 일정 시간(displayTime) 후에 이미지를 'Hit_01.png' (기본 이미지)로 되돌립니다.
-    // setTimeout 함수를 사용하여 일정 시간 후에 코드가 실행되도록 합니다.
+    // 2. 🖱️ 커서를 'cursor_hit.png' (타격 커서)로 변경합니다.
+    // 인라인 스타일로 적용하여 CSS 설정을 임시로 덮어씁니다.
+    monsterImage.style.cursor = hitCursor; 
+
+    // 3. 일정 시간 후에 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
+        // 몬스터 이미지 원상 복구
         monsterImage.src = normalImage;
+
+        // 4. 🖱️ 커서의 인라인 스타일을 제거하여 CSS에 정의된 기본 커서('cursor.png')로 되돌립니다.
+        monsterImage.style.cursor = ''; 
     }, displayTime);
 }
 
 // 몬스터 이미지에 클릭 이벤트 리스너를 추가합니다.
 monsterImage.addEventListener('mousedown', handleHit);
-
-// 참고: 'mousedown' 이벤트를 사용하면 마우스를 누르는 순간 이미지가 바뀌어
-// 'click' 이벤트보다 더 빠르게 반응하는 클릭 게임의 느낌을 줄 수 있습니다.
