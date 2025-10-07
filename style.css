@@ -40,7 +40,7 @@ body {
 
 /* 이미지 클릭 시 약간의 애니메이션 효과 */
 #monster:active {
-    transform: scale(0.98);
+    transform: scale(0.93);
 }
 
 .hit-effect {
