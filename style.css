@@ -16,7 +16,9 @@ body {
     display: flex;
     flex-direction: row; 
     align-items: flex-start;
-    gap: 50px;
+    
+    /* 💥 50px 간격을 확실하게 적용 */
+    gap: 50px; 
 }
 
 .game-container {
