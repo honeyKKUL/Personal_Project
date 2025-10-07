@@ -6,10 +6,12 @@ const counterDisplay = document.getElementById('hit-count');
 // 타격 횟수 변수를 초기화합니다.
 let hitCount = 0;
 
-// 타격 이미지 파일 경로 (몬스터 이미지)
-const hitImage = 'Hit_02.png';
 // 기본 이미지 파일 경로 (몬스터 이미지)
 const normalImage = 'Hit_01.png';
+
+// 💥 랜덤으로 선택될 타격 이미지 파일 배열
+const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png'];
+
 // 이미지/커서 유지 시간 (밀리초)
 const displayTime = 150; 
 
@@ -22,22 +24,25 @@ function handleHit() {
     hitCount++;
     counterDisplay.textContent = hitCount;
     
-    // 2. 몬스터 이미지를 'Hit_02.png'로 변경합니다.
-    monsterImage.src = hitImage;
+    // 💥 2. 랜덤으로 타격 이미지 중 하나를 선택합니다.
+    const randomIndex = Math.floor(Math.random() * hitImages.length);
+    const randomHitImage = hitImages[randomIndex];
+    
+    // 3. 몬스터 이미지를 랜덤으로 선택된 타격 이미지로 변경합니다.
+    monsterImage.src = randomHitImage;
 
-    // 3. 🖱️ 커서를 'cursor_hit.png' (타격 커서)로 변경합니다.
+    // 4. 🖱️ 커서를 'cursor_hit.png' (타격 커서)로 변경합니다.
     monsterImage.style.cursor = hitCursor; 
 
-    // 4. 일정 시간 후에 몬스터 이미지와 커서를 원래대로 되돌립니다.
+    // 5. 일정 시간 후에 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
-        // 몬스터 이미지 원상 복구
+        // 몬스터 이미지 원상 복구 (Hit_01.png)
         monsterImage.src = normalImage;
 
-        // 5. 🖱️ 커서의 인라인 스타일을 제거하여 CSS에 정의된 기본 커서로 되돌립니다.
+        // 6. 🖱️ 커서의 인라인 스타일을 제거하여 CSS에 정의된 기본 커서로 되돌립니다.
         monsterImage.style.cursor = ''; 
     }, displayTime);
 }
 
 // 몬스터 이미지에 클릭 이벤트 리스너를 추가합니다.
-// 'mousedown'을 사용하여 클릭 즉시 반응하도록 합니다.
 monsterImage.addEventListener('mousedown', handleHit);
