@@ -1,0 +1,38 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    background-color: #282c34; /* 어두운 배경 */
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+}
+
+.game-container {
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #3c4048;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+}
+
+h1 {
+    margin-bottom: 20px;
+    color: #61dafb; /* 밝은 색상 제목 */
+}
+
+/* 이미지 스타일 */
+#monster {
+    width: 80%; /* 컨테이너에 맞게 크기 조절 */
+    max-width: 500px; /* 최대 크기 설정 */
+    cursor: pointer; /* 클릭 가능한 마우스 커서 */
+    transition: transform 0.1s ease-out; /* 부드러운 효과를 위한 트랜지션 */
+    border: 5px solid #61dafb;
+    border-radius: 10px;
+}
+
+/* 이미지 클릭 시 약간의 애니메이션 효과 */
+#monster:active {
+    transform: scale(0.98);
+}
