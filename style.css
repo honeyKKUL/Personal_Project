@@ -1,16 +1,18 @@
 body {
+    /* 기존 스타일 유지 */
     display: flex;
     justify-content: center;
     align-items: center;
     min-height: 100vh;
     margin: 0;
-    background-color: #282c34; /* 어두운 배경 */
+    background-color: #282c34; 
     color: white;
     font-family: sans-serif;
     text-align: center;
 }
 
 .game-container {
+    /* 기존 스타일 유지 */
     padding: 20px;
     border-radius: 10px;
     background-color: #3c4048;
@@ -18,18 +20,19 @@ body {
 }
 
 h1 {
+    /* 기존 스타일 유지 */
     margin-bottom: 20px;
-    color: #61dafb; /* 밝은 색상 제목 */
+    color: #61dafb; 
 }
 
-/* 이미지 스타일 - 테두리 제거 */
+/* 이미지 스타일: 테두리(border) 속성 완전히 제거 */
 #monster {
-    width: 80%; /* 컨테이너에 맞게 크기 조절 */
-    max-width: 500px; /* 최대 크기 설정 */
-    cursor: pointer; /* 클릭 가능한 마우스 커서 */
-    transition: transform 0.1s ease-out; /* 부드러운 효과를 위한 트랜지션 */
-    /* border: 5px solid #61dafb; <--- 삭제됨 */
-    /* border-radius: 10px; <--- 삭제됨 */
+    width: 80%;
+    max-width: 500px; 
+    cursor: pointer;
+    transition: transform 0.1s ease-out;
+    
+    /* 이전 코드에 포함되었던 border와 border-radius 속성이 없습니다. */
 }
 
 /* 이미지 클릭 시 약간의 애니메이션 효과 */
