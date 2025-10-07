@@ -199,15 +199,18 @@ function handleHit(event) {
     const randomIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomIndex];
     
-    // 5. 🖱️ 커서를 선택된 타격 커서로 변경
-    const hitCursorPath = getCursorPaths(currentCursor).hit;
-    monsterImage.style.cursor = hitCursorPath; 
+ // 5. 🖱️ 커서를 선택된 타격 커서로 변경
+    const hitCursorPath = getCursorPaths(currentCursor).hit; // <-- 여기서 hit 커서 경로를 가져옴
+    monsterImage.style.cursor = hitCursorPath;              // <-- 몬스터에 커서를 적용
 
     // 6. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
-    }, displayTime);
+    }, displayTime); // 5. 🖱️ 커서를 선택된 타격 커서로 변경
+    const hitCursorPath = getCursorPaths(currentCursor).hit; // <-- 여기서 hit 커서 경로를 가져옴
+    monsterImage.style.cursor = hitCursorPath;              // <-- 몬스터에 커서를 적용
+
 }
 
 /**
