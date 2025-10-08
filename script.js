@@ -27,7 +27,7 @@ const achievementText = document.getElementById('achievement-text');
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
 const eventGif = 'hit_event.gif'; // 💥 GIF 파일명 반영됨
-const eventDuration = 2000; // 💥 GIF 재생 시간 (4초)
+const eventDuration = 1000; // 💥 GIF 재생 시간 (4초)
 
 
 // 💥 업적 데이터 정의 (icon 필드 추가)
