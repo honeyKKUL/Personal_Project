@@ -64,7 +64,7 @@ let currentDamage = 1; 
 const normalImage = 'Hit_01.png';
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
-const effectDuration = 300; // 💥 CSS 애니메이션 지속 시간과 일치
+const effectDuration = 300; // 💥 CSS 애니메이션 지속 시간(0.3s)과 일치
 
 function getCursorPaths(cursorName) {
     return {
@@ -101,9 +101,14 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    // 💥 DOM에 추가하자마자 CSS Keyframe 애니메이션이 시작됨
     body.appendChild(effect);
     
+    // 💥 중요: 다음 프레임에서 .animate 클래스를 추가하여 애니메이션 시작
+    // requestAnimationFrame을 사용하여 DOM 추가와 애니메이션 시작을 분리
+    requestAnimationFrame(() => {
+        effect.classList.add('animate');
+    });
+
     // 이펙트가 사라지는 시간과 동일하게 요소 제거
     // CSS 애니메이션 지속 시간(300ms)에 맞춰 제거
     setTimeout(() => {
@@ -367,52 +372,4 @@ function initializeCursors() {
 
         if (button.classList.contains('selected')) {
             if (iconImg) {
-                iconImg.src = `${cursorName}_icon_on.png`;
-            }
-        } else if (iconImg) {
-            iconImg.src = `${cursorName}_icon_off.png`;
-        }
-    });
-
-    updateMonsterCursor(); 
-}
-
-
-// ------------------------------------
-// 이벤트 리스너 설정
-// ------------------------------------
-
-monsterImage.addEventListener('mousedown', handleHit);
-
-// 터치 이벤트를 handleHit 함수로 처리
-monsterImage.addEventListener('touchstart', (event) => {
-    handleHit(event);
-    event.preventDefault(); 
-});
-
-cursorButtons.forEach(button => {
-    button.addEventListener('click', handleCursorChange);
-});
-
-settingsButton.addEventListener('click', toggleSettingsMenu);
-
-achievementButton.addEventListener('click', () => openModal('achievement'));
-devButton.addEventListener('click', () => openModal('developer'));
-
-jump1000HitsButton.addEventListener('click', handleHitJump);
-
-closeButton.addEventListener('click', closeModal);
-
-// 외부 클릭 시 모달 또는 메뉴 닫기 로직
-window.addEventListener('click', (event) => {
-    if (event.target == modal) {
-        closeModal();
-    }
-    
-    if (event.target !== settingsButton && !settingsMenu.contains(event.target)) {
-        settingsMenu.style.display = 'none';
-    }
-});
-
-// 페이지 로드 시 초기화 함수 실행
-initializeCursors();
+                iconImg.src = `${cursorName}_icon_on.
