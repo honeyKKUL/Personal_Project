@@ -8,6 +8,10 @@
 </head>
 <body>
 
+    <div id="achievement-banner">
+        <p id="achievement-text">업적 달성!</p>
+    </div>
+
     <div class="main-content"> 
         <div class="game-container">
             
@@ -20,7 +24,9 @@
 
         <div class="cursor-controls">
             
-            <button id="settings-button">설정</button>
+            <button id="settings-button">
+                <img src="settings_icon.png" alt="설정" id="settings-icon-img" style="width: 20px; height: 20px;">
+            </button>
             
             <div id="settings-menu" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px;">
                 <button id="achievement-button" class="sub-setting-button">업적</button>
@@ -64,7 +70,6 @@
         </div>
     </div>
 
-
     <div id="achievement-modal" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
@@ -80,10 +85,6 @@
                 <button id="jump-1000-hits" class="dev-feature-button">타격수 1000 증가</button>
             </div>
         </div>
-    </div>
-
-    <div id="achievement-banner">
-        <p id="achievement-text">업적 달성: 테스트</p>
     </div>
 
     <script src="script.js"></script>
