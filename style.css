@@ -327,15 +327,25 @@ body {
 
 /* 업적 목록의 텍스트와 상태를 분리 */
 .achievement-title-status {
-    flex-grow: 1;
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    flex-direction: column; /* 제목과 상태를 위아래로 배치 */
+    flex-grow: 1; /* 남은 공간을 채우도록 설정 */
 }
 
+/* 업적 제목 (폰트/크기 수정) */
+.achievement-title-status span:first-child {
+    /* 💥 업적명 폰트 크기 수정 */
+    font-size: 0.8em; /* 제목 폰트 크기를 약간 키움 */
+    font-weight: bold; /* 제목은 굵게 */
+    color: #333;
+    margin-bottom: 2px;
+}
+
+/* 업적 상태 텍스트 (폰트/크기 수정) */
 .achievement-status {
-    margin-left: 5px;
-    font-size: 0.3em;
+    /* 💥 상태 텍스트 폰트 크기 수정 */
+    font-size: 0.2em; /* 상태 텍스트는 제목보다 작게 */
+    color: #555; /* 색상을 진한 회색으로 */
     font-style: italic;
 }
 
