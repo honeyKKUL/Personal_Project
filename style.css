@@ -46,9 +46,15 @@ body {
 #monster {
     width: 80%;
     max-width: 500px;
-    /* JS에서 커서가 설정되지만, 기본값으로 유지 */
     cursor: url('cursor.png'), pointer;
     transition: transform 0.1s ease-out;
+    
+    /* 🎨 GIF 색상 왜곡 방지 및 렌더링 최적화 추가 */
+    image-rendering: -webkit-optimize-contrast; /* WebKit 기반 브라우저(Chrome, Safari) 최적화 */
+    image-rendering: crisp-edges;               /* 최신 표준 (권장) */
+    
+    /* 🖼️ 배경 투명도와 색상 혼합을 보정 */
+    mix-blend-mode: normal; 
 }
 
 #monster:active {
