@@ -1,4 +1,4 @@
-/* style.css (UI 및 이미지 크기 복구 버전) */
+/* style.css (최종 레이아웃 및 크기 제어) */
 
 body {
     display: flex;
@@ -10,7 +10,7 @@ body {
     color: white;
     font-family: sans-serif;
     text-align: center;
-    /* 이미지 및 텍스트 선택 방지 (게임에 중요) */
+    /* 이미지 및 텍스트 선택 방지 */
     -webkit-user-select: none;  
     -moz-user-select: none;     
     -ms-user-select: none;      
@@ -22,7 +22,10 @@ body {
     flex-direction: row; 
     align-items: flex-start;
     gap: 50px; 
-    /* 💥 수정: 불필요한 max-width/width 제거, 기존 레이아웃 유지 */
+    /* 💥 추가/수정: 전체 콘텐츠 영역의 최대 너비를 제한하여 과도한 확대를 방지 */
+    max-width: 1200px; 
+    padding: 20px;
+    width: 90%; /* 화면이 작아지면 90% 사용 */
 }
 
 .game-container {
@@ -30,7 +33,9 @@ body {
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    /* 💥 수정: 불필요한 max-width/width 제거, 기존 레이아웃 유지 */
+    /* 💥 추가/수정: 게임 영역의 최대 너비를 제한하여 몬스터 크기를 간접 제어 */
+    max-width: 700px; 
+    width: 100%; 
 }
 
 /* 타격 횟수 카운터 스타일 */
@@ -43,13 +48,13 @@ body {
 
 /* 이미지 스타일 (몬스터 크기 제어) */
 #monster {
-    width: 80%;
-    max-width: 500px;
+    /* 💥 중요: 부모 컨테이너(max-width: 700px)에 맞춰 최대 100%까지만 확장 */
+    width: 100%; 
+    max-width: 500px; /* 몬스터 자체의 최대 크기는 500px로 유지 */
     cursor: url('cursor.png'), pointer;
     transition: transform 0.1s ease-out;
     -webkit-user-drag: none; 
     -moz-user-drag: none;
-    /* 💥 추가: 이미지가 컨테이너를 넘지 않도록 명시적 제한 */
     height: auto; 
     display: block;
     margin: 0 auto;
@@ -60,7 +65,7 @@ body {
 }
 
 /* ------------------------------------ */
-/* 커서 컨트롤 및 설정 버튼 스타일 (유지) */
+/* 커서 컨트롤 및 설정 버튼 스타일 (변화 없음) */
 /* ------------------------------------ */
 
 .cursor-controls {
@@ -68,6 +73,8 @@ body {
     flex-direction: column;
     gap: 15px; 
     align-items: center;
+    /* 💥 추가: 커서 컨트롤 영역의 크기도 제어 */
+    min-width: 150px; 
 }
 
 .cursor-selector {
@@ -96,7 +103,7 @@ body {
 
 
 /* ------------------------------------ */
-/* 커서 버튼 그룹 스타일 (유지) */
+/* 커서 버튼 그룹 스타일 (변화 없음) */
 /* ------------------------------------ */
 
 .button-group {
@@ -152,7 +159,7 @@ body {
 
 
 /* ------------------------------------ */
-/* 업적 달성 배너 스타일 (유지) */
+/* 업적 달성 배너 스타일 (변화 없음) */
 /* ------------------------------------ */
 #achievement-banner {
     position: fixed;
@@ -177,7 +184,7 @@ body {
 
 
 /* ------------------------------------ */
-/* 모달 (팝업) 스타일 (유지) */
+/* 모달 (팝업) 스타일 (변화 없음) */
 /* ------------------------------------ */
 .modal {
     display: none; 
@@ -244,7 +251,7 @@ body {
 }
 
 /* ------------------------------------ */
-/* 타격 이펙트 스타일 (유지) */
+/* 타격 이펙트 스타일 (변화 없음) */
 /* ------------------------------------ */
 
 .hit-effect {
