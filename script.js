@@ -64,8 +64,7 @@ let currentDamage = 1; 
 const normalImage = 'Hit_01.png';
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
-const effectDuration = 300; 
-
+const effectDuration = 300; // 💥 CSS 애니메이션 지속 시간과 일치
 
 function getCursorPaths(cursorName) {
     return {
@@ -93,7 +92,7 @@ function playEventAnimation() {
 }
 
 
-// 타격 이펙트 생성 및 재생 함수 (Keyframe 맞춤 최종 수정)
+// 타격 이펙트 생성 및 재생 함수 (스프라이트 애니메이션 최종 수정)
 function createHitEffect(x, y) {
     const effect = document.createElement('div');
     effect.className = 'hit-effect';
@@ -102,14 +101,14 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    // 💥 Keyframe 애니메이션은 CSS에서 모든 변화를 처리하므로,
-    // JS는 요소를 생성하고 위치만 지정한 후 DOM에 추가합니다.
+    // 💥 DOM에 추가하자마자 CSS Keyframe 애니메이션이 시작됨
     body.appendChild(effect);
     
     // 이펙트가 사라지는 시간과 동일하게 요소 제거
+    // CSS 애니메이션 지속 시간(300ms)에 맞춰 제거
     setTimeout(() => {
         effect.remove();
-    }, effectDuration + 100);
+    }, effectDuration + 50); // 애니메이션 완료 후 50ms 후 제거
 }
 
 function showAchievementBanner(title) {
@@ -362,22 +361,20 @@ function toggleSettingsMenu() {
  * 초기화 함수
  */
 function initializeCursors() {
-    cursorButtons.forEach(button => {
-        const cursorName = button.dataset.cursor;
-        const iconImg = button.querySelector('img');
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        const iconImg = button.querySelector('img');
 
-        // 선택된 커서만 _on으로, 나머지는 _off로 설정
-        if (button.classList.contains('selected')) {
-            if (iconImg) {
-                iconImg.src = `${cursorName}_icon_on.png`;
-            }
-        } else if (iconImg) {
-            // 💥 로드 실패 에러 방지를 위해 명확히 _off를 붙입니다.
-            iconImg.src = `${cursorName}_icon_off.png`; 
-        }
-    });
+        if (button.classList.contains('selected')) {
+            if (iconImg) {
+                iconImg.src = `${cursorName}_icon_on.png`;
+            }
+        } else if (iconImg) {
+            iconImg.src = `${cursorName}_icon_off.png`;
+        }
+    });
 
-    updateMonsterCursor(); 
+    updateMonsterCursor(); 
 }
 
 
