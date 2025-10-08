@@ -8,26 +8,26 @@ const cursorButtons = document.querySelectorAll('.cursor-button');
 
 // 💥 업적 및 설정 관련 DOM 요소 (수정/추가됨)
 const settingsButton = document.getElementById('settings-button');
-const settingsMenu = document.getElementById('settings-menu'); // 💥 추가
-const achievementButton = document.getElementById('achievement-button'); // 💥 추가
-const devButton = document.getElementById('dev-button'); // 💥 추가
+const settingsMenu = document.getElementById('settings-menu'); 
+const achievementButton = document.getElementById('achievement-button'); 
+const devButton = document.getElementById('dev-button'); 
 const modal = document.getElementById('achievement-modal');
 const closeButton = document.querySelector('.close-button');
-const modalTitle = document.getElementById('modal-title'); // 💥 추가
-const achievementPanel = document.getElementById('achievement-panel'); // 💥 추가
-const developerPanel = document.getElementById('developer-panel'); // 💥 추가
-const jump1000HitsButton = document.getElementById('jump-1000-hits'); // 💥 추가
+const modalTitle = document.getElementById('modal-title'); 
+const achievementPanel = document.getElementById('achievement-panel'); 
+const developerPanel = document.getElementById('developer-panel'); 
+const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
 const achievementList = document.getElementById('achievement-list');
 const achievementBanner = document.getElementById('achievement-banner');
 const achievementText = document.getElementById('achievement-text');
 
 // ------------------------------------
-// 💥 이벤트 상태 변수
+// 💥 이벤트 상태 변수 (GIF 파일명, 지속 시간 반영)
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // GIF 파일명
-const eventDuration = 4000; // GIF 재생 시간 (4초)
+const eventGif = 'hit_event.gif'; // 💥 GIF 파일명 반영됨
+const eventDuration = 4000; // 💥 GIF 재생 시간 (4초)
 
 
 // 💥 업적 데이터 정의 (icon 필드 추가)
@@ -75,6 +75,7 @@ let currentDamage = 1;
 
 // 이미지 및 애니메이션 설정
 const normalImage = 'Hit_01.png';
+// 💥 수정됨: Hit_05.png 추가
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
 const effectDuration = 300; 
@@ -103,7 +104,7 @@ function playEventAnimation() {
     // 몬스터 이미지 교체 (GIF 재생)
     monsterImage.src = eventGif; 
     
-    // 몬스터 커서를 기본 커서로 되돌립니다. (GIF 재생 중 타격 커서 적용 방지)
+    // 몬스터 커서를 기본 커서로 되돌립니다.
     monsterImage.style.cursor = 'default';
 
     // 일정 시간 후 (GIF 재생 시간) 게임 상태 복구
@@ -131,9 +132,11 @@ function createHitEffect(x, y) {
     body.appendChild(effect);
     
     requestAnimationFrame(() => {
+        // CSS 애니메이션 시작
         effect.classList.add('animate');
     });
 
+    // CSS transition time(0.3s) + delay(0.1s)
     setTimeout(() => {
         effect.remove();
     }, effectDuration + 100); 
@@ -230,8 +233,7 @@ function handleHit(event) {
         return;
     }
     
-    // 1. 💥 1010 타격 초과 처리 로직 (가장 먼저 실행)
-    // 타격 후의 예상 카운트
+    // 1. 💥 1010 타격 초과 처리 로직 (타격수가 임계값을 넘길 때 고정)
     const potentialHitCount = hitCount + currentDamage;
     
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
@@ -239,8 +241,8 @@ function handleHit(event) {
         hitCount = eventThreshold;
         counterDisplay.textContent = hitCount;
         
-        // 이벤트 발동 로직 실행
-        checkAchievements(); // 여기서 playEventAnimation이 호출됨
+        // 이벤트 발동 로직 실행 (checkAchievements에서 playEventAnimation 호출)
+        checkAchievements(); 
         return; // 나머지 타격 로직 실행 중지
     }
     
@@ -282,7 +284,8 @@ function handleHitJump() {
     const jumpAmount = 1000;
     
     if (hitCount >= eventThreshold) {
-        // 이미 1010을 달성했으면 증가하지 않습니다.
+        alert("이미 최대 타격수(1010)를 달성했습니다.");
+        closeModal();
         return;
     }
     
@@ -295,12 +298,12 @@ function handleHitJump() {
     checkAchievements();
     
     closeModal(); // 버튼 누른 후 모달 닫기
-    alert(`타격수가 ${jumpAmount} 증가했습니다! 현재: ${hitCount}`);
+    alert(`타격수가 ${newHitCount - (newHitCount - jumpAmount)} 증가했습니다! 현재: ${hitCount}`);
 }
 
 
 /**
- * 💥 커서 버튼 클릭 핸들러 (커서 아이콘 이미지 변경 로직 유지)
+ * 💥 커서 버튼 클릭 핸들러
  */
 function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
@@ -314,7 +317,6 @@ function handleCursorChange(event) {
     const newDamage = parseInt(clickedButton.dataset.damage); 
     
     // 1. 이전 커서의 아이콘을 _off 상태로 변경
-    // 현재 선택된 커서 버튼을 찾아 _on -> _off로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
     if (previouslySelectedButton) {
         previouslySelectedButton.classList.remove('selected');
@@ -341,11 +343,11 @@ function handleCursorChange(event) {
 
 
 // ------------------------------------
-// 💥 모달 (팝업) 기능 수정 (패널 분리)
+// 💥 모달 (팝업) 기능 (패널 분리 및 조건 숨김 로직 포함)
 // ------------------------------------
 
 /**
- * 업적 목록을 모달에 렌더링하는 함수 (조건 숨김/아이콘 추가 로직 반영)
+ * 업적 목록을 모달에 렌더링하는 함수
  */
 function renderAchievements() {
     achievementList.innerHTML = ''; // 목록 초기화
@@ -363,13 +365,14 @@ function renderAchievements() {
         
         let statusText;
         if (ach.achieved) {
-            // 💥 달성 시에만 실제 조건 표시
+            // 달성 시에만 실제 조건 표시
             if (ach.type === 'hitCount') {
                 statusText = `(${ach.condition} 타격 완료)`;
             } else if (ach.type === 'unlock') {
                 statusText = `(커서 02 해금 완료)`;
             } else if (ach.type === 'cursorCount') {
-                statusText = `(${ach.condition} 개 해금 완료)`;
+                const unlockedCount = Array.from(cursorButtons).filter(btn => !btn.classList.contains('locked')).length;
+                statusText = `(${unlockedCount}/${ach.condition} 개 해금 완료)`;
             } else if (ach.type === 'singleHit') {
                 statusText = `(${ach.condition} 타격 완료)`;
             }
@@ -395,7 +398,7 @@ function renderAchievements() {
 }
 
 /**
- * 모달 열기 함수 (패널 선택 기능 추가)
+ * 모달 열기 함수 (패널 선택 기능)
  * @param {string} panelId - 'achievement' 또는 'developer'
  */
 function openModal(panelId) {
@@ -410,7 +413,7 @@ function openModal(panelId) {
         developerPanel.style.display = 'block';
     }
     
-    settingsMenu.style.display = 'none'; // 메뉴 닫기
+    settingsMenu.style.display = 'none'; // 모달이 열리면 메뉴 닫기
     modal.style.display = 'block';
 }
 
@@ -423,7 +426,6 @@ function closeModal() {
  * 💥 설정 메뉴 토글 함수
  */
 function toggleSettingsMenu() {
-    // 현재 상태가 none이면 block으로, 아니면 none으로
     settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
         ? 'flex' 
         : 'none';
@@ -452,13 +454,11 @@ function initializeCursors() {
 
 
 // ------------------------------------
-// 이벤트 리스너 설정 (수정됨)
+// 이벤트 리스너 설정
 // ------------------------------------
 
-// 몬스터 이미지에 클릭 이벤트 리스너 추가
 monsterImage.addEventListener('mousedown', handleHit);
 
-// 커서 버튼들에 클릭 이벤트 리스너 추가
 cursorButtons.forEach(button => {
     button.addEventListener('click', handleCursorChange);
 });
@@ -472,13 +472,18 @@ devButton.addEventListener('click', () => openModal('developer'));
 // 💥 개발자 기능 버튼 이벤트 리스너
 jump1000HitsButton.addEventListener('click', handleHitJump);
 
-// 모달 닫기 리스너 유지
 closeButton.addEventListener('click', closeModal);
 
-// 모달 외부 클릭 시 닫기 리스너 유지
+// 💥 외부 클릭 시 모달 또는 메뉴 닫기 로직 (개발자 기능 클릭 문제를 해결함)
 window.addEventListener('click', (event) => {
+    // 1. 모달 외부 클릭 시 닫기
     if (event.target == modal) {
         closeModal();
+    }
+    
+    // 2. 설정 버튼이나 메뉴 자체가 아닌 곳을 클릭했을 때 메뉴 숨김
+    if (event.target !== settingsButton && !settingsMenu.contains(event.target)) {
+        settingsMenu.style.display = 'none';
     }
 });
 
