@@ -22,35 +22,71 @@ const achievementBanner = document.getElementById('achievement-banner');
 const achievementText = document.getElementById('achievement-text');
 
 // ------------------------------------
-// 💥 이벤트 상태 변수 (GIF 파일명, 지속 시간 반영)
+// 💥 이벤트 상태 변수
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // 💥 GIF 파일명 반영됨
-const eventDuration = 3000; // 💥 GIF 재생 시간 (4초)
+const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
+const eventDuration = 3000; // GIF 재생 시간 (4초)
 
 
-// 💥 업적 데이터 정의 (icon 필드 추가)
+// 💥 업적 데이터 정의 (간소화됨: '첫 클릭', '초보 타격가', '커서 마스터 시리즈'만 유지)
 const ACHIEVEMENTS = {
     'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount', icon: 'icon_first_hit.png' },
     'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount', icon: 'icon_amateur_striker.png' },
-    'pro_striker': { title: '프로 타격가', condition: 100, achieved: false, type: 'hitCount', icon: 'icon_pro_striker.png' },
-    'master_striker': { title: '타격의 달인', condition: 500, achieved: false, type: 'hitCount', icon: 'icon_master_striker.png' },
-    'ultimate_striker': { title: '궁극의 타격가', condition: 1010, achieved: false, type: 'hitCount', icon: 'icon_ultimate_striker.png' },
-    'cursor_collector': { title: '커서 수집가', condition: 5, achieved: false, type: 'cursorCount', icon: 'icon_cursor_collector.png' },
-    'unlock_cursor02': { title: '첫 해금!', condition: 50, achieved: false, type: 'unlock', icon: 'icon_unlock_cursor02.png' },
-
+    
     // 단일 커서 사용 업적 (10개)
-    'single_cursor_01': { title: '커서 01 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
-    'single_cursor_02': { title: '커서 02 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
-    'single_cursor_03': { title: '커서 03 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
-    'single_cursor_04': { title: '커서 04 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
-    'single_cursor_05': { title: '커서 05 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
-    'single_cursor_06': { title: '커서 06 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor06', icon: 'icon_single_cursor_06.png' },
-    'single_cursor_07': { title: '커서 07 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor07', icon: 'icon_single_cursor_07.png' },
-    'single_cursor_08': { title: '커서 08 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor08', icon: 'icon_single_cursor_08.png' },
-    'single_cursor_09': { title: '커서 09 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09', icon: 'icon_single_cursor_09.png' },
-    'single_cursor_10': { title: '커서 10 마스터', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10', icon: 'icon_single_cursor_10.png' },
+    'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
+    'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
+    'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
+    'single_cursor_04': { title: '나, 나하하... 사용한 게 나 뿐이라니 탐정씨도 참...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
+    'single_cursor_05': { title: '이히히!!!! 벌써 끝인가요~?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
+    'single_cursor_06': { title: '일소
+const monsterImage = document.getElementById('monster');
+const counterDisplay = document.getElementById('hit-count');
+const body = document.body;
+const cursorButtons = document.querySelectorAll('.cursor-button');
+
+// 💥 업적 및 설정 관련 DOM 요소 (수정/추가됨)
+const settingsButton = document.getElementById('settings-button');
+const settingsMenu = document.getElementById('settings-menu'); 
+const achievementButton = document.getElementById('achievement-button'); 
+const devButton = document.getElementById('dev-button'); 
+const modal = document.getElementById('achievement-modal');
+const closeButton = document.querySelector('.close-button');
+const modalTitle = document.getElementById('modal-title'); 
+const achievementPanel = document.getElementById('achievement-panel'); 
+const developerPanel = document.getElementById('developer-panel'); 
+const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
+const achievementList = document.getElementById('achievement-list');
+const achievementBanner = document.getElementById('achievement-banner');
+const achievementText = document.getElementById('achievement-text');
+
+// ------------------------------------
+// 💥 이벤트 상태 변수
+// ------------------------------------
+let isEventActive = false; // 이벤트 활성 상태 플래그
+const eventThreshold = 1010; // 이벤트 발동 타격 수
+const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
+const eventDuration = 3000; // GIF 재생 시간 (4초)
+
+
+// 💥 업적 데이터 정의 (간소화됨: '첫 클릭', '초보 타격가', '커서 마스터 시리즈'만 유지)
+const ACHIEVEMENTS = {
+    'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount', icon: 'icon_first_hit.png' },
+    'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount', icon: 'icon_amateur_striker.png' },
+    
+    // 단일 커서 사용 업적 (10개)
+    'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
+    'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
+    'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
+    'single_cursor_04': { title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
+    'single_cursor_05': { title: '이히히!!!! 벌써 끝인가요~?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
+    'single_cursor_06': { title: '그야말로 일로매진이로군, 오오사키 군!', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor06', icon: 'icon_single_cursor_06.png' },
+    'single_cursor_07': { title: '오오사키 님, 해내셨군요. 훌륭하십니다.', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor07', icon: 'icon_single_cursor_07.png' },
+    'single_cursor_08': { title: '...❤️', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor08', icon: 'icon_single_cursor_08.png' },
+    'single_cursor_09': { title: '아, 아앗... 저, 저로도 괜찮으시다면...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09', icon: 'icon_single_cursor_09.png' },
+    'single_cursor_10': { title: '나로만 달성했다는 건가? 무겁네~ 네 마음은!', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10', icon: 'icon_single_cursor_10.png' },
 };
 
 
@@ -60,7 +96,7 @@ let singleCursorHitCounts = {
     'cursor06': 0, 'cursor07': 0, 'cursor08': 0, 'cursor09': 0, 'cursor10': 0, 
 };
 
-// 해금 설정 및 상태 변수
+// 해금 설정 및 상태 변수 (해금 관련 업적은 제거되었으나, 해금 로직은 유지)
 const UNLOCK_INTERVAL = 50;
 const UNLOCK_THRESHOLDS = {};
 for (let i = 2; i <= 10; i++) {
@@ -75,7 +111,6 @@ let currentDamage = 1;
 
 // 이미지 및 애니메이션 설정
 const normalImage = 'Hit_01.png';
-// 💥 수정됨: Hit_05.png 추가
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
 const effectDuration = 300; 
@@ -96,22 +131,18 @@ function updateMonsterCursor() {
 }
 
 // ------------------------------------
-// 💥 이벤트 재생 함수
+// 이벤트 재생 함수
 // ------------------------------------
 function playEventAnimation() {
-    isEventActive = true; // 이벤트 활성화, 클릭 방지
+    isEventActive = true; 
     
-    // 몬스터 이미지 교체 (GIF 재생)
     monsterImage.src = eventGif; 
-    
-    // 몬스터 커서를 기본 커서로 되돌립니다.
     monsterImage.style.cursor = 'default';
 
-    // 일정 시간 후 (GIF 재생 시간) 게임 상태 복구
     setTimeout(() => {
-        isEventActive = false; // 이벤트 비활성화, 클릭 허용
-        monsterImage.src = normalImage; // 원래 몬스터 이미지 (Hit_01.png)로 복구
-        updateMonsterCursor(); // 이전에 선택된 커서로 복구
+        isEventActive = false; 
+        monsterImage.src = normalImage;
+        updateMonsterCursor(); 
         
         console.log("1010 이벤트 종료. 게임 플레이 재개.");
     }, eventDuration);
@@ -126,17 +157,15 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    const randomRotation = Math.random() * 360; 
+    const randomRotation = Math.floor(Math.random() * 360); 
     effect.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
     
     body.appendChild(effect);
     
     requestAnimationFrame(() => {
-        // CSS 애니메이션 시작
         effect.classList.add('animate');
     });
 
-    // CSS transition time(0.3s) + delay(0.1s)
     setTimeout(() => {
         effect.remove();
     }, effectDuration + 100); 
@@ -147,7 +176,6 @@ function showAchievementBanner(title) {
     achievementText.textContent = `업적 달성: ${title}`;
     achievementBanner.classList.add('show');
     
-    // 2.5초 후 배너를 숨깁니다.
     setTimeout(() => {
         achievementBanner.classList.remove('show');
     }, 2500);
@@ -156,28 +184,15 @@ function showAchievementBanner(title) {
 
 // 업적 확인 함수
 function checkAchievements() {
-    // 1. Hit Count & Cursor Collector Achievements 
-    for (const key in ACHIEVEMENTS) {
+    // 1. Hit Count Achievements ('first_hit', 'amateur_striker')
+    for (const key of ['first_hit', 'amateur_striker']) {
         const achievement = ACHIEVEMENTS[key];
         
         if (achievement.achieved) continue;
 
-        if (achievement.type === 'hitCount') {
-            if (hitCount >= achievement.condition) {
-                achievement.achieved = true;
-                showAchievementBanner(achievement.title);
-                
-                // 💥 1010 타격 이벤트 발동 조건
-                if (key === 'ultimate_striker' && hitCount >= eventThreshold) {
-                    playEventAnimation();
-                }
-            }
-        } else if (achievement.type === 'cursorCount') {
-            const unlockedCount = Array.from(cursorButtons).filter(btn => !btn.classList.contains('locked')).length;
-            if (unlockedCount >= achievement.condition) {
-                achievement.achieved = true;
-                showAchievementBanner(achievement.title);
-            }
+        if (hitCount >= achievement.condition) {
+            achievement.achieved = true;
+            showAchievementBanner(achievement.title);
         }
     }
     
@@ -190,6 +205,11 @@ function checkAchievements() {
         if (ach && !ach.achieved && singleCursorHitCounts[cursorKey] >= ach.condition) {
             ach.achieved = true;
             showAchievementBanner(ach.title);
+            
+            // 💥 커서 마스터 업적 달성 시 1010 이벤트 발동
+            if (ach.condition === eventThreshold) {
+                playEventAnimation();
+            }
         }
     }
 }
@@ -200,9 +220,6 @@ function checkUnlocks() {
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
         
-        // 이벤트 임계값을 넘겼다면 더 이상 해금하지 않습니다.
-        if (hitCount >= eventThreshold) return;
-
         if (cursorName === 'cursor01') return;
 
         const unlockHitCount = UNLOCK_THRESHOLDS[cursorName];
@@ -216,11 +233,6 @@ function checkUnlocks() {
             if (iconImg) {
                 iconImg.src = `${cursorName}_icon_off.png`;
             }
-
-            if (cursorName === 'cursor02' && !ACHIEVEMENTS['unlock_cursor02'].achieved) {
-                 ACHIEVEMENTS['unlock_cursor02'].achieved = true;
-                 showAchievementBanner(ACHIEVEMENTS['unlock_cursor02'].title);
-            }
         }
     });
 }
@@ -233,18 +245,7 @@ function handleHit(event) {
         return;
     }
     
-    // 1. 💥 1010 타격 초과 처리 로직 (타격수가 임계값을 넘길 때 고정)
-    const potentialHitCount = hitCount + currentDamage;
-    
-    if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
-        // 임계값을 넘기는 순간, 카운트를 1010으로 고정
-        hitCount = eventThreshold;
-        counterDisplay.textContent = hitCount;
-        
-        // 이벤트 발동 로직 실행 (checkAchievements에서 playEventAnimation 호출)
-        checkAchievements(); 
-        return; // 나머지 타격 로직 실행 중지
-    }
+    // 1. 1010 타격 초과 처리 로직은 제거됨 (커서 마스터 업적 달성 시 이벤트 발동으로 대체)
     
     // 이펙트 생성 및 재생
     createHitEffect(event.clientX, event.clientY);
@@ -278,32 +279,36 @@ function handleHit(event) {
 }
 
 // ------------------------------------
-// 💥 개발자 기능: 1000 타격 증가 핸들러
+// 개발자 기능: 1000 타격 증가 핸들러 (1010 타격 고정 로직에 맞게 수정)
 // ------------------------------------
 function handleHitJump() {
-    const jumpAmount = 1000;
+    const targetHitCount = eventThreshold - 10; // 타겟 타격수를 1000으로 설정 (커서 마스터 조건 전)
     
-    if (hitCount >= eventThreshold) {
-        alert("이미 최대 타격수(1010)를 달성했습니다.");
+    if (hitCount >= targetHitCount) {
+        alert("이미 높은 타격수(50 이상)를 달성했습니다.");
         closeModal();
         return;
     }
     
-    // 1010을 초과하지 않는 범위 내에서 증가
-    const newHitCount = Math.min(hitCount + jumpAmount, eventThreshold);
-    hitCount = newHitCount;
+    // 타격수를 1000으로 설정
+    hitCount = targetHitCount;
     counterDisplay.textContent = hitCount;
     
     checkUnlocks();
-    checkAchievements();
     
-    closeModal(); // 버튼 누른 후 모달 닫기
-    alert(`타격수가 ${newHitCount - (newHitCount - jumpAmount)} 증가했습니다! 현재: ${hitCount}`);
+    // '초보 타격가' 업적이 달성되도록 보장
+    if (!ACHIEVEMENTS['amateur_striker'].achieved) {
+        ACHIEVEMENTS['amateur_striker'].achieved = true;
+        showAchievementBanner(ACHIEVEMENTS['amateur_striker'].title);
+    }
+    
+    closeModal(); 
+    alert(`타격수가 1000으로 설정되었습니다! 현재: ${hitCount}`);
 }
 
 
 /**
- * 💥 커서 버튼 클릭 핸들러
+ * 커서 버튼 클릭 핸들러
  */
 function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
@@ -343,15 +348,16 @@ function handleCursorChange(event) {
 
 
 // ------------------------------------
-// 💥 모달 (팝업) 기능 (패널 분리 및 조건 숨김 로직 포함)
+// 모달 (팝업) 기능
 // ------------------------------------
 
 /**
  * 업적 목록을 모달에 렌더링하는 함수
  */
 function renderAchievements() {
-    achievementList.innerHTML = ''; // 목록 초기화
+    achievementList.innerHTML = ''; 
 
+    // 커서 마스터 업적은 커서 이름 순서대로 정렬
     const sortedAchievements = Object.entries(ACHIEVEMENTS).sort(([, a], [, b]) => {
         if (a.type === 'singleHit' && b.type === 'singleHit') {
             return a.cursor.localeCompare(b.cursor);
@@ -368,16 +374,11 @@ function renderAchievements() {
             // 달성 시에만 실제 조건 표시
             if (ach.type === 'hitCount') {
                 statusText = `(${ach.condition} 타격 완료)`;
-            } else if (ach.type === 'unlock') {
-                statusText = `(커서 02 해금 완료)`;
-            } else if (ach.type === 'cursorCount') {
-                const unlockedCount = Array.from(cursorButtons).filter(btn => !btn.classList.contains('locked')).length;
-                statusText = `(${unlockedCount}/${ach.condition} 개 해금 완료)`;
             } else if (ach.type === 'singleHit') {
                 statusText = `(${ach.condition} 타격 완료)`;
             }
         } else {
-            // 💥 달성 전에는 ??? 표시
+            // 달성 전에는 ??? 표시
             statusText = '???';
         }
 
@@ -399,7 +400,6 @@ function renderAchievements() {
 
 /**
  * 모달 열기 함수 (패널 선택 기능)
- * @param {string} panelId - 'achievement' 또는 'developer'
  */
 function openModal(panelId) {
     if (panelId === 'achievement') {
@@ -413,7 +413,7 @@ function openModal(panelId) {
         developerPanel.style.display = 'block';
     }
     
-    settingsMenu.style.display = 'none'; // 모달이 열리면 메뉴 닫기
+    settingsMenu.style.display = 'none'; 
     modal.style.display = 'block';
 }
 
@@ -423,7 +423,7 @@ function closeModal() {
 
 
 /**
- * 💥 설정 메뉴 토글 함수
+ * 설정 메뉴 토글 함수
  */
 function toggleSettingsMenu() {
     settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
@@ -433,7 +433,7 @@ function toggleSettingsMenu() {
 
 
 /**
- * 💥 초기화 함수
+ * 초기화 함수
  */
 function initializeCursors() {
     cursorButtons.forEach(button => {
@@ -463,25 +463,23 @@ cursorButtons.forEach(button => {
     button.addEventListener('click', handleCursorChange);
 });
 
-// 💥 설정 메뉴 관련 이벤트 리스너
+// 설정 메뉴 관련 이벤트 리스너
 settingsButton.addEventListener('click', toggleSettingsMenu);
 
 achievementButton.addEventListener('click', () => openModal('achievement'));
 devButton.addEventListener('click', () => openModal('developer'));
 
-// 💥 개발자 기능 버튼 이벤트 리스너
+// 개발자 기능 버튼 이벤트 리스너
 jump1000HitsButton.addEventListener('click', handleHitJump);
 
 closeButton.addEventListener('click', closeModal);
 
-// 💥 외부 클릭 시 모달 또는 메뉴 닫기 로직 (개발자 기능 클릭 문제를 해결함)
+// 외부 클릭 시 모달 또는 메뉴 닫기 로직
 window.addEventListener('click', (event) => {
-    // 1. 모달 외부 클릭 시 닫기
     if (event.target == modal) {
         closeModal();
     }
     
-    // 2. 설정 버튼이나 메뉴 자체가 아닌 곳을 클릭했을 때 메뉴 숨김
     if (event.target !== settingsButton && !settingsMenu.contains(event.target)) {
         settingsMenu.style.display = 'none';
     }
