@@ -35,7 +35,7 @@ const ACHIEVEMENTS = {
     'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount', icon: 'icon_first_hit.png' },
     'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount', icon: 'icon_amateur_striker.png' },
     
-    // 단일 커서 사용 업적 (10개) - 업적 이름이 변경됨
+    // 단일 커서 사용 업적 (10개)
     'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
     'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
     'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
@@ -55,7 +55,6 @@ let singleCursorHitCounts = {
     'cursor06': 0, 'cursor07': 0, 'cursor08': 0, 'cursor09': 0, 'cursor10': 0, 
 };
 
-// 해금 설정 및 상태 변수 (해금 관련 업적은 제거되었으나, 해금 로직은 유지)
 const UNLOCK_INTERVAL = 50;
 const UNLOCK_THRESHOLDS = {};
 for (let i = 2; i <= 10; i++) {
@@ -164,8 +163,6 @@ function checkAchievements() {
         if (ach && !ach.achieved && singleCursorHitCounts[cursorKey] >= ach.condition) {
             ach.achieved = true;
             showAchievementBanner(ach.title);
-            
-            // 💥 커서 마스터 업적 달성 시 이벤트 발동 로직 제거됨 (handleHit에서 전체 타격으로 처리)
         }
     }
 }
@@ -201,47 +198,47 @@ function handleHit(event) {
         return;
     }
     
-    // 💥 1. 1010 타격 초과 처리 로직 복원 및 수정
+    // 1010 타격 초과 처리 로직
     const potentialHitCount = hitCount + currentDamage;
     
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
-        // 임계값을 넘기는 순간, 카운트를 1010으로 고정
         hitCount = eventThreshold;
         counterDisplay.textContent = hitCount;
         
-        // 이벤트 발동
         playEventAnimation(); 
-        
-        // 타격수 업적 확인 (1타, 50타 등)
         checkAchievements();
-        return; // 나머지 타격 로직 실행 중지
+        return;
     }
 
-    // 이펙트 생성 및 재생
-    createHitEffect(event.clientX, event.clientY);
+    // 💥 이펙트 생성 시 이벤트에서 좌표를 가져오는 방식 통일
+    // 터치 이벤트의 경우 event.clientX/Y 대신 touch 객체 사용이 필요함
+    let clientX = event.clientX;
+    let clientY = event.clientY;
+
+    if (event.touches && event.touches.length > 0) {
+        clientX = event.touches[0].clientX;
+        clientY = event.touches[0].clientY;
+    }
+
+    createHitEffect(clientX, clientY);
     
-    // 2. 타격 횟수를 currentDamage 값만큼 증가시키고 화면을 업데이트합니다.
+    // 타격 횟수 증가 및 업데이트
     hitCount += currentDamage;
     counterDisplay.textContent = hitCount;
     
-    // 현재 커서의 단일 타격 횟수를 증가시킵니다.
     singleCursorHitCounts[currentCursor] += 1; 
     
-    // 3. 해금 상태를 확인합니다.
     checkUnlocks();
-    
-    // 4. 업적 상태를 확인합니다.
     checkAchievements();
 
-    // 5. 랜덤 타격 이미지 변경
+    // 랜덤 타격 이미지 변경 및 커서 변경
     const randomIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomIndex];
     
-    // 6. 🖱️ 커서를 선택된 타격 커서로 변경
     const hitCursorPath = getCursorPaths(currentCursor).hit;
     monsterImage.style.cursor = hitCursorPath; 
 
-    // 7. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
+    // 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
@@ -252,25 +249,22 @@ function handleHit(event) {
 // 개발자 기능: 1000 타격 증가 핸들러
 // ------------------------------------
 function handleHitJump() {
-    const targetHitCount = eventThreshold - 10; // 1000으로 설정
+    const targetHitCount = eventThreshold - 10; 
     
-    // 💥 1010타 (이벤트 임계값) 도달 시 경고
-    if (hitCount >= eventThreshold) {
-        alert("이미 최대 타격수(1010)를 달성했습니다.");
+    if (hitCount >= targetHitCount) {
+        alert("이미 높은 타격수(1000 이상)를 달성했습니다.");
         closeModal();
         return;
     }
-    
-    // 타격수를 1000 또는 그 이상으로 설정하는 경우, 임계값을 넘지 않도록 조정
-    const newHitCount = Math.min(hitCount + 1000, targetHitCount);
-    hitCount = newHitCount;
+    
+    hitCount = targetHitCount;
     counterDisplay.textContent = hitCount;
     
     checkUnlocks();
-    checkAchievements(); // 업적 강제 달성 로직 제거, checkAchievements에 의존
+    checkAchievements();
 
     closeModal(); 
-    alert(`타격수가 ${hitCount}으로 설정되었습니다!`);
+    alert(`타격수가 1000으로 설정되었습니다! 현재: ${hitCount}`);
 }
 
 
@@ -324,7 +318,6 @@ function handleCursorChange(event) {
 function renderAchievements() {
     achievementList.innerHTML = ''; 
 
-    // 커서 마스터 업적은 커서 이름 순서대로 정렬
     const sortedAchievements = Object.entries(ACHIEVEMENTS).sort(([, a], [, b]) => {
         if (a.type === 'singleHit' && b.type === 'singleHit') {
             return a.cursor.localeCompare(b.cursor);
@@ -338,14 +331,12 @@ function renderAchievements() {
         
         let statusText;
         if (ach.achieved) {
-            // 달성 시에만 실제 조건 표시
             if (ach.type === 'hitCount') {
                 statusText = `(${ach.condition} 타격 완료)`;
             } else if (ach.type === 'singleHit') {
                 statusText = `(${ach.condition} 타격 완료)`;
             }
         } else {
-            // 달성 전에는 ??? 표시
             statusText = '???';
         }
 
@@ -426,17 +417,22 @@ function initializeCursors() {
 
 monsterImage.addEventListener('mousedown', handleHit);
 
+// 💥 추가: 모바일 터치 이벤트를 handleHit 함수로 처리하도록 추가
+monsterImage.addEventListener('touchstart', (event) => {
+    // 터치 이벤트를 handleHit으로 전달 (handleHit에서 touch 객체 처리)
+    handleHit(event);
+    event.preventDefault(); // 기본 터치 동작(스크롤, 하이라이트 등) 방지
+});
+
 cursorButtons.forEach(button => {
     button.addEventListener('click', handleCursorChange);
 });
 
-// 설정 메뉴 관련 이벤트 리스너
 settingsButton.addEventListener('click', toggleSettingsMenu);
 
 achievementButton.addEventListener('click', () => openModal('achievement'));
 devButton.addEventListener('click', () => openModal('developer'));
 
-// 개발자 기능 버튼 이벤트 리스너
 jump1000HitsButton.addEventListener('click', handleHitJump);
 
 closeButton.addEventListener('click', closeModal);
