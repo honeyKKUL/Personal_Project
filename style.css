@@ -203,16 +203,16 @@ body {
     height: 20px;
     background-color: rgba(255, 0, 0, 0.8);
     border-radius: 50%;
-    opacity: 1; /* 초기에는 보이게 */
+    opacity: 0; /* 초기에는 투명하게 숨김 */
     pointer-events: none;
-    transform: translate(-50%, -50%); /* 클릭 지점 중앙에서 시작 */
+    transform: translate(-50%, -50%) scale(0.1); /* 초기에는 작게 시작 */
+    transition: all 0.3s ease-out; /* transition을 기본 요소에 추가 */
 }
 
 .hit-effect.animate {
-    opacity: 0; /* 투명하게 사라짐 */
+    opacity: 1; /* 애니메이션 시작 시 불투명하게 만듬 */
     /* 위로 이동하며 커지고 회전 */
     transform: translate(-50%, -150%) scale(1.5) rotate(45deg); 
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
 
