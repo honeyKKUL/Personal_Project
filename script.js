@@ -372,4 +372,52 @@ function initializeCursors() {
 
         if (button.classList.contains('selected')) {
             if (iconImg) {
-                iconImg.src = `${cursorName}_icon_on.
+                iconImg.src = `${cursorName}_icon_on.png`;
+            }
+        } else if (iconImg) {
+            iconImg.src = `${cursorName}_icon_off.png`;
+        }
+    });
+
+    updateMonsterCursor(); 
+}
+
+
+// ------------------------------------
+// 이벤트 리스너 설정
+// ------------------------------------
+
+monsterImage.addEventListener('mousedown', handleHit);
+
+// 터치 이벤트를 handleHit 함수로 처리
+monsterImage.addEventListener('touchstart', (event) => {
+    handleHit(event);
+    event.preventDefault(); 
+});
+
+cursorButtons.forEach(button => {
+    button.addEventListener('click', handleCursorChange);
+});
+
+settingsButton.addEventListener('click', toggleSettingsMenu);
+
+achievementButton.addEventListener('click', () => openModal('achievement'));
+devButton.addEventListener('click', () => openModal('developer'));
+
+jump1000HitsButton.addEventListener('click', handleHitJump);
+
+closeButton.addEventListener('click', closeModal);
+
+// 외부 클릭 시 모달 또는 메뉴 닫기 로직
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        closeModal();
+    }
+    
+    if (event.target !== settingsButton && !settingsMenu.contains(event.target)) {
+        settingsMenu.style.display = 'none';
+    }
+});
+
+// 페이지 로드 시 초기화 함수 실행
+initializeCursors();
