@@ -236,7 +236,7 @@ body {
 .achievement-item {
     margin: 10px 0;
     padding: 10px;
-    border-radius: 5px;
+    border-radius: 2px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -297,10 +297,10 @@ body {
 
 /* 💥 업적 이미지 컨테이너 스타일 */
 .achievement-icon {
-    width: 20px;
-    height: 20px;
-    min-width: 20px; /* flex에서 크기 고정 */
-    min-height: 20px;
+    width: 50px;
+    height: 50px;
+    min-width: 50px; /* flex에서 크기 고정 */
+    min-height: 50px;
     border: 1px solid #ccc; /* 이미지 공간을 명확히 표시 */
     border-radius: 3px;
     margin-right: 15px;
@@ -334,8 +334,8 @@ body {
 }
 
 .achievement-status {
-    margin-left: 15px;
-    font-size: 0.9em;
+    margin-left: 5px;
+    font-size: 0.3em;
     font-style: italic;
 }
 
