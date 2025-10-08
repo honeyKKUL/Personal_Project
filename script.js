@@ -362,20 +362,22 @@ function toggleSettingsMenu() {
  * 초기화 함수
  */
 function initializeCursors() {
-    cursorButtons.forEach(button => {
-        const cursorName = button.dataset.cursor;
-        const iconImg = button.querySelector('img');
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        const iconImg = button.querySelector('img');
 
-        if (button.classList.contains('selected')) {
-            if (iconImg) {
-                iconImg.src = `${cursorName}_icon_on.png`;
-            }
-        } else if (iconImg) {
-            iconImg.src = `${cursorName}_icon_off.png`;
-        }
-    });
+        // 선택된 커서만 _on으로, 나머지는 _off로 설정
+        if (button.classList.contains('selected')) {
+            if (iconImg) {
+                iconImg.src = `${cursorName}_icon_on.png`;
+            }
+        } else if (iconImg) {
+            // 💥 로드 실패 에러 방지를 위해 명확히 _off를 붙입니다.
+            iconImg.src = `${cursorName}_icon_off.png`; 
+        }
+    });
 
-    updateMonsterCursor(); 
+    updateMonsterCursor(); 
 }
 
 
