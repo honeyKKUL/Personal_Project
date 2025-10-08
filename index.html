@@ -18,7 +18,15 @@
             <p>화면을 클릭하여 몬스터에게 대미지를 입히세요!</p>
         </div>
 
-        <div class="cursor-controls"> 
+        <div class="cursor-controls">
+            
+            <button id="settings-button">설정</button>
+            
+            <div id="settings-menu" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px;">
+                <button id="achievement-button" class="sub-setting-button">업적</button>
+                <button id="dev-button" class="sub-setting-button">개발자 기능</button>
+            </div>
+
             <div class="cursor-selector">
                 <div class="button-group">
                     <button class="cursor-button selected" data-cursor="cursor01" data-damage="1">
@@ -53,36 +61,30 @@
                     </button>
                 </div>
             </div>
+        </div>
+    </div>
+
+
+    <div id="achievement-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2 id="modal-title"></h2> 
             
-           <div class="cursor-controls">
-    
-    <button id="settings-button">설정</button>
-    
-    <div id="settings-menu" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px;">
-        <button id="achievement-button" class="sub-setting-button">업적</button>
-        <button id="dev-button" class="sub-setting-button">개발자 기능</button>
-    </div>
-
-    <div class="cursor-selector">...</div>
-    </div>
-
-
-<div id="achievement-modal" class="modal">
-    <div class="modal-content">
-        <span class="close-button">&times;</span>
-        <h2 id="modal-title"></h2> 
-        
-        <div id="achievement-panel">
-            <ul id="achievement-list">
+            <div id="achievement-panel">
+                <ul id="achievement-list">
                 </ul>
-        </div>
-        
-        <div id="developer-panel" style="display: none;">
-            <p>개발자 편의 기능</p>
-            <button id="jump-1000-hits" class="dev-feature-button">타격수 1000 증가</button>
+            </div>
+            
+            <div id="developer-panel" style="display: none;">
+                <p>개발자 편의 기능</p>
+                <button id="jump-1000-hits" class="dev-feature-button">타격수 1000 증가</button>
+            </div>
         </div>
     </div>
-</div>
+
+    <div id="achievement-banner">
+        <p id="achievement-text">업적 달성: 테스트</p>
+    </div>
 
     <script src="script.js"></script>
 </body>
