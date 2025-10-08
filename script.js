@@ -19,7 +19,7 @@ const achievementText = document.getElementById('achievement-text');
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // 💥 GIF 파일명으로 수정됨!
+const eventGif = 'hit_event.gif'; // GIF 파일명
 const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 
@@ -68,7 +68,8 @@ let currentDamage = 1;
 
 // 이미지 및 애니메이션 설정
 const normalImage = 'Hit_01.png';
-const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png'];
+// 💥 수정됨: Hit_05.png 추가
+const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
 const effectDuration = 300; 
 
@@ -190,6 +191,9 @@ function checkUnlocks() {
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
         
+        // 💥 이벤트 임계값을 넘겼다면 더 이상 해금하지 않습니다.
+        if (hitCount >= eventThreshold) return;
+
         if (cursorName === 'cursor01') return;
 
         const unlockHitCount = UNLOCK_THRESHOLDS[cursorName];
@@ -215,36 +219,50 @@ function checkUnlocks() {
 
 // 클릭 이벤트를 처리하는 함수 (handleHit)
 function handleHit(event) {
-    // 💥 수정됨: 이벤트가 활성화된 상태면 클릭 무시
+    // 이벤트가 활성화된 상태면 클릭 무시
     if (isEventActive) {
         return;
+    }
+    
+    // 1. 💥 1010 타격 초과 처리 로직
+    // 타격 후의 예상 카운트
+    const potentialHitCount = hitCount + currentDamage;
+    
+    if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
+        // 임계값을 넘기는 순간, 카운트를 1010으로 고정하고 바로 이벤트 발동 로직 실행
+        hitCount = eventThreshold;
+        counterDisplay.textContent = hitCount;
+        
+        // 이펙트와 이미지 변경을 건너뛰고 바로 이벤트로 진입
+        checkAchievements(); // 여기서 playEventAnimation이 호출됨
+        return; // 나머지 타격 로직 실행 중지
     }
     
     // 이펙트 생성 및 재생
     createHitEffect(event.clientX, event.clientY);
     
-    // 1. 타격 횟수를 currentDamage 값만큼 증가시키고 화면을 업데이트합니다.
+    // 2. 타격 횟수를 currentDamage 값만큼 증가시키고 화면을 업데이트합니다.
     hitCount += currentDamage;
     counterDisplay.textContent = hitCount;
     
     // 현재 커서의 단일 타격 횟수를 증가시킵니다.
     singleCursorHitCounts[currentCursor] += 1; 
     
-    // 2. 해금 상태를 확인합니다.
+    // 3. 해금 상태를 확인합니다.
     checkUnlocks();
     
-    // 3. 업적 상태를 확인합니다. (이벤트 발동 로직 포함)
+    // 4. 업적 상태를 확인합니다.
     checkAchievements();
 
-    // 4. 랜덤 타격 이미지 변경
+    // 5. 랜덤 타격 이미지 변경
     const randomIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomIndex];
     
-    // 5. 🖱️ 커서를 선택된 타격 커서로 변경
+    // 6. 🖱️ 커서를 선택된 타격 커서로 변경
     const hitCursorPath = getCursorPaths(currentCursor).hit;
     monsterImage.style.cursor = hitCursorPath; 
 
-    // 6. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
+    // 7. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
