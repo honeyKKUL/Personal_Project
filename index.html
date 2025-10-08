@@ -54,22 +54,35 @@
                 </div>
             </div>
             
-            <button id="settings-button">설정</button>
-        </div>
-    </div>
+           <div class="cursor-controls">
     
-    <div id="achievement-banner">
-        <p id="achievement-text">업적 달성: [업적 이름]</p>
+    <button id="settings-button">설정</button>
+    
+    <div id="settings-menu" style="display: none; flex-direction: column; gap: 10px; margin-top: 15px;">
+        <button id="achievement-button" class="sub-setting-button">업적</button>
+        <button id="dev-button" class="sub-setting-button">개발자 기능</button>
     </div>
 
-    <div id="achievement-modal" class="modal">
-        <div class="modal-content">
-            <span class="close-button">&times;</span>
-            <h2>업적 목록</h2>
+    <div class="cursor-selector">...</div>
+    </div>
+
+
+<div id="achievement-modal" class="modal">
+    <div class="modal-content">
+        <span class="close-button">&times;</span>
+        <h2 id="modal-title"></h2> 
+        
+        <div id="achievement-panel">
             <ul id="achievement-list">
                 </ul>
         </div>
+        
+        <div id="developer-panel" style="display: none;">
+            <p>개발자 편의 기능</p>
+            <button id="jump-1000-hits" class="dev-feature-button">타격수 1000 증가</button>
+        </div>
     </div>
+</div>
 
     <script src="script.js"></script>
 </body>
