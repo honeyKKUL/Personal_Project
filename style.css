@@ -229,9 +229,19 @@ body {
 }
 
 /* 업적 목록 스타일 */
-#achievement-list {
-    list-style: none;
-    padding: 0;
+.achievement-list li {
+    border: 1px solid #777; 
+    border-radius: 4px;
+    
+    /* 💥 수정: 상하 패딩을 10px에서 5px로 줄여 항목 높이 감소 */
+    padding: 5px 10px; 
+    
+    /* 💥 수정: 아래쪽 마진을 8px에서 4px로 줄여 항목 간 간격 감소 */
+    margin-bottom: 4px; 
+    
+    display: flex;
+    align-items: center; 
+    transition: background-color 0.2s;
 }
 .achievement-item {
     margin: 10px 0;
