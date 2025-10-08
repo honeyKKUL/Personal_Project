@@ -253,6 +253,8 @@ body {
 /* 타격 이펙트 스타일 */
 /* ------------------------------------ */
 
+/* style.css - 타격 이펙트 스타일 */
+
 .hit-effect {
     width: 125px; 
     height: 125px;
@@ -260,14 +262,29 @@ body {
     pointer-events: none;
     z-index: 10000;
     
-    background-image: url('hit_effect.png');
+    /* 💥 이 경로가 가장 중요합니다. 파일 이름(hit_effect.png)이 정확해야 합니다. */
+    background-image: url('hit_effect.png'); 
     background-repeat: no-repeat;
-    background-size: 500px 125px; 
+    /* 💥 이펙트 PNG가 4프레임이고 125x125라면, 총 가로 길이는 500px이어야 합니다. */
+    background-size: 500px 125px;  
     background-position: 0 0;
     
     opacity: 1; 
     
-    transform: translate(-50%, -50%); 
+    transform: translate(-50%, -50%); /* 클릭 지점에 중앙 정렬 */
+}
+
+/* 프레임 애니메이션 및 사라짐 정의 */
+@keyframes playEffect {
+    /* 💥 0%에서 100%로 가면서 배경 위치를 -500px만큼 이동시켜 4프레임을 모두 보여줍니다. */
+    0% { background-position: 0 0; opacity: 1; }
+    100% { background-position: -500px 0; opacity: 0; } 
+}
+
+.hit-effect.animate {
+    /* 💥 0.3초 동안 4단계로 애니메이션 실행 후 최종 상태(forwards) 유지 */
+    animation: playEffect 0.3s steps(4) forwards; 
+    transition: none; 
 }
 
 /* 프레임 애니메이션 및 사라짐 정의 */
