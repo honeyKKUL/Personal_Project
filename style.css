@@ -1,4 +1,4 @@
-/* style.css (모바일 선택 방지 및 이펙트 수정 포함) */
+/* style.css (최종본) */
 
 /* ------------------------------------ */
 /* 전역 스타일 및 이미지 선택 방지 */
@@ -15,58 +15,15 @@ body {
     min-height: 100vh; 
     padding-top: 50px; 
     
-    /* 💥 추가: 이미지 및 텍스트 선택 방지 (모바일 하이라이트 방지) */
-    -webkit-user-select: none;  /* Chrome/Safari/Opera */
-    -moz-user-select: none;     /* Firefox */
-    -ms-user-select: none;      /* IE/Edge */
-    user-select: none;          /* 표준 */
+    /* 이미지 및 텍스트 선택 방지 (모바일 하이라이트 방지) */
+    -webkit-user-select: none;  
+    -moz-user-select: none;     
+    -ms-user-select: none;      
+    user-select: none;          
     
-    /* 💥 추가: 터치 스크롤 동작 방지 (게임 플레이 영역 외) */
+    /* 터치 스크롤 동작 방지 (게임 플레이 영역 외) */
     touch-action: pan-y; 
 }
-
-/* 몬스터 이미지가 클릭 후 선택되는 것을 확실히 방지 */
-#monster {
-    width: 80%;
-    max-width: 500px;
-    cursor: url('cursor.png'), pointer;
-    transition: transform 0.1s ease-out;
-    image-rendering: -webkit-optimize-contrast; 
-    image-rendering: crisp-edges;               
-    mix-blend-mode: normal; 
-    
-    /* 💥 추가: 드래그 방지 */
-    -webkit-user-drag: none; 
-    -moz-user-drag: none;
-}
-
-/* ------------------------------------ */
-/* 타격 이펙트 (CSS 애니메이션) - 수정됨 */
-/* ------------------------------------ */
-.hit-effect {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: rgba(255, 0, 0, 0.8);
-    border-radius: 50%;
-    opacity: 0;
-    pointer-events: none;
-    /* 💥 수정: 초기 transition 제거 (animate 클래스에서 제어) */
-}
-
-.hit-effect.animate {
-    /* 💥 수정: 이펙트가 위로 움직이는 애니메이션 */
-    opacity: 0;
-    /* 몬스터 중앙에서 시작하여 위로 살짝 이동하며 커지고 회전 */
-    transform: translate(-50%, -100%) scale(1.5) rotate(45deg); 
-    /* 💥 수정: 트랜지션 명시 (이펙트가 보이도록) */
-    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
-}
-
-/* ------------------------------------ */
-/* 나머지 스타일은 이전 수정본과 동일합니다. */
-/* (모달, 설정 버튼, 미디어 쿼리 등 모두 포함) */
-/* ------------------------------------ */
 
 .main-content {
     display: flex;
@@ -78,8 +35,11 @@ body {
     overflow: hidden; 
 }
 
+/* ------------------------------------ */
+/* 게임 컨테이너 (몬스터 영역) */
+/* ------------------------------------ */
 .game-container {
-    flex: 2;
+    flex: 2; 
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -95,12 +55,30 @@ body {
     color: #2c3e50;
 }
 
+#monster {
+    width: 80%;
+    max-width: 500px;
+    cursor: url('cursor.png'), pointer;
+    transition: transform 0.1s ease-out;
+    
+    image-rendering: -webkit-optimize-contrast; 
+    image-rendering: crisp-edges;               
+    mix-blend-mode: normal; 
+    
+    /* 이미지 드래그 방지 */
+    -webkit-user-drag: none; 
+    -moz-user-drag: none;
+}
+
 #monster:active {
     transform: scale(0.98);
 }
 
+/* ------------------------------------ */
+/* 커서 및 설정 컨트롤 영역 */
+/* ------------------------------------ */
 .cursor-controls {
-    flex: 1;
+    flex: 1; 
     background-color: #ecf0f1;
     padding: 20px;
     display: flex;
@@ -109,6 +87,7 @@ body {
     border-left: 1px solid #bdc3c7;
 }
 
+/* 설정 버튼 및 메뉴 */
 #settings-button {
     padding: 4px; 
     width: 48px;      
@@ -118,7 +97,7 @@ body {
     background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 50%;
+    border-radius: 50%; 
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.2s;
     margin-bottom: 15px; 
@@ -161,10 +140,13 @@ body {
     background-color: #7f8c8d;
 }
 
+
+/* 커서 선택 영역 */
 .cursor-selector {
     margin-top: 20px;
     width: 100%;
-    border-top: 1px solid #bdc3c7; /* 커서 목록 분리선 */
+    /* 커서 목록 분리선 추가 */
+    border-top: 1px solid #bdc3c7; 
     padding-top: 15px;
 }
 
@@ -182,11 +164,11 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s;
-    height: 45px;
+    height: 45px; 
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden;
+    overflow: hidden; 
 }
 
 .cursor-button img {
@@ -210,6 +192,29 @@ body {
 .cursor-button:hover:not(.locked) {
     background-color: #e0e0e0;
 }
+
+
+/* ------------------------------------ */
+/* 타격 이펙트 (CSS 애니메이션) - 최종 수정 */
+/* ------------------------------------ */
+.hit-effect {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 50%;
+    opacity: 1; /* 초기에는 보이게 */
+    pointer-events: none;
+    transform: translate(-50%, -50%); /* 클릭 지점 중앙에서 시작 */
+}
+
+.hit-effect.animate {
+    opacity: 0; /* 투명하게 사라짐 */
+    /* 위로 이동하며 커지고 회전 */
+    transform: translate(-50%, -150%) scale(1.5) rotate(45deg); 
+    transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+}
+
 
 /* ------------------------------------ */
 /* 모달 (업적/개발자 기능 팝업) */
@@ -270,10 +275,11 @@ body {
     overflow-y: auto;
 }
 
+/* 업적 목록 항목 (li) */
 .achievement-list li {
     border: 1px solid #777; 
     border-radius: 4px;
-    padding: 8px 10px; 
+    padding: 8px 10px; /* 상하 패딩을 늘려 가독성 확보 */
     margin-bottom: 6px; 
     display: flex;
     align-items: center; 
@@ -296,6 +302,7 @@ body {
     width: 100%;
 }
 
+/* 아이콘 크기 및 정렬 (40px 기준) */
 .achievement-icon {
     width: 40px;      
     height: 40px;     
@@ -312,6 +319,7 @@ body {
     display: block;
 }
 
+/* 업적 폰트 스타일 */
 .achievement-title-status {
     display: flex;
     flex-direction: column; 
@@ -331,6 +339,7 @@ body {
     font-style: italic;
 }
 
+/* 업적 달성 배너 */
 #achievement-banner {
     position: fixed;
     top: 20px;
@@ -358,6 +367,7 @@ body {
     font-weight: bold;
 }
 
+/* 개발자 기능 패널 */
 #developer-panel {
     display: flex;
     flex-direction: column;
@@ -400,12 +410,14 @@ body {
         padding: 15px;
     }
     
+    /* 모바일용 아이콘 크기 확대 */
     .achievement-icon,
     .achievement-icon img {
         width: 50px;
         height: 50px;
     }
     
+    /* 모바일용 폰트 크기 확대 */
     .achievement-title-status span:first-child {
         font-size: 1.2em;
     }
@@ -413,6 +425,7 @@ body {
         font-size: 1.0em;
     }
     
+    /* 커서 버튼 그룹 (4열로 변경) */
     .button-group {
         grid-template-columns: repeat(4, 1fr);
         gap: 8px;
