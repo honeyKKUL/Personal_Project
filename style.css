@@ -1,6 +1,43 @@
 /* style.css (최종본) */
 
 /* ------------------------------------ */
+/* Keyframe 애니메이션 정의 */
+/* ------------------------------------ */
+@keyframes hit-fade-out {
+    0% {
+        opacity: 1; /* 시작: 불투명 */
+        /* 클릭 지점 중앙(-50%, -50%)에서 작은 크기(scale(0.1))로 시작 */
+        transform: translate(-50%, -50%) scale(0.1) rotate(0deg); 
+    }
+    100% {
+        opacity: 0; /* 끝: 투명하게 사라짐 */
+        /* 위로 이동(-150%)하며 커지고(scale(1.5)) 회전 */
+        transform: translate(-50%, -150%) scale(1.5) rotate(45deg);
+    }
+}
+
+
+/* ------------------------------------ */
+/* 타격 이펙트 (Keyframe 적용) */
+/* ------------------------------------ */
+.hit-effect {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: rgba(255, 0, 0, 0.8);
+    border-radius: 50%;
+    pointer-events: none;
+    
+    /* 💥 중요: 애니메이션 적용 */
+    /* 0.3초 동안 ease-out 속도로 애니메이션 실행 후, 최종 상태(forwards) 유지 */
+    animation: hit-fade-out 0.3s ease-out forwards;
+    
+    /* Keyframe이 시작될 때의 초기 상태 설정 */
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(0.1); 
+}
+
+/* ------------------------------------ */
 /* 전역 스타일 및 이미지 선택 방지 */
 /* ------------------------------------ */
 body {
@@ -191,30 +228,6 @@ body {
 
 .cursor-button:hover:not(.locked) {
     background-color: #e0e0e0;
-}
-
-
-/* ------------------------------------ */
-/* 타격 이펙트 (CSS 애니메이션) - 최종 수정 */
-/* ------------------------------------ */
-.hit-effect {
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: rgba(255, 0, 0, 0.8);
-    border-radius: 50%;
-    
-    /* 💥 수정: 초기 opacity와 transform은 JS가 담당 */
-    
-    pointer-events: none;
-    /* 💥 수정: transition을 기본 요소에 추가 (모든 변화에 적용) */
-    transition: all 0.3s ease-out; 
-}
-
-.hit-effect.animate {
-    opacity: 0; /* 💥 수정: 최종 상태는 투명하게 사라짐 */
-    /* 위로 이동하며 커지고 회전 */
-    transform: translate(-50%, -150%) scale(1.5) rotate(45deg); 
 }
 
 
