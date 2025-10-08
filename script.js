@@ -27,48 +27,7 @@ const achievementText = document.getElementById('achievement-text');
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
 const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
-const eventDuration = 3000; // GIF 재생 시간 (4초)
-
-
-// 💥 업적 데이터 정의 (간소화됨: '첫 클릭', '초보 타격가', '커서 마스터 시리즈'만 유지)
-const ACHIEVEMENTS = {
-    'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount', icon: 'icon_first_hit.png' },
-    'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount', icon: 'icon_amateur_striker.png' },
-    
-    // 단일 커서 사용 업적 (10개)
-    'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
-    'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
-    'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
-    'single_cursor_04': { title: '나, 나하하... 사용한 게 나 뿐이라니 탐정씨도 참...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
-    'single_cursor_05': { title: '이히히!!!! 벌써 끝인가요~?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
-    'single_cursor_06': { title: '일소
-const monsterImage = document.getElementById('monster');
-const counterDisplay = document.getElementById('hit-count');
-const body = document.body;
-const cursorButtons = document.querySelectorAll('.cursor-button');
-
-// 💥 업적 및 설정 관련 DOM 요소 (수정/추가됨)
-const settingsButton = document.getElementById('settings-button');
-const settingsMenu = document.getElementById('settings-menu'); 
-const achievementButton = document.getElementById('achievement-button'); 
-const devButton = document.getElementById('dev-button'); 
-const modal = document.getElementById('achievement-modal');
-const closeButton = document.querySelector('.close-button');
-const modalTitle = document.getElementById('modal-title'); 
-const achievementPanel = document.getElementById('achievement-panel'); 
-const developerPanel = document.getElementById('developer-panel'); 
-const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
-const achievementList = document.getElementById('achievement-list');
-const achievementBanner = document.getElementById('achievement-banner');
-const achievementText = document.getElementById('achievement-text');
-
-// ------------------------------------
-// 💥 이벤트 상태 변수
-// ------------------------------------
-let isEventActive = false; // 이벤트 활성 상태 플래그
-const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
-const eventDuration = 3000; // GIF 재생 시간 (4초)
+const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 
 // 💥 업적 데이터 정의 (간소화됨: '첫 클릭', '초보 타격가', '커서 마스터 시리즈'만 유지)
