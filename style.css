@@ -1,4 +1,4 @@
-/* style.css (스프라이트 애니메이션 복원) */
+/* style.css (최종) */
 
 body {
     display: flex;
@@ -10,7 +10,6 @@ body {
     color: white;
     font-family: sans-serif;
     text-align: center;
-    /* 이미지 및 텍스트 선택 방지 (게임에 중요) */
     -webkit-user-select: none;  
     -moz-user-select: none;     
     -ms-user-select: none;      
@@ -22,6 +21,9 @@ body {
     flex-direction: row; 
     align-items: flex-start;
     gap: 50px; 
+    /* 💥 추가: 전체 콘텐츠의 최대 너비 제한 */
+    max-width: 1000px; 
+    width: 90%; 
 }
 
 .game-container {
@@ -29,6 +31,9 @@ body {
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    /* 💥 추가: 게임 컨테이너 자체의 최대 너비 제한 */
+    max-width: 700px; 
+    width: 100%; 
 }
 
 /* 타격 횟수 카운터 스타일 */
@@ -43,10 +48,8 @@ body {
 #monster {
     width: 80%;
     max-width: 500px;
-    /* JS에서 커서가 설정되지만, 기본값으로 유지 */
     cursor: url('cursor.png'), pointer;
     transition: transform 0.1s ease-out;
-    /* 이미지 드래그 방지 */
     -webkit-user-drag: none; 
     -moz-user-drag: none;
 }
@@ -123,7 +126,7 @@ body {
 
 .cursor-button.selected {
     border-color: #c0392b; 
-    background-color: #c0392b; /* 선택 시 배경 색상 변화는 유지 */
+    background-color: #c0392b; 
     box-shadow: 0 0 8px rgba(192, 57, 43, 0.8);
 }
 
@@ -240,7 +243,7 @@ body {
 }
 
 /* ------------------------------------ */
-/* 타격 이펙트 스타일 (복원 및 수정) */
+/* 타격 이펙트 스타일 (최종) */
 /* ------------------------------------ */
 
 .hit-effect {
@@ -248,35 +251,29 @@ body {
     height: 125px;
     position: absolute;
     pointer-events: none;
-    z-index: 10000; /* 확실하게 최상단에 배치 */
+    z-index: 10000;
     
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
-    /* 💥 2000x500 스프라이트 시트 -> 4프레임 x 125px 크기로 스케일링 */
     background-size: 500px 125px; 
     background-position: 0 0;
     
-    /* 💥 초기 투명도 설정 (JS에서 애니메이션 시작 시 1로 변하고, 종료 시 0으로 변함) */
     opacity: 1; 
     
-    /* 💥 위치를 중앙으로 조정 (크기 변화, 이동 애니메이션은 제거) */
     transform: translate(-50%, -50%); 
 }
 
 /* 💥 프레임 애니메이션 및 사라짐 정의 */
 @keyframes playEffect {
-    /* 0%에서 75%까지 4개의 프레임을 전환 (4프레임이므로 steps(3)이 아닌 steps(4)가 더 정확) */
+    /* 0%에서 75%까지 4개의 프레임을 전환 */
     0% { background-position: 0 0; opacity: 1; }
     100% { background-position: -500px 0; opacity: 0; } 
 }
 
 .hit-effect.animate {
-    /* 💥 steps(4)를 사용하여 4개의 프레임을 0.3초 동안 순차적으로 재생 */
+    /* steps(4)를 사용하여 4개의 프레임을 0.3초 동안 순차적으로 재생 */
     animation: playEffect 0.3s steps(4) forwards; 
     
-    /* 💥 애니메이션 종료 후 요소를 투명하게 만듦 (Keyframe 100%의 opacity: 0을 적용) */
-    opacity: 0; 
-    
-    /* 💥 transition 제거 (애니메이션이 모든 것을 처리) */
+    /* 애니메이션이 모든 것을 처리하므로 transition 제거 */
     transition: none; 
 }
