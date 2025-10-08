@@ -93,7 +93,7 @@ function playEventAnimation() {
 }
 
 
-// 타격 이펙트 생성 및 재생 함수 (최종 수정)
+// 타격 이펙트 생성 및 재생 함수 (Keyframe 맞춤 최종 수정)
 function createHitEffect(x, y) {
     const effect = document.createElement('div');
     effect.className = 'hit-effect';
@@ -102,26 +102,15 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    // 2. 초기 상태 설정 (JS에서)
-    const randomRotation = Math.floor(Math.random() * 360);
-    // 💥 중요: 초기 크기와 투명도를 JS에서 설정 (CSS .hit-effect의 초기값과 일치)
-    effect.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg) scale(0.1)`;
-    effect.style.opacity = '0';
-    
+    // 💥 Keyframe 애니메이션은 CSS에서 모든 변화를 처리하므로,
+    // JS는 요소를 생성하고 위치만 지정한 후 DOM에 추가합니다.
     body.appendChild(effect);
     
-    // 3. 렌더링 후 딜레이 없이 최종 상태로 전환
-    // requestAnimationFrame을 사용하여 브라우저가 요소를 DOM에 배치(Reflow)한 후 다음 프레임에 애니메이션 시작
-    requestAnimationFrame(() => {
-        // 💥 중요: CSS .animate 클래스를 추가하여 transition이 적용된 최종 상태로 이동
-        effect.classList.add('animate');
-    });
-    
+    // 이펙트가 사라지는 시간과 동일하게 요소 제거
     setTimeout(() => {
         effect.remove();
     }, effectDuration + 100);
 }
-
 
 function showAchievementBanner(title) {
     achievementText.textContent = `업적 달성: ${title}`;
