@@ -82,7 +82,11 @@ body {
 }
 
 #settings-button {
-    padding: 10px 20px;
+    /* 💥 수정: 텍스트 대신 아이콘만 표시되도록 크기 조정 */
+    padding: 8px 8px; /* 패딩을 줄여서 버튼 크기를 작게 만듭니다 */
+    width: 36px;      /* 버튼의 너비와 높이를 고정 (20px 이미지 + 8px*2 패딩) */
+    height: 36px;
+    
     font-size: 1em;
     cursor: pointer;
     background-color: #3498db;
@@ -91,7 +95,13 @@ body {
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     transition: background-color 0.2s;
+    
+    /* 💥 추가: 이미지를 중앙에 배치하기 위함 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
+
 #settings-button:hover {
     background-color: #2980b9;
 }
