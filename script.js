@@ -1,4 +1,4 @@
-// script.js (오류 해결 최종본)
+// script.js (오류 해결 최종본 - 이펙트 생성 기능 포함)
 
 // ------------------------------------
 // 1. DOM 요소 및 상태 변수 선언
@@ -28,7 +28,7 @@ const achievementText = document.getElementById('achievement-text');
 // 이벤트 상태 변수
 let isEventActive = false; 
 const eventThreshold = 1010; 
-const eventGif = 'hit_event.gif'; 
+const eventGif = 'hit_event.gif'; // 이 파일이 없다면 이벤트가 발생할 때 오류가 발생할 수 있습니다.
 const eventDuration = 4000; 
 
 // 업적 데이터 정의 (간결화)
@@ -64,7 +64,7 @@ let currentCursor = 'cursor01';
 let currentDamage = 1; 
 
 const normalImage = 'Hit_01.png';
-const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
+const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png']; // 몬스터가 맞는 이미지
 const displayTime = 150; 
 const effectDuration = 300; // 💥 CSS 애니메이션 지속 시간(0.3s)과 일치
 
@@ -106,14 +106,16 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    body.appendChild(effect);
+    // 2. DOM에 추가
+    body.appendChild(effect); // <body> 바로 아래에 추가하여 몬스터 위에 겹치게 함
     
-    // 💥 중요: 다음 프레임에서 .animate 클래스를 추가하여 애니메이션 시작
+    // 3. 애니메이션 클래스 추가
+    // requestAnimationFrame을 사용하여 DOM이 업데이트된 후 애니메이션이 시작되도록 함
     requestAnimationFrame(() => {
         effect.classList.add('animate');
     });
 
-    // 이펙트가 사라지는 시간과 동일하게 요소 제거
+    // 4. 이펙트가 사라지는 시간과 동일하게 요소 제거
     setTimeout(() => {
         effect.remove();
     }, effectDuration + 50); // 애니메이션 완료 후 50ms 후 제거
@@ -168,7 +170,8 @@ function checkUnlocks() {
 
             const iconImg = button.querySelector('img');
             if (iconImg) {
-                iconImg.src = `${cursorName}_icon_off.png`;
+                // 해금되면 꺼진 아이콘으로 변경
+                iconImg.src = `${cursorName}_icon_off.png`; 
             }
         }
     });
@@ -183,6 +186,7 @@ function handleHit(event) {
     
     const potentialHitCount = hitCount + currentDamage;
     
+    // 이벤트 트리거 조건 확인 (1010타 이벤트)
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
         hitCount = eventThreshold;
         counterDisplay.textContent = hitCount;
@@ -199,8 +203,10 @@ function handleHit(event) {
     if (event.touches && event.touches.length > 0) {
         clientX = event.touches[0].clientX;
         clientY = event.touches[0].clientY;
+        event.preventDefault(); // 터치 시 기본 스크롤 동작 방지
     }
 
+    // 💥 이펙트 생성 및 실행
     createHitEffect(clientX, clientY);
     
     hitCount += currentDamage;
@@ -211,12 +217,15 @@ function handleHit(event) {
     checkUnlocks();
     checkAchievements();
 
+    // 몬스터 이미지 변경 (피격 애니메이션)
     const randomIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomIndex];
     
+    // 커서 이미지 변경 (피격 커서)
     const hitCursorPath = getCursorPaths(currentCursor).hit;
     monsterImage.style.cursor = hitCursorPath; 
 
+    // 일정 시간 후 원본 이미지와 커서로 복구
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
@@ -262,6 +271,7 @@ function handleCursorChange(event) {
     
     const newDamage = parseInt(clickedButton.dataset.damage); 
     
+    // 기존 선택된 버튼 해제
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
     if (previouslySelectedButton) {
         previouslySelectedButton.classList.remove('selected');
@@ -272,6 +282,7 @@ function handleCursorChange(event) {
         }
     }
     
+    // 새 버튼 선택
     clickedButton.classList.add('selected');
     const newIconImg = clickedButton.querySelector('img');
     if (newIconImg) {
@@ -375,9 +386,10 @@ function initializeCursors() {
             if (iconImg) {
                 iconImg.src = `${cursorName}_icon_on.png`;
             }
-        } else if (iconImg) {
+        } else if (iconImg && !button.classList.contains('locked')) { // 잠금 상태가 아닐 때만 끄기 아이콘 로드
             iconImg.src = `${cursorName}_icon_off.png`;
         }
+        // 잠금 상태일 때는 HTML에서 설정된 기본 이미지(자물쇠 등)를 유지
     });
 
     updateMonsterCursor(); 
@@ -391,10 +403,7 @@ function initializeCursors() {
 monsterImage.addEventListener('mousedown', handleHit);
 
 // 터치 이벤트를 handleHit 함수로 처리
-monsterImage.addEventListener('touchstart', (event) => {
-    handleHit(event);
-    event.preventDefault(); 
-});
+monsterImage.addEventListener('touchstart', handleHit); 
 
 cursorButtons.forEach(button => {
     button.addEventListener('click', handleCursorChange);
@@ -405,7 +414,10 @@ settingsButton.addEventListener('click', toggleSettingsMenu);
 achievementButton.addEventListener('click', () => openModal('achievement'));
 devButton.addEventListener('click', () => openModal('developer'));
 
-jump1000HitsButton.addEventListener('click', handleHitJump);
+// jump1000HitsButton이 null이 아닌지 확인 후 이벤트 리스너 추가
+if(jump1000HitsButton) {
+    jump1000HitsButton.addEventListener('click', handleHitJump);
+}
 
 closeButton.addEventListener('click', closeModal);
 
