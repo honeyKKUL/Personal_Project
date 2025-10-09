@@ -228,6 +228,14 @@ function loadState() {
     // 초기 UI 렌더링
     counterDisplay.textContent = hitCount;
     initializeCursors();
+
+    // 💥 이벤트 GIF 사전 로딩
+    const eventGifPreloader = new Image();
+    eventGifPreloader.src = eventGif; // eventGif 변수는 'hit_event.gif' 경로를 담고 있습니다.
+
+        
+
+    
 }
 
 /**
