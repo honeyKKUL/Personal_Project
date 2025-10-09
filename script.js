@@ -1,4 +1,4 @@
-// script.js (전체 코드 - 사운드 겹치기 방식 적용)
+// script.js (전체 코드 - 커서 강화 로직 적용)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -29,13 +29,30 @@ const eventThreshold = 1010; // 이벤트 발동 타격 수
 const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
 const eventDuration = 4000; // GIF 재생 시간 (4초)
 
+// ------------------------------------
+// 🌟 커서 강화 설정 (새로운 로직)
+// ------------------------------------
+const MAX_DAMAGE_LEVELS = 5; // 최대 강화 단계 (1단계 타격수 1, 5단계 타격수 5 추가)
+const DAMAGE_UPGRADE_INTERVAL = 50; // 50타마다 데미지 1 증가
+
+// 각 커서의 기본 데미지 (data-damage 속성 값과 동일)
+const BASE_DAMAGE = {
+    'cursor01': 1, 'cursor02': 2, 'cursor03': 3, 'cursor04': 4, 'cursor05': 5, 
+    'cursor06': 6, 'cursor07': 7, 'cursor08': 8, 'cursor09': 9, 'cursor10': 10, 
+};
+
+// 각 커서의 현재 강화 단계를 저장하는 객체 (0단계로 시작)
+let cursorDamageLevels = {
+    'cursor01': 0, 'cursor02': 0, 'cursor03': 0, 'cursor04': 0, 'cursor05': 0, 
+    'cursor06': 0, 'cursor07': 0, 'cursor08': 0, 'cursor09': 0, 'cursor10': 0, 
+};
 
 // 💥 업적 데이터 정의
 const ACHIEVEMENTS = {
     'first_hit': { title: '첫 클릭!', condition: 1, achieved: false, type: 'hitCount', icon: 'icon_first_hit.png' },
     'amateur_striker': { title: '초보 타격가', condition: 50, achieved: false, type: 'hitCount', icon: 'icon_amateur_striker.png' },
     
-    // 단일 커서 사용 업적 (10개) - 업적 이름이 변경됨
+    // 단일 커서 사용 업적 (10개) - 조건은 1010타로 유지
     'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' },
     'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
     'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
@@ -55,18 +72,11 @@ let singleCursorHitCounts = {
     'cursor06': 0, 'cursor07': 0, 'cursor08': 0, 'cursor09': 0, 'cursor10': 0, 
 };
 
-// 해금 설정 및 상태 변수 (해금 관련 업적은 제거되었으나, 해금 로직은 유지)
-const UNLOCK_INTERVAL = 50;
-const UNLOCK_THRESHOLDS = {};
-for (let i = 2; i <= 10; i++) {
-    const key = `cursor${i.toString().padStart(2, '0')}`;
-    UNLOCK_THRESHOLDS[key] = (i - 1) * UNLOCK_INTERVAL;
-}
+// 💥 UNLOCK_THRESHOLDS 변수와 해금 관련 로직 모두 제거됨.
 
 let hitCount = 0;
 let currentCursor = 'cursor01'; 
-let currentDamage = 1; 
-
+let currentDamage = 1;  // 초기값은 기본 커서의 데미지
 
 // 이미지 및 애니메이션 설정
 const normalImage = 'Hit_01.png';
@@ -87,6 +97,17 @@ function getCursorPaths(cursorName) {
 function updateMonsterCursor() {
     const cursorPath = getCursorPaths(currentCursor).normal;
     monsterImage.style.cursor = cursorPath; 
+}
+
+// ------------------------------------
+// 🌟 현재 커서의 실제 데미지를 계산하는 함수 (추가됨)
+// ------------------------------------
+function getCursorCurrentDamage(cursorName) {
+    const base = BASE_DAMAGE[cursorName] || 1; // 기본 데미지
+    const level = cursorDamageLevels[cursorName] || 0; // 강화 단계 (최대 5)
+
+    // 강화 레벨만큼 추가 데미지 부여 (1단계: +1, 5단계: +5)
+    return base + level;
 }
 
 // ------------------------------------
@@ -183,32 +204,64 @@ function checkAchievements() {
             ach.achieved = true;
             showAchievementBanner(ach.title);
             
-            // 💥 커서 마스터 업적 달성 시 이벤트 발동 로직 제거됨 (handleHit에서 전체 타격으로 처리)
         }
     }
 }
 
 
-// 커서 해금 상태를 확인하고 UI를 업데이트하는 함수
-function checkUnlocks() {
-    cursorButtons.forEach(button => {
-        const cursorName = button.dataset.cursor;
-        
-        if (cursorName === 'cursor01') return;
+// 💥 커서 해금 상태 확인 및 UI 업데이트 함수 (제거됨 - 모두 해금 상태)
 
-        const unlockHitCount = UNLOCK_THRESHOLDS[cursorName];
 
-        if (hitCount >= unlockHitCount && button.classList.contains('locked')) {
-            button.classList.remove('locked');
-            console.log(`🎉 ${cursorName}이(가) ${hitCount}타로 해금되었습니다!`);
+// ------------------------------------
+// 🌟 커서 강화 상태 확인 및 적용 함수 (새로 추가)
+// ------------------------------------
+function checkDamageUpgrade(cursorName) {
+    const currentHits = singleCursorHitCounts[cursorName];
+    const currentLevel = cursorDamageLevels[cursorName];
+    
+    // 현재 타격수로 달성 가능한 최대 레벨을 계산합니다.
+    const maxAchievableLevel = Math.min(
+        MAX_DAMAGE_LEVELS, // 최대 5단계 제한
+        Math.floor(currentHits / DAMAGE_UPGRADE_INTERVAL) // 50타당 1단계
+    );
 
-            // 해금 시 커서 아이콘을 _off 상태로 업데이트
-            const iconImg = button.querySelector('img');
-            if (iconImg) {
-                iconImg.src = `${cursorName}_icon_off.png`;
-            }
-        }
-    });
+    // 새로운 레벨이 현재 레벨보다 높다면 강화 적용
+    if (maxAchievableLevel > currentLevel) {
+        for (let level = currentLevel + 1; level <= maxAchievableLevel; level++) {
+             // 단계별 알림 (선택 사항)
+             const newDamage = BASE_DAMAGE[cursorName] + level;
+             console.log(`🎉 ${cursorName} ${level}단계 강화! 데미지: ${newDamage}`);
+             showAchievementBanner(`${cursorName} 강화 ${level}단계 달성!`);
+        }
+        
+        cursorDamageLevels[cursorName] = maxAchievableLevel;
+        
+        // 현재 선택된 커서의 데미지 업데이트
+        if (currentCursor === cursorName) {
+             currentDamage = getCursorCurrentDamage(currentCursor);
+        }
+        
+        // 커서 버튼의 데미지 텍스트 업데이트 (UI에 표시된다고 가정)
+        updateCursorButtonUI(cursorName);
+    }
+}
+
+// ------------------------------------
+// 🌟 커서 버튼 UI 업데이트 함수 (강화 레벨 및 데미지 표시용)
+// ------------------------------------
+function updateCursorButtonUI(cursorName) {
+    const button = document.querySelector(`.cursor-button[data-cursor="${cursorName}"]`);
+    if (button) {
+        const level = cursorDamageLevels[cursorName] || 0;
+        const damage = getCursorCurrentDamage(cursorName);
+        
+        // 버튼의 data-damage 속성은 실제 데미지 계산의 기초가 되므로 업데이트하지 않습니다.
+        
+        // UI에 레벨과 데미지를 표시하는 로직을 추가할 수 있습니다.
+        // 예: 버튼 텍스트 업데이트 (index.html에 표시할 요소가 있어야 함)
+        // button.setAttribute('data-level', level); 
+        // button.setAttribute('data-display-damage', damage); 
+    }
 }
 
 
@@ -223,13 +276,12 @@ function handleHit(event) {
     const soundIndex = Math.floor(Math.random() * hitSounds.length);
     const soundToPlay = hitSounds[soundIndex];
 
-    // 💥 핵심: 현재 재생 위치를 0으로 설정하여 사운드가 겹치도록 합니다.
     soundToPlay.currentTime = 0; 
     soundToPlay.play().catch(e => {
         console.warn("사운드 재생 실패:", e);
     });
 
-    // 💥 2. 1010 타격 초과 처리 로직 복원 및 수정
+    // 💥 2. 1010 타격 초과 처리 로직
     const potentialHitCount = hitCount + currentDamage;
     
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
@@ -255,8 +307,8 @@ function handleHit(event) {
     // 현재 커서의 단일 타격 횟수를 증가시킵니다.
     singleCursorHitCounts[currentCursor] += 1; 
     
-    // 4. 해금 상태를 확인합니다.
-    checkUnlocks();
+    // 🌟 4. 강화 상태를 확인합니다. (새로운 로직)
+    checkDamageUpgrade(currentCursor);
     
     // 5. 업적 상태를 확인합니다.
     checkAchievements();
@@ -294,11 +346,17 @@ function handleHitJump() {
     hitCount = newHitCount;
     counterDisplay.textContent = hitCount;
     
-    checkUnlocks();
-    checkAchievements(); // 업적 강제 달성 로직 제거, checkAchievements에 의존
+    // 💥 해금 로직 대신 강화 로직으로 대체
+    // 개발자 기능 사용 시 모든 커서의 타격 횟수를 1000 증가시켜 최대 강화 단계에 근접하게 만듭니다.
+    for (const cursorName in singleCursorHitCounts) {
+         singleCursorHitCounts[cursorName] += 1000;
+         checkDamageUpgrade(cursorName);
+    }
+    
+    checkAchievements();
 
     closeModal(); 
-    alert(`타격수가 ${hitCount}으로 설정되었습니다!`);
+    alert(`타격수가 ${hitCount}으로 설정되었고, 모든 커서 타격수도 1000 증가했습니다!`);
 }
 
 
@@ -309,13 +367,8 @@ function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
     
-    if (clickedButton.classList.contains('locked')) {
-        console.log("잠금 해제 후 선택할 수 있습니다.");
-        return; 
-    }
-    
-    const newDamage = parseInt(clickedButton.dataset.damage); 
-    
+    // 💥 해금 로직 제거
+    
     // 1. 이전 커서의 아이콘을 _off 상태로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
     if (previouslySelectedButton) {
@@ -336,7 +389,8 @@ function handleCursorChange(event) {
 
     // 3. 게임 상태 업데이트
     currentCursor = newCursorName;
-    currentDamage = newDamage; 
+    // 🌟 현재 선택된 커서의 강화된 데미지로 업데이트
+    currentDamage = getCursorCurrentDamage(newCursorName); 
     
     updateMonsterCursor();
 }
@@ -370,11 +424,20 @@ function renderAchievements() {
             if (ach.type === 'hitCount') {
                 statusText = `(${ach.condition} 타격 완료)`;
             } else if (ach.type === 'singleHit') {
-                statusText = `(${ach.condition} 타격 완료)`;
+                const hits = singleCursorHitCounts[ach.cursor];
+                const damage = getCursorCurrentDamage(ach.cursor);
+                const level = cursorDamageLevels[ach.cursor];
+                statusText = `(총 ${hits} 타격 | 현재 데미지: ${damage} | 강화 ${level}단계)`;
             }
         } else {
             // 달성 전에는 ??? 표시
-            statusText = '???';
+            if (ach.type === 'singleHit') {
+                const hits = singleCursorHitCounts[ach.cursor];
+                const nextUpgrade = (cursorDamageLevels[ach.cursor] + 1) * DAMAGE_UPGRADE_INTERVAL;
+                statusText = `(${hits} / ${ach.condition} 타격 | 다음 강화: ${nextUpgrade}타)`;
+            } else {
+                 statusText = '???';
+            }
         }
 
         li.className = `achievement-item ${ach.achieved ? 'unlocked' : 'locked'}`;
@@ -398,7 +461,7 @@ function renderAchievements() {
  */
 function openModal(panelId) {
     if (panelId === 'achievement') {
-        renderAchievements();
+        renderAchievements(); // 🌟 강화 정보가 반영되도록 renderAchievements 호출
         modalTitle.textContent = "업적 목록";
         achievementPanel.style.display = 'block';
         developerPanel.style.display = 'none';
@@ -431,6 +494,10 @@ function toggleSettingsMenu() {
  * 초기화 함수
  */
 function initializeCursors() {
+    // 🌟 강화된 데미지로 currentDamage 초기화
+    currentDamage = getCursorCurrentDamage(currentCursor);
+    
+    // 🌟 모든 커서는 처음부터 'unlocked' 상태로 간주
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
         const iconImg = button.querySelector('img');
@@ -442,6 +509,9 @@ function initializeCursors() {
         } else if (iconImg) {
             iconImg.src = `${cursorName}_icon_off.png`;
         }
+        
+        // 🌟 강화 정보가 반영되도록 UI 업데이트
+        updateCursorButtonUI(cursorName);
     });
 
     updateMonsterCursor(); 
