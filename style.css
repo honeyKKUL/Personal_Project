@@ -346,9 +346,11 @@ body {
 /* ------------------------------------ */
 #achievement-banner {
     position: fixed;
-    /* top: 20px; 💥 제거 */
-    bottom: 20px; /* 🌟 아래쪽에서 나오도록 변경 */
-    right: 20px;
+    /* 💥 top: 20px; right: 20px; 제거 */
+    bottom: 20px; /* 아래쪽에서 시작 */
+    left: 50%; /* 중앙 정렬을 위해 50% 이동 */
+    transform: translateX(-50%) translateY(50px); /* 🌟 X축 중앙 정렬 및 아래로 숨기기 */
+    
     background-color: #2ecc71;
     color: white;
     padding: 10px 20px;
@@ -357,14 +359,13 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
-    transform: translateY(50px); /* 🌟 아래로 숨겨놓기 */
     z-index: 20;
 }
 
 #achievement-banner.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0); /* 🌟 제자리로 이동 */
+    transform: translateX(-50%) translateY(0); /* 🌟 X축 중앙 정렬 유지하며 제자리로 이동 */
 }
 
 #achievement-text {
