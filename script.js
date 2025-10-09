@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 강화 시스템, 초기화 복구, 잠금 해제, 파일명 반영)
+// script.js (최종 수정본 - 강화 사운드 제거 및 모든 기능 반영)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -22,12 +22,24 @@ const achievementBanner = document.getElementById('achievement-banner');
 const achievementText = document.getElementById('achievement-text');
 
 // ------------------------------------
+// 💥 사운드 파일 정의 (타격 사운드 5개만 사용)
+// ------------------------------------
+const HIT_SOUNDS = [
+    new Audio('hit_sound_01.mp3'),
+    new Audio('hit_sound_02.mp3'),
+    new Audio('hit_sound_03.mp3'),
+    new Audio('hit_sound_04.mp3'),
+    new Audio('hit_sound_05.mp3')
+];
+
+
+// ------------------------------------
 // 💥 이벤트 및 상태 변수 (초기값으로 고정)
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // GIF 파일명
-const eventDuration = 3000; // GIF 재생 시간 (4초)
+const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
+const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 let hitCount = 0;
 let currentCursor = 'cursor01'; 
@@ -44,7 +56,7 @@ let cursorLevels = {};
 let singleCursorHitCounts = {};
 
 
-// 💥 업적 데이터 정의 (초기값으로 고정)
+// 💥 업적 데이터 정의 (사용자 지정 문구 반영)
 const ACHIEVEMENTS = {
     // 1. 첫 타격 업적 
     'first_hit': { 
@@ -53,29 +65,111 @@ const ACHIEVEMENTS = {
         condition: 1, 
         achieved: false, 
         type: 'hitCount', 
-        icon: 'icon_first_hit.png' 
+        icon: 'icon_first_hit.png',
+        custom_status_text_achieved: '첫 타격을 기념합니다.' // 💥 달성 문구
     },
     // 2. 모든 커서 강화 업적 추가 
     'ACH_ALL_CURSOR_LEVEL_5': { 
-        title: '공략 완료', 
+        title: '궁극의 무기', 
         description: '모든 커서를 5단계까지 강화', 
-        condition: MAX_LEVEL, // 5단계 달성
+        condition: MAX_LEVEL,
         achieved: false, 
         type: 'allMaxLevel', 
-        icon: 'icon_amateur_striker.png' 
+        icon: 'icon_amateur_striker.png',
+        custom_status_text_achieved: '모든 커서가 5단계에 도달했습니다.' // 💥 달성 문구
     },
     
-    // 3. 단일 커서 사용 업적
-    'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' }, 
-    'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
-    'single_cursor_03': { title: '당신에게 선택 받는다고 해서 무엇이 달라지나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
-    'single_cursor_04': { title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
-    'single_cursor_05': { title: '이히히!!!! 벌써 끝인가요~?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
-    'single_cursor_06': { title: '그야말로 일로매진이로군, 오오사키 군!', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor06', icon: 'icon_single_cursor_06.png' },
-    'single_cursor_07': { title: '오오사키 님, 해내셨군요. 훌륭하십니다.', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor07', icon: 'icon_single_cursor_07.png' },
-    'single_cursor_08': { title: '...❤️', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor08', icon: 'icon_single_cursor_08.png' },
-    'single_cursor_09': { title: '사, 사용될 수 있어서 영광이었습니다...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09', icon: 'icon_single_cursor_09.png' },
-    'single_cursor_10': { title: '하하! 일편단심이라니 무서운 걸, 오오사키 군.', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10', icon: 'icon_single_cursor_10.png' },
+    // 3. 단일 커서 사용 업적 (여기의 'title'과 'custom_status_text_achieved'를 수정하세요!)
+    'single_cursor_01': { 
+        title: '제대로 저로 개종해주셨나요?', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor01', 
+        icon: 'icon_single_cursor_01.png',
+        custom_status_text_achieved: '당신의 선택에 감사합니다.' // 💥 달성 문구
+    }, 
+    'single_cursor_02': { 
+        title: '큭큭, 바보같을 정도로 성실하신 분...', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor02', 
+        icon: 'icon_single_cursor_02.png',
+        custom_status_text_achieved: '당신의 성실함에 찬사를 보냅니다.' // 💥 달성 문구
+    },
+    'single_cursor_03': { 
+        title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor03', 
+        icon: 'icon_single_cursor_03.png',
+        custom_status_text_achieved: '달라진 것은 바로 당신의 마음.' // 💥 달성 문구
+    },
+    'single_cursor_04': { 
+        title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor04', 
+        icon: 'icon_single_cursor_04.png',
+        custom_status_text_achieved: '오직 나뿐인 탐정씨의 마음을 확인했습니다.' // 💥 달성 문구
+    },
+    'single_cursor_05': { 
+        title: '이히히!!!! 벌써 끝인가요~?', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor05', 
+        icon: 'icon_single_cursor_05.png',
+        custom_status_text_achieved: '당신의 타격은 끝이 없군요!' // 💥 달성 문구
+    },
+    'single_cursor_06': { 
+        title: '그야말로 일로매진이로군, 오오사키 군!', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor06', 
+        icon: 'icon_single_cursor_06.png',
+        custom_status_text_achieved: '오오사키 군, 자네는 해냈네!' // 💥 달성 문구
+    },
+    'single_cursor_07': { 
+        title: '오오사키 님, 해내셨군요. 훌륭하십니다.', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor07', 
+        icon: 'icon_single_cursor_07.png',
+        custom_status_text_achieved: '훌륭한 선택입니다.' // 💥 달성 문구
+    },
+    'single_cursor_08': { 
+        title: '...❤️', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor08', 
+        icon: 'icon_single_cursor_08.png',
+        custom_status_text_achieved: '이 커서에 담긴 마음을 받았습니다.' // 💥 달성 문구
+    },
+    'single_cursor_09': { 
+        title: '아, 아앗... 저, 저로도 괜찮으시다면...', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor09', 
+        icon: 'icon_single_cursor_09.png',
+        custom_status_text_achieved: '저는 당신의 선택이 맞습니다.' // 💥 달성 문구
+    },
+    'single_cursor_10': { 
+        title: '나로만 달성했다는 건가? 무겁네~ 네 마음은!', 
+        condition: 1010, 
+        achieved: false, 
+        type: 'singleHit', 
+        cursor: 'cursor10', 
+        icon: 'icon_single_cursor_10.png',
+        custom_status_text_achieved: '무거운 네 마음, 인정할 수밖에 없네~' // 💥 달성 문구
+    },
 };
 
 
@@ -88,7 +182,6 @@ const effectDuration = 250;
 // 커서 파일 경로를 생성하는 함수 (PNG 파일명 규칙 복구)
 function getCursorPaths(cursorName) {
     return {
-        // 💥 PNG 파일과 custom cursor 포맷 사용
         normal: `url('${cursorName}.png'), pointer`, 
         hit: `url('${cursorName}_hit.png'), pointer`
     };
@@ -105,11 +198,9 @@ function updateMonsterCursor() {
 // ------------------------------------
 
 /**
- * 로컬 스토리지에서 상태를 로드합니다. (로컬 스토리지 제거, 초기화 로직으로 변경)
+ * 페이지 새로고침 시 모든 상태를 0으로 초기화합니다.
  */
 function loadState() {
-    // 💥 모든 상태가 0으로 초기화됩니다.
-    
     hitCount = 0; 
     currentCursor = 'cursor01'; 
     currentDamage = 1; 
@@ -132,11 +223,10 @@ function loadState() {
 }
 
 /**
- * 로컬 스토리지에 현재 상태를 저장합니다. (저장 로직 제거)
+ * 상태 저장 로직을 제거했습니다. 새로고침 시 모든 데이터가 사라집니다.
  */
 function saveState() {
-    // 💥 상태 저장 로직을 제거했습니다. 새로고침 시 모든 데이터가 사라집니다.
-    // (개발자 기능으로 1000 타격 증가 시에는 UI 업데이트를 위해 호출되지만, 실제로는 아무것도 저장되지 않습니다.)
+    // 아무것도 저장하지 않습니다.
 }
 
 
@@ -202,6 +292,8 @@ function checkCursorLevels(cursorName, singleHitCount) {
             // 레벨업 실행
             cursorLevels[cursorName] = newLevel;
             console.log(`[강화] ${cursorName}이(가) 레벨 ${newLevel}이 되었습니다!`);
+            
+            // 💥 강화 사운드 재생 로직 제거
             
             // 툴팁 UI 업데이트
             if (button) updateCursorButtonTooltip(button);
@@ -278,25 +370,24 @@ function showAchievementBanner(title) {
 function checkAchievements(type = 'GENERAL') {
     let newlyAchieved = false;
     
-    // 1. Hit Count Achievements ('first_hit')
-    const firstHitAch = ACHIEVEMENTS['first_hit'];
-    // 💥 새로고침 시 상태가 초기화되므로, 이미 달성했는지 확인하는 로직은 유효합니다.
-    if (firstHitAch && !firstHitAch.achieved && hitCount >= firstHitAch.condition) {
-        firstHitAch.achieved = true;
-        showAchievementBanner(firstHitAch.title);
-        newlyAchieved = true;
-    }
-    
-    // 2. Single Cursor Hit Achievements 
-    for (let i = 1; i <= 10; i++) {
-        const cursorKey = `cursor${i.toString().padStart(2, '0')}`;
-        const achievementKey = `single_cursor_${i.toString().padStart(2, '0')}`;
-        const ach = ACHIEVEMENTS[achievementKey];
-
-        if (ach && !ach.achieved && singleCursorHitCounts[cursorKey] >= ach.condition) {
+    // 1. Hit Count Achievements ('first_hit') 및 기타 일반 업적
+    for (const key in ACHIEVEMENTS) {
+        const ach = ACHIEVEMENTS[key];
+        
+        if (ach.achieved) continue;
+        
+        if (ach.type === 'hitCount' && hitCount >= ach.condition) {
             ach.achieved = true;
             showAchievementBanner(ach.title);
             newlyAchieved = true;
+            
+        } else if (ach.type === 'singleHit') {
+            const cursorKey = ach.cursor;
+            if (singleCursorHitCounts[cursorKey] >= ach.condition) {
+                ach.achieved = true;
+                showAchievementBanner(ach.title);
+                newlyAchieved = true;
+            }
         }
     }
     
@@ -316,7 +407,7 @@ function checkAchievements(type = 'GENERAL') {
     }
     
     if (newlyAchieved) {
-        saveState(); // 💥 저장 로직은 아무것도 하지 않지만, 일관성을 위해 호출
+        saveState(); // 저장 로직은 제거됨
     }
 }
 
@@ -326,6 +417,11 @@ function handleHit(event) {
     if (isEventActive) {
         return;
     }
+    
+    // 💥 타격 사운드 재생 (5개 중 랜덤)
+    const randomSound = HIT_SOUNDS[Math.floor(Math.random() * HIT_SOUNDS.length)];
+    randomSound.currentTime = 0;
+    randomSound.play();
     
     const potentialHitCount = hitCount + currentDamage;
     
@@ -375,6 +471,11 @@ function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
     
+    // 잠금 상태면 클릭 무시 (index.html에서 locked 클래스가 제거되어야 함)
+    if (clickedButton.classList.contains('locked')) {
+        return;
+    }
+    
     // 이전 커서의 아이콘을 _off 상태로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
     if (previouslySelectedButton) {
@@ -403,7 +504,7 @@ function handleCursorChange(event) {
 
 
 /**
- * 업적 목록을 모달에 렌더링하는 함수
+ * 업적 목록을 모달에 렌더링하는 함수 (미달성 문구 제거)
  */
 function renderAchievements() {
     achievementList.innerHTML = ''; 
@@ -421,38 +522,31 @@ function renderAchievements() {
         const li = document.createElement('li');
         const isUnlocked = ach.achieved;
         
-        let statusText;
+        let statusText = '';
         let iconSrc = ach.icon; 
         
         if (isUnlocked) {
-            
-            if (ach.type === 'hitCount') {
-                statusText = `총 ${ach.condition}회 타격 완료`;
-            } else if (ach.type === 'singleHit') {
-                statusText = `${ach.condition}회 타격 완료`;
-            } else if (ach.type === 'allMaxLevel') {
-                 statusText = `모든 커서 ${ach.condition}단계 달성`;
+            // 💥 달성 시 커스텀 문구 사용
+            if (ach.custom_status_text_achieved) {
+                 statusText = ach.custom_status_text_achieved;
+            } else {
+                statusText = '달성 완료';
             }
         } else {
-            // 달성 전에는 진행 상황 표시
-            if (ach.type === 'singleHit') {
-                 statusText = `(${singleCursorHitCounts[ach.cursor] || 0} / ${ach.condition} 타격)`;
-            } else if (ach.type === 'hitCount') {
-                statusText = `(${hitCount} / ${ach.condition} 타격)`;
-            } else if (ach.type === 'allMaxLevel') {
-                const completed = Array.from(cursorButtons).filter(b => cursorLevels[b.dataset.cursor] >= MAX_LEVEL).length;
-                statusText = `(${completed} / ${cursorButtons.length}개 커서 ${MAX_LEVEL}단계 달성)`;
-            } else {
-                statusText = '???';
-            }
+            // 💥 미달성 시 텍스트 제거 (statusText는 빈 문자열로 유지됨)
+            // 커스텀 문구 표시 안 함
         }
         
-        // 커서 강화 레벨을 툴팁에 추가
+        // 커서 강화 레벨을 업적 제목 옆에 표시
         let cursorLevelInfo = '';
         if (ach.type === 'singleHit') {
             const level = cursorLevels[ach.cursor] || 0;
             cursorLevelInfo = ` (현재 ${level}Lv, 피해량 ${calculateDamage(ach.cursor)})`;
+        } else if (ach.type === 'allMaxLevel' && !isUnlocked) {
+             const completed = Array.from(cursorButtons).filter(b => cursorLevels[b.dataset.cursor] >= MAX_LEVEL).length;
+             cursorLevelInfo = ` (${completed} / ${cursorButtons.length}개 커서 ${MAX_LEVEL}단계 달성)`;
         }
+
 
         li.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
         li.innerHTML = `
@@ -462,7 +556,7 @@ function renderAchievements() {
                 </div>
                 <div class="achievement-title-status">
                     <span>${ach.title}${cursorLevelInfo}</span>
-                    <span class="achievement-status">${statusText}</span>
+                    <span class="achievement-status">${statusText}</span> 
                 </div>
             </div>
         `;
@@ -512,14 +606,10 @@ function initializeCursors() {
         const cursorName = button.dataset.cursor;
         const iconImg = button.querySelector('img');
         
-        // 해금 로직이 없으므로 locked 클래스를 제거
-        button.classList.remove('locked');
-        
         // 툴팁 초기화 (강화 정보 포함)
         updateCursorButtonTooltip(button);
 
         // 선택된 커서 UI 업데이트
-        // (loadState에서 currentCursor가 'cursor01'로 초기화되었으므로, 초기에는 cursor01이 선택됨)
         if (button.dataset.cursor === currentCursor) {
             button.classList.add('selected');
             if (iconImg) {
@@ -538,20 +628,17 @@ function initializeCursors() {
 // 개발자 기능: 1000 타격 증가 핸들러
 // ------------------------------------
 function handleHitJump() {
-    const jumpAmount = 1000;
-    const targetHitCount = eventThreshold; 
+    const targetHitCount = eventThreshold - 10; 
     
-    if (hitCount >= targetHitCount) {
-        alert(`이미 이벤트 타격수(${targetHitCount})를 달성했습니다.`);
+    if (hitCount >= eventThreshold) {
+        alert(`이미 이벤트 타격수(${eventThreshold})를 달성했습니다.`);
         closeModal();
         return;
     }
 
-    const newHitCount = Math.min(hitCount + jumpAmount, targetHitCount - 1); 
+    const newHitCount = Math.min(hitCount + 1000, targetHitCount); 
     hitCount = newHitCount;
     counterDisplay.textContent = hitCount;
-    
-    // 개발자 기능으로 증가한 타격수는 단일 커서 타격수에 반영하지 않습니다.
     
     checkAchievements();
     saveState(); 
