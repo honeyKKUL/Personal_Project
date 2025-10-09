@@ -1,4 +1,4 @@
-/* style.css (레이아웃 복구 및 이펙트 포함 최종본) */
+/* style.css (최종 디자인 복구 및 레이아웃 안정화) */
 
 body {
     display: flex;
@@ -6,7 +6,7 @@ body {
     align-items: center; /* 세로 중앙 정렬 */
     min-height: 100vh; /* 화면 전체 높이 사용 */
     margin: 0;
-    background-color: #282c34;
+    background-color: #282c34; /* 배경색 유지 */
     color: white;
     font-family: sans-serif;
     text-align: center;
@@ -16,25 +16,26 @@ body {
 }
 
 .main-content {
+    /* 💥💥 레이아웃 복구의 핵심 💥💥 */
     display: flex;
-    flex-direction: row;  /* 몬스터 영역과 버튼 영역을 가로로 배치 */
-    align-items: flex-start; /* 위쪽 정렬 */
-    gap: 50px; 
+    flex-direction: row;  /* 가로로 나란히 배치 */
+    align-items: flex-start; /* 상단 정렬 */
+    gap: 50px;  /* 영역 사이의 간격 */
     max-width: 1200px; 
     width: 90%; 
     padding: 20px;
     box-sizing: border-box;
-    justify-content: center; 
+    justify-content: center; /* 중앙에 배치 */
 }
 
-/* 몬스터 영역 */
+/* 몬스터 영역 (크고 중앙에 위치) */
 .game-container {
-    flex-grow: 1;
+    flex-grow: 1; /* 남은 공간을 차지 */
     padding: 20px;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
-    max-width: 700px; 
+    max-width: 700px; /* 최대 크기 제한 */
     width: 100%; 
 }
 
@@ -47,7 +48,7 @@ body {
 
 #monster {
     width: 100%; 
-    max-width: 500px; /* 몬스터 크기 제어 */
+    max-width: 500px; /* 몬스터 이미지 자체 크기 제어 */
     cursor: url('cursor01.png'), pointer;
     transition: transform 0.1s ease-out;
     height: auto; 
@@ -60,7 +61,7 @@ body {
 }
 
 /* ------------------------------------ */
-/* 커서 컨트롤 및 설정 영역 */
+/* 커서 컨트롤 및 설정 영역 (오른쪽에 위치) */
 /* ------------------------------------ */
 .cursor-controls {
     display: flex;
@@ -81,11 +82,9 @@ body {
     border: none;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-    transition: background-color 0.2s;
     width: 100%;
 }
 
-/* 설정 메뉴 드롭다운 스타일 */
 .settings-menu {
     display: flex;
     flex-direction: column;
@@ -110,11 +109,6 @@ body {
     white-space: nowrap;
 }
 
-.settings-menu button:hover {
-    background-color: #f0f0f0;
-}
-
-/* 커서 선택기 스타일 */
 .cursor-selector {
     padding: 15px;
     border-radius: 10px;
@@ -124,7 +118,6 @@ body {
     width: 100px;
 }
 
-/* 커서 버튼 스타일 */
 .button-group {
     display: flex;
     flex-direction: column; 
@@ -138,7 +131,6 @@ body {
     border-radius: 8px;
     padding: 5px;
     cursor: pointer;
-    transition: all 0.2s;
     width: 50px; 
     height: 50px;
     display: flex;
