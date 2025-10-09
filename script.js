@@ -1,4 +1,4 @@
-// script.js (전체 코드 - 구문 오류 수정 완료)
+// script.js (전체 코드 - 최종 오류 수정 완료)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -126,7 +126,6 @@ const hitSounds = HIT_SOUND_FILES.map(file => {
     return audio;
 });
 
-
 // 타격 이펙트 생성 및 재생 함수
 function createHitEffect(x, y) {
     const effect = document.createElement('div');
@@ -184,7 +183,7 @@ function checkAchievements() {
             ach.achieved = true;
             showAchievementBanner(ach.title);
             
-            // 💥 커서 마스터 업적 달성 시 이벤트 발동 로직 제거됨 (handleHit에서 전체 타격으로 처리)
+            // 💥 커서 마스터 업적 달성 시 이벤트 발동 로직 제거됨 (handleHit에서 전체 타격으로 처리)
         }
     }
 }
@@ -220,17 +219,16 @@ function handleHit(event) {
         return;
     }
     
-    // 💥 1. 랜덤 타격 사운드 재생 (추가 및 수정된 부분)
-    const randomIndex = Math.floor(Math.random() * hitSounds.length);
-    const soundToPlay = hitSounds[randomIndex];
+    // 1. 랜덤 타격 사운드 재생 (이전 오류 해결을 위해 복구)
+    const soundIndex = Math.floor(Math.random() * hitSounds.length);
+    const soundToPlay = hitSounds[soundIndex];
 
-    soundToPlay.currentTime = 0; // 사운드를 처음부터 다시 재생 (연속 클릭 대응)
-    soundToPlay.play().catch(e => {
-        // 자동 재생 제한 등으로 인해 재생 실패 시 콘솔에만 기록
-        console.warn("사운드 재생 실패:", e);
-    }); // <-- 💥 catch 블록을 여기서 닫아주어 구문 오류를 해결했습니다.
+    soundToPlay.currentTime = 0; 
+    soundToPlay.play().catch(e => {
+        console.warn("사운드 재생 실패:", e);
+    });
 
-    // 💥 2. 1010 타격 초과 처리 로직 복원 및 수정
+    // 💥 2. 1010 타격 초과 처리 로직 복원 및 수정
     const potentialHitCount = hitCount + currentDamage;
     
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
@@ -239,14 +237,14 @@ function handleHit(event) {
         counterDisplay.textContent = hitCount;
         
         // 이벤트 발동
-        playEventAnimation(); 
+        playEventAnimation(); 
         
         // 타격수 업적 확인 (1타, 50타 등)
         checkAchievements();
         return; // 나머지 타격 로직 실행 중지
     }
 
-    // 이펙트 생성 및 재생
+    // 이펙트 생성 및 재생
     createHitEffect(event.clientX, event.clientY);
     
     // 3. 타격 횟수를 currentDamage 값만큼 증가시키고 화면을 업데이트합니다.
@@ -262,9 +260,10 @@ function handleHit(event) {
     // 5. 업적 상태를 확인합니다.
     checkAchievements();
 
-    // 6. 랜덤 타격 이미지 변경
-    const randomIndex = Math.floor(Math.random() * hitImages.length);
-    monsterImage.src = hitImages[randomIndex];
+    // 6. 랜덤 타격 이미지 변경
+    // 💥 266줄 오류 해결: 'randomIndex'가 이미 선언되었으므로, 다른 이름 (imageIndex) 사용
+    const imageIndex = Math.floor(Math.random() * hitImages.length); 
+    monsterImage.src = hitImages[imageIndex]; 
     
     // 7. 🖱️ 커서를 선택된 타격 커서로 변경
     const hitCursorPath = getCursorPaths(currentCursor).hit;
@@ -274,24 +273,26 @@ function handleHit(event) {
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
-    }, displayTime); // <--- 이 한 줄로 setTimeout 호출을 끝냅니다.
+    }, displayTime); 
+    // 💥 277줄 오류 해결: 불필요한 닫는 중괄호 제거
 
-} // <--- handleHit 함수의 닫는 중괄호
+}
+
 // ------------------------------------
 // 개발자 기능: 1000 타격 증가 핸들러
 // ------------------------------------
 function handleHitJump() {
     const targetHitCount = eventThreshold - 10; // 1000으로 설정
     
-    // 💥 1010타 (이벤트 임계값) 도달 시 경고
+    // 💥 1010타 (이벤트 임계값) 도달 시 경고
     if (hitCount >= eventThreshold) {
         alert("이미 최대 타격수(1010)를 달성했습니다.");
         closeModal();
         return;
     }
-    
-    // 타격수를 1000 또는 그 이상으로 설정하는 경우, 임계값을 넘지 않도록 조정
-    const newHitCount = Math.min(hitCount + 1000, targetHitCount);
+    
+    // 타격수를 1000 또는 그 이상으로 설정하는 경우, 임계값을 넘지 않도록 조정
+    const newHitCount = Math.min(hitCount + 1000, targetHitCount);
     hitCount = newHitCount;
     counterDisplay.textContent = hitCount;
     
