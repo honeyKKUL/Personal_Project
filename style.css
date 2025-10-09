@@ -188,27 +188,28 @@ body {
 /* 타격 이펙트 (CSS 애니메이션) */
 /* ------------------------------------ */
 .hit-effect {
-    width: 125px; 
-    height: 125px;
+    width: 500px;       /* 1프레임 크기 */
+    height: 500px;
     position: absolute;
     pointer-events: none;
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
-    background-size: 500px 125px; 
+    background-size: 2000px 500px; /* 전체 스프라이트 크기 */
     background-position: 0 0;
     transform: translate(-50%, -50%);
-    opacity: 0; /* 기본 투명도 0 */
+    opacity: 0;
+    z-index: 5; /* 다른 요소에 가려지지 않도록 */
 }
 
 @keyframes playEffect {
     from { background-position: 0 0; }
-    to { background-position: -500px 0; } 
+    to { background-position: -2000px 0; } /* 전체 이동폭 */
 }
 
 .animate {
-    animation: playEffect 0.3s steps(4) forwards; 
-    opacity: 1; 
-    transition: opacity 0.1s 0.3s; 
+    animation: playEffect 0.3s steps(4) forwards;
+    opacity: 1;
+    transition: opacity 0.1s 0.3s;
 }
 
 
