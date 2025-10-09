@@ -150,8 +150,8 @@ function createHitEffect(x, y) {
 
 // 사운드를 부드럽게 페이드 아웃하고, 새로운 사운드를 재생하는 함수
 function smoothlyFadeOutAndPlay(nextSound) {
-    const fadeDuration = 100; // 페이드 아웃 시간 (100ms)
-    const fadeInterval = 10;  // 볼륨 감소 간격 (10ms)
+    const fadeDuration = 50; // 페이드 아웃 시간 (100ms)
+    const fadeInterval = 5;  // 볼륨 감소 간격 (10ms)
     const steps = fadeDuration / fadeInterval; // 총 스텝 수
 
     // 이전에 재생 중이던 사운드들을 찾아 부드럽게 멈춥니다.
