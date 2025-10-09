@@ -188,22 +188,22 @@ body {
 /* 타격 이펙트 (CSS 애니메이션) */
 /* ------------------------------------ */
 .hit-effect {
-    width: 500px;       /* 1프레임 크기 */
-    height: 500px;
+    width: 250px;        /* 🔽 1/2 크기로 축소 */
+    height: 250px;
     position: absolute;
     pointer-events: none;
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
-    background-size: 2000px 500px; /* 전체 스프라이트 크기 */
+    background-size: 1000px 250px; /* 🔽 전체 스프라이트도 1/2 비율로 축소 */
     background-position: 0 0;
     transform: translate(-50%, -50%);
     opacity: 0;
-    z-index: 5; /* 다른 요소에 가려지지 않도록 */
+    z-index: 5;
 }
 
 @keyframes playEffect {
     from { background-position: 0 0; }
-    to { background-position: -2000px 0; } /* 전체 이동폭 */
+    to { background-position: -1000px 0; } /* 🔽 전체 이동폭도 1/2로 축소 */
 }
 
 .animate {
@@ -211,6 +211,7 @@ body {
     opacity: 1;
     transition: opacity 0.1s 0.3s;
 }
+
 
 
 /* ------------------------------------ */
@@ -312,17 +313,24 @@ body {
 /* 아이콘 크기 및 위치 조정 (40px 기준) */
 /* ------------------------------------ */
 .achievement-icon {
-    /* 💥 크기 40px 고정 */
-    width: 40px;      
-    height: 40px;     
-    /* 💥 수정: 아이콘과 텍스트 사이 여백을 8px로 줄임 */
-    margin-right: 8px; 
-    flex-shrink: 0;
-    
-    /* 💥 추가: 아이콘 이미지를 40px 영역 내에서 중앙 정렬 */
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 40px;
+    height: 40px;
+    margin-right: 8px;
+    flex-shrink: 0;
+    
+    /* 🔥 수직 정렬 균형용 */
+    position: relative;
+    top: 2px; /* 필요시 1~3px로 조정 */
+}
+
+.achievement-title-status {
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* 🔥 텍스트 그룹을 수직 중앙 정렬 */
+    line-height: 1.2; /* 줄 간격을 살짝 좁혀서 시각적 균형 유지 */
 }
 
 .achievement-icon img {
