@@ -290,7 +290,7 @@ body {
 }
 
 .achievement-icon {
-    margin-right: 0px;
+    margin-right: 8px;
     min-width: 20px;
     display: flex;
     flex-direction: column;
