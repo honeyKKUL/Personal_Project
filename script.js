@@ -270,13 +270,12 @@ function handleHit(event) {
     monsterImage.style.cursor = hitCursorPath; 
 
     // 7. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
-    setTimeout(() => {
-        monsterImage.src = normalImage;
-        updateMonsterCursor(); 
-    }, displayTime
-    );
-}
+    setTimeout(() => {
+        monsterImage.src = normalImage;
+        updateMonsterCursor(); 
+    }, displayTime); // <--- 이 한 줄로 setTimeout 호출을 끝냅니다.
 
+    } // <--- handleHit 함수의 닫는 중괄호
 // ------------------------------------
 // 개발자 기능: 1000 타격 증가 핸들러
 // ------------------------------------
