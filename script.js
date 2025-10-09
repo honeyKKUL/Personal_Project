@@ -72,7 +72,7 @@ let currentDamage = 1; 
 const normalImage = 'Hit_01.png';
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
-const effectDuration = 300; 
+const effectDuration = 250; // 👈 0.25초로 변경
 
 
 // 커서 파일 경로를 생성하는 함수
@@ -127,7 +127,7 @@ function createHitEffect(x, y) {
 
     setTimeout(() => {
         effect.remove();
-    }, effectDuration + 100); 
+    }, effectDuration); // 👈 effectDuration(250ms)로 바로 사용
 }
 
 // 업적 달성 배너 표시 함수
