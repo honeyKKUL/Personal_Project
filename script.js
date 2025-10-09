@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 모든 오류 수정, 모달 정보 제거, 타격수/단일 기록 초기화 기능 확인)
+// script.js (최종 수정본 - 모든 오류 수정, 모달 정보 제거, 타격수/단일 기록 초기화, 기본 피해량 1로 수정)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -50,13 +50,15 @@ const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 let hitCount = 0;
 let currentCursor = 'cursor01'; 
-let currentDamage = 1; 
+let currentDamage = 1; // 💥 초기 피해량은 1로 설정
 
 // ------------------------------------
 // 💥 커서 강화 시스템 변수 
 // ------------------------------------
 const LEVEL_UP_INTERVAL = 50; // 강화되는 타격 수 단위
 const MAX_LEVEL = 5; // 최대 강화 단계
+// 💥 모든 커서의 고정 기본 피해량
+const BASE_DAMAGE = 1; 
 
 let cursorLevels = {}; 
 let singleCursorHitCounts = {};
@@ -209,8 +211,8 @@ function updateMonsterCursor() {
 function loadState() {
     hitCount = 0; 
     currentCursor = 'cursor01'; 
-    currentDamage = 1; 
-
+    currentDamage = BASE_DAMAGE; // 💥 기본 피해량으로 초기화
+    
     // 💥 강화 레벨 및 단일 타격 수 초기화
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
@@ -245,13 +247,15 @@ function saveState() {
  */
 function calculateDamage(cursorName) {
     const selectedButton = document.querySelector(`[data-cursor="${cursorName}"]`);
-    if (!selectedButton) return 1;
+    if (!selectedButton) return BASE_DAMAGE;
 
-    const baseDamage = parseInt(selectedButton.dataset.damage);
+    // 💥 '기본 피해량'은 BASE_DAMAGE(1)로 고정. 
+    // 💥 data-damage 값은 '강화당 추가되는 피해량'으로 사용합니다. (이전에는 '기본 피해량'으로 사용됨)
+    const damagePerLevel = parseInt(selectedButton.dataset.damage);
     const currentLevel = cursorLevels[cursorName] || 0;
 
-    // 피해량 = 기본 피해량 + 현재 레벨
-    return baseDamage + currentLevel; 
+    // 피해량 = 고정 기본 피해량 (1) + (강화당 추가 피해량 * 현재 레벨)
+    return BASE_DAMAGE + (damagePerLevel * currentLevel); 
 }
 
 /**
@@ -259,18 +263,20 @@ function calculateDamage(cursorName) {
  */
 function updateCursorButtonTooltip(button) {
     const cursorName = button.dataset.cursor;
-    const baseDamage = parseInt(button.dataset.damage);
+    const damagePerLevel = parseInt(button.dataset.damage); // 💥 강화당 피해량으로 사용
     const currentLevel = cursorLevels[cursorName] || 0;
     const singleHitCount = singleCursorHitCounts[cursorName] || 0;
     
-    const currentDamage = baseDamage + currentLevel; 
+    const currentDamage = calculateDamage(cursorName); // 💥 수정된 함수 사용
     
     let tooltipText = `피해량: ${currentDamage} | 타격수: ${singleHitCount}`;
 
     if (currentLevel < MAX_LEVEL) {
         // 다음 레벨업에 필요한 총 타격 횟수
         const nextLevelHits = (currentLevel + 1) * LEVEL_UP_INTERVAL;
-        const nextDamage = baseDamage + currentLevel + 1;
+        
+        // 💥 다음 레벨의 피해량 계산
+        const nextDamage = BASE_DAMAGE + (damagePerLevel * (currentLevel + 1)); 
         tooltipText += ` | 다음 강화 (${currentLevel + 1}단계, ${nextDamage} 피해): ${nextLevelHits} 타격 시`;
     } else {
         tooltipText += ' | (최대 레벨 달성)';
@@ -303,7 +309,9 @@ function checkCursorLevels(cursorName, singleHitCount) {
             if (button) updateCursorButtonTooltip(button);
 
             // 현재 커서의 피해량 업데이트
-            currentDamage = calculateDamage(currentCursor);
+            if (currentCursor === cursorName) {
+                currentDamage = calculateDamage(currentCursor);
+            }
         }
     }
     
@@ -522,10 +530,10 @@ function handleHitCountReset() {
     hitCount = 0;
     counterDisplay.textContent = hitCount;
     
-    // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트 💥 (요청 사항 반영 완료된 부분)
+    // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트 
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
-        singleCursorHitCounts[cursorName] = 0; // 이 부분이 단일 커서 기록을 0으로 초기화합니다.
+        singleCursorHitCounts[cursorName] = 0; 
         updateCursorButtonTooltip(button);
     });
     
@@ -573,7 +581,7 @@ function handleCursorChange(event) {
 
     // 게임 상태 업데이트
     currentCursor = newCursorName;
-    currentDamage = calculateDamage(currentCursor); // 강화 레벨 기반으로 피해량 계산
+    currentDamage = calculateDamage(currentCursor); // 💥 수정된 함수 사용
     
     updateMonsterCursor();
     saveState();
@@ -622,16 +630,6 @@ function renderAchievements() {
         
         // 💥 요청에 따라 커서 레벨 및 피해량 정보를 표시하는 로직을 제거했습니다.
         let cursorLevelInfo = '';
-        /* (이전 코드 주석 처리)
-        if (ach.type === 'singleHit') {
-            const level = cursorLevels[ach.cursor] || 0;
-            cursorLevelInfo = ` (현재 ${level}Lv, 피해량 ${calculateDamage(ach.cursor)})`;
-        } else if (ach.type === 'allMaxLevel' && !isUnlocked) {
-             const completed = Array.from(cursorButtons).filter(b => cursorLevels[b.dataset.cursor] >= MAX_LEVEL).length;
-             cursorLevelInfo = ` (${completed} / ${cursorButtons.length}개 커서 ${MAX_LEVEL}단계 달성)`;
-        }
-        */
-
 
         li.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
         li.innerHTML = `
