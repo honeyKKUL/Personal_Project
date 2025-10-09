@@ -1,4 +1,4 @@
-/* style.css (수정본) */
+/* style.css (최종 수정본) */
 
 /* ------------------------------------ */
 /* 기본 및 배경 스타일 */
@@ -14,8 +14,8 @@ body {
     align-items: flex-start; 
     min-height: 100vh; 
     padding-top: 50px; 
-    position: relative; /* 💥 이펙트 기준점을 body로 고정 */
-    overflow: hidden;   /* 💥 이펙트가 화면 밖으로 벗어나지 않도록 */
+    position: relative; 
+    overflow: hidden; 
 }
 
 .main-content {
@@ -44,191 +44,143 @@ body {
 #hit-count {
     font-size: 3em;
     margin-bottom: 20px;
-    font-weight: bold;
-    color: #2c3e50;
+    color: #e74c3c;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 #monster {
-    width: 80%;
-    max-width: 500px;
-    cursor: url('cursor.png'), pointer;
+    width: 300px; 
+    height: 300px; 
+    /* cursor는 script.js에서 설정 */
+    user-select: none;
     transition: transform 0.1s ease-out;
-
-    image-rendering: -webkit-optimize-contrast; 
-    image-rendering: crisp-edges;               
-    mix-blend-mode: normal; 
 }
 
-#monster:active {
-    transform: scale(0.98);
-}
 
 /* ------------------------------------ */
-/* 커서 및 설정 컨트롤 영역 */
+/* 커서 컨트롤 및 버튼 */
 /* ------------------------------------ */
 .cursor-controls {
     flex: 1;
-    background-color: #ecf0f1;
     padding: 20px;
+    background-color: #2c3e50;
+    color: white;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-left: 1px solid #bdc3c7;
 }
 
-/* 설정 버튼 및 메뉴 */
 #settings-button {
-    padding: 4px; 
-    width: 48px;      
-    height: 48px;
-    font-size: 1em;
-    cursor: pointer;
-    background-color: #333333;
-    color: white;
+    background: none;
     border: none;
-    border-radius: 50%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-    transition: background-color 0.2s;
-    margin-bottom: 15px; 
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    cursor: pointer;
+    padding: 10px;
+    margin-bottom: 10px;
 }
 
 #settings-icon-img {
-    width: 40px;
-    height: 40px;
-    display: block;
-}
-
-#settings-button:hover {
-    background-color: #0d0d0d;
+    width: 30px;
+    height: 30px;
 }
 
 #settings-menu {
-    border: 1px solid #bdc3c7;
+    border: 1px solid #34495e;
     padding: 10px;
     border-radius: 5px;
-    background-color: white;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
     width: 80%;
 }
 
 .sub-setting-button {
-    padding: 8px;
-    background-color: #95a5a6;
+    background-color: #34495e;
     color: white;
     border: none;
-    border-radius: 3px;
+    padding: 8px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.2s;
-    margin-top: 5px;
 }
 
 .sub-setting-button:hover {
-    background-color: #7f8c8d;
+    background-color: #4a6681;
 }
 
-/* 커서 선택 영역 */
 .cursor-selector {
-    margin-top: 20px;
     width: 100%;
 }
 
 .button-group {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     gap: 10px;
-    padding: 0 5px;
+    padding: 0 10px;
 }
 
 .cursor-button {
-    padding: 5px;
-    background-color: #ccc;
-    border: 2px solid #ccc;
+    background-color: #34495e;
+    color: white;
+    border: 2px solid #34495e;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
-    transition: all 0.2s;
-    height: 45px;
+    transition: background-color 0.2s, border-color 0.2s;
     display: flex;
-    justify-content: center;
     align-items: center;
-    overflow: hidden;
+    justify-content: center;
+    min-height: 60px;
 }
 
 .cursor-button img {
-    width: 35px;
-    height: 35px;
+    width: 40px;
+    height: 40px;
     display: block;
-    image-rendering: pixelated;
+}
+
+.cursor-button:hover:not(.selected) {
+    background-color: #4a6681;
 }
 
 .cursor-button.selected {
-    border-color: #2ecc71;
-    background-color: #e6f7ef;
-}
-
-
-
-.cursor-button:hover:not(.locked) {
-    background-color: #e0e0e0;
+    border-color: #e74c3c;
+    background-color: #1a242f;
 }
 
 /* ------------------------------------ */
-/* 💥 타격 이펙트 (디버깅 스타일 제거됨) */
+/* 타격 이펙트 */
 /* ------------------------------------ */
 .hit-effect {
-    /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
-    --scale: 0.5; 
-    --frame-count: 4;
-    --frame-width: calc(500px * var(--scale));
-    --frame-height: calc(500px * var(--scale));
-    --sheet-width: calc(2000px * var(--scale));
-    --move-distance: calc(var(--sheet-width) - var(--frame-width));
-
     position: absolute;
-    width: var(--frame-width);
-    height: var(--frame-height);
+    width: 20px;
+    height: 20px;
+    background-color: #e74c3c; /* 붉은색 */
+    border-radius: 50%;
+    opacity: 0;
     pointer-events: none;
-    z-index: 9999;
-
-    background-image: url('hit_effect.png');
-    background-repeat: no-repeat;
-    background-size: var(--sheet-width) var(--frame-height);
-    background-position: 0 0;
-    transform: translate(-50%, -50%) scale(var(--scale));
-    opacity: 1;
-
-    /* 디버깅 시각화용 스타일 제거 */
+    box-shadow: 0 0 10px rgba(231, 76, 60, 0.7);
+    transition: width 0.25s ease-out, height 0.25s ease-out, opacity 0.25s ease-out, transform 0.25s ease-out;
 }
 
-@keyframes playEffect {
-    from { background-position: 0 0; }
-    to { background-position: calc(-1 * var(--move-distance)) 0; }
+.hit-effect.animate {
+    opacity: 0.8;
+    width: 50px;
+    height: 50px;
+    /* transform은 script.js에서 translate(-50%, -50%) rotate(Ndeg)로 설정됨 */
 }
 
-.animate {
-    /* 애니메이션 재생 시간을 0.2초로 단축 */
-    animation: playEffect 0.2s steps(3) forwards;
-    opacity: 1;
-    /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
-    transition: opacity 0.05s 0.2s; 
-}
+
 /* ------------------------------------ */
-/* 모달 (업적/개발자 기능 팝업) */
+/* 모달 (업적/개발자) */
 /* ------------------------------------ */
 .modal {
-    display: none;
-    position: fixed;
-    z-index: 10;
+    display: none; 
+    position: fixed; 
+    z-index: 10; 
     left: 0;
     top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
-    backdrop-filter: blur(2px);
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.4); 
 }
 
 .modal-content {
@@ -236,11 +188,11 @@ body {
     margin: 10% auto; 
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
+    width: 80%; 
     max-width: 500px;
     border-radius: 10px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.5);
     position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .close-button {
@@ -248,74 +200,51 @@ body {
     float: right;
     font-size: 28px;
     font-weight: bold;
-    cursor: pointer;
-    position: absolute;
-    top: 10px;
-    right: 15px;
 }
 
 .close-button:hover,
 .close-button:focus {
     color: #000;
     text-decoration: none;
+    cursor: pointer;
 }
 
-#modal-title {
-    border-bottom: 2px solid #bdc3c7;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    color: #2c3e50;
-}
-
-/* ------------------------------------ */
-/* 모달 내부 업적 목록 */
-/* ------------------------------------ */
 #achievement-list {
     list-style: none;
     padding: 0;
-    max-height: 400px;
-    overflow-y: auto;
 }
 
-.achievement-list li {
-    border: 1px solid #777; 
-    border-radius: 4px;
-    padding: 5px 10px;
-    margin-bottom: 4px;
+.achievement-item {
     display: flex;
-    align-items: center; 
-    transition: background-color 0.2s;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid #eee;
 }
 
-.achievement-list li.unlocked {
-    border-color: #27ae60; 
-    background-color: #e8f5e9;
+/* 💥 달성되지 않은 업적: 제목, 내용 숨김 */
+.achievement-item.locked .achievement-title-status {
+    display: none;
 }
 
-.achievement-list li.locked {
-    border-color: #95a5a6; 
-    opacity: 0.7;
+/* 💥 달성되지 않은 업적: 아이콘을 흐릿하게 표시 */
+.achievement-item.locked .achievement-icon img {
+    opacity: 0.3;
+}
+
+/* 달성된 업적: 아이콘을 선명하게 표시 (옵션) */
+.achievement-item.unlocked .achievement-icon img {
+    opacity: 1;
 }
 
 .achievement-text-group {
     display: flex;
     align-items: center;
-    width: 100%;
-}
-
-.achievement-icon {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 40px;
-    height: 40px;
-    margin-right: 8px;
-    flex-shrink: 0;
-    position: relative;
-    top: 2px;
+    width: 100%; 
 }
 
 .achievement-title-status {
+    flex-grow: 1; 
+    margin-left: 15px; 
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -341,17 +270,17 @@ body {
     font-style: italic;
 }
 
+
 /* ------------------------------------ */
-/* 업적 달성 배너 */
+/* 업적 달성 배너 (💥 중앙 하단 위치 적용) */
 /* ------------------------------------ */
 #achievement-banner {
     position: fixed;
-    /* 💥 top: 20px; right: 20px; 제거 */
     bottom: 20px; /* 아래쪽에서 시작 */
     left: 50%; /* 중앙 정렬을 위해 50% 이동 */
-    transform: translateX(-50%) translateY(50px); /* 🌟 X축 중앙 정렬 및 아래로 숨기기 */
+    transform: translateX(-50%) translateY(50px); /* X축 중앙 정렬 및 아래로 숨기기 */
     
-    background-color: #e74c3c;
+    background-color: #2ecc71;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
@@ -365,16 +294,11 @@ body {
 #achievement-banner.show {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0); /* 🌟 X축 중앙 정렬 유지하며 제자리로 이동 */
-}
-
-#achievement-text {
-    margin: 0;
-    font-weight: bold;
+    transform: translateX(-50%) translateY(0); /* X축 중앙 정렬 유지하며 제자리로 이동 */
 }
 
 /* ------------------------------------ */
-/* 개발자 기능 패널 */
+/* 개발자 기능 */
 /* ------------------------------------ */
 #developer-panel {
     display: flex;
@@ -383,15 +307,15 @@ body {
 }
 
 .dev-feature-button {
-    padding: 10px;
-    background-color: #e74c3c;
+    background-color: #f39c12;
     color: white;
     border: none;
+    padding: 10px;
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.2s;
 }
 
 .dev-feature-button:hover {
-    background-color: #c0392b;
+    background-color: #e67e22;
 }
