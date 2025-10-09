@@ -305,7 +305,7 @@ body {
 }
 
 .achievement-item.unlocked .achievement-icon {
-    margin-right: 15px;
+    margin-right: 0px;
 }
 
 .achievement-icon img {
