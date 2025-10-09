@@ -27,7 +27,7 @@ const achievementText = document.getElementById('achievement-text');
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
 const eventGif = 'hit_event.gif'; // GIF 파일명
-const eventDuration = 4000; // GIF 재생 시간 (4초)
+const eventDuration = 3000; // GIF 재생 시간 (4초)
 
 let hitCount = 0;
 let currentCursor = 'cursor01'; 
@@ -57,7 +57,7 @@ const ACHIEVEMENTS = {
     },
     // 2. 모든 커서 강화 업적 추가 
     'ACH_ALL_CURSOR_LEVEL_5': { 
-        title: '궁극의 무기', 
+        title: '공략 완료', 
         description: '모든 커서를 5단계까지 강화', 
         condition: MAX_LEVEL, // 5단계 달성
         achieved: false, 
@@ -68,14 +68,14 @@ const ACHIEVEMENTS = {
     // 3. 단일 커서 사용 업적
     'single_cursor_01': { title: '제대로 저로 개종해주셨나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor01', icon: 'icon_single_cursor_01.png' }, 
     'single_cursor_02': { title: '큭큭, 바보같을 정도로 성실하신 분...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor02', icon: 'icon_single_cursor_02.png' },
-    'single_cursor_03': { title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
+    'single_cursor_03': { title: '당신에게 선택 받는다고 해서 무엇이 달라지나요?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor03', icon: 'icon_single_cursor_03.png' },
     'single_cursor_04': { title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor04', icon: 'icon_single_cursor_04.png' },
     'single_cursor_05': { title: '이히히!!!! 벌써 끝인가요~?', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor05', icon: 'icon_single_cursor_05.png' },
     'single_cursor_06': { title: '그야말로 일로매진이로군, 오오사키 군!', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor06', icon: 'icon_single_cursor_06.png' },
     'single_cursor_07': { title: '오오사키 님, 해내셨군요. 훌륭하십니다.', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor07', icon: 'icon_single_cursor_07.png' },
     'single_cursor_08': { title: '...❤️', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor08', icon: 'icon_single_cursor_08.png' },
-    'single_cursor_09': { title: '아, 아앗... 저, 저로도 괜찮으시다면...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09', icon: 'icon_single_cursor_09.png' },
-    'single_cursor_10': { title: '나로만 달성했다는 건가? 무겁네~ 네 마음은!', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10', icon: 'icon_single_cursor_10.png' },
+    'single_cursor_09': { title: '사, 사용될 수 있어서 영광이었습니다...', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor09', icon: 'icon_single_cursor_09.png' },
+    'single_cursor_10': { title: '하하! 일편단심이라니 무서운 걸, 오오사키 군.', condition: 1010, achieved: false, type: 'singleHit', cursor: 'cursor10', icon: 'icon_single_cursor_10.png' },
 };
 
 
