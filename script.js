@@ -56,7 +56,7 @@ let currentDamage = 1; // 💥 초기 피해량은 1로 설정
 // 💥 커서 강화 시스템 변수 
 // ------------------------------------
 const LEVEL_UP_INTERVAL = 50; // 강화되는 타격 수 단위
-const MAX_LEVEL = 5; // 최대 강화 단계
+const MAX_LEVEL = 4; // 최대 강화 단계
 // 💥 모든 커서의 고정 기본 피해량
 const BASE_DAMAGE = 1; 
 
@@ -78,18 +78,18 @@ const ACHIEVEMENTS = {
     },
     // 2. 모든 커서 강화 업적 추가 
     'ACH_ALL_CURSOR_LEVEL_5': { 
-        title: '공략완료', 
+        title: '공략 완료', 
         description: '모든 커서를 5단계까지 강화', 
         condition: MAX_LEVEL,
         achieved: false, 
         type: 'allMaxLevel', 
         icon: 'icon_amateur_striker.png',
-        custom_status_text_achieved: '모든 히로인을 강화했습니다' 
+        custom_status_text_achieved: '모든 히로인을 공략했습니다.' 
     },
     
     // 3. 단일 커서 사용 업적 
     'single_cursor_01': { 
-        title: '제대로 저로 개종해주셨나요?', 
+        title: '쇼타로', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -98,7 +98,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '아리아케로만 1010타격 달성' 
     }, 
     'single_cursor_02': { 
-        title: '큭큭, 바보같을 정도로 성실하신 분...', 
+        title: '메이', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -107,7 +107,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '신바시로만 1010타격 달성' 
     },
     'single_cursor_03': { 
-        title: '당신에게 선택받는다고 해서 무엇이 달라지나요.', 
+        title: '카에데', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -116,7 +116,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '아오미로만 1010타격 달성' 
     },
     'single_cursor_04': { 
-        title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', 
+        title: '요조', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -125,7 +125,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '타케시바로만 1010타격 달성' 
     },
     'single_cursor_05': { 
-        title: '이히히!!!! 벌써 끝인가요~?', 
+        title: '미치오', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -134,7 +134,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '시오도메로만 1010타격 달성' 
     },
     'single_cursor_06': { 
-        title: '그야말로 일로매진이로군, 오오사키 군!', 
+        title: '기이치로', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -143,7 +143,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '시죠마에로만 1010타격 달성' 
     },
     'single_cursor_07': { 
-        title: '오오사키 님, 해내셨군요. 훌륭하십니다.', 
+        title: '로렌', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -152,7 +152,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '토요스로만 1010타격 달성' 
     },
     'single_cursor_08': { 
-        title: '...❤️', 
+        title: '리이치', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -161,7 +161,7 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '히노데로만 1010타격 달성' 
     },
     'single_cursor_09': { 
-        title: '사, 사용될 수 있어서 영광이었습니다...', 
+        title: '쿠레이치로', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
@@ -170,13 +170,13 @@ const ACHIEVEMENTS = {
         custom_status_text_achieved: '후네노로만 1010타격 달성' 
     },
     'single_cursor_10': { 
-        title: '나로만 달성했다는 건가? 이거 무거운 걸, 오오사키 군.', 
+        title: '시즈마', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
         cursor: 'cursor10', 
         icon: 'icon_single_cursor_10.png',
-        custom_status_text_achieved: '시즈마로만 1010타격 달성' 
+        custom_status_text_achieved: '다이바로만 1010타격 달성' 
     },
 };
 
