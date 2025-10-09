@@ -291,7 +291,7 @@ body {
 
 .achievement-icon {
     margin-right: 0px;
-    min-width: 40px;
+    min-width: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
