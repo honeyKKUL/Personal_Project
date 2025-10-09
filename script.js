@@ -779,3 +779,15 @@ window.addEventListener('click', (event) => {
         }
     }
 });
+
+// 1. 몬스터 이미지 우클릭 방지
+monsterImage.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});
+
+// 2. 모든 이미지(커서 아이콘 포함) 우클릭 방지
+document.querySelectorAll('img').forEach(img => {
+    img.addEventListener('contextmenu', (e) => {
+        e.preventDefault();
+    });
+});
