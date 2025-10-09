@@ -148,6 +148,41 @@ function createHitEffect(x, y) {
     }, effectDuration); // 👈 effectDuration(250ms)로 바로 사용
 }
 
+// 사운드를 부드럽게 페이드 아웃하고, 새로운 사운드를 재생하는 함수
+function smoothlyFadeOutAndPlay(nextSound) {
+    const fadeDuration = 100; // 페이드 아웃 시간 (100ms)
+    const fadeInterval = 10;  // 볼륨 감소 간격 (10ms)
+    const steps = fadeDuration / fadeInterval; // 총 스텝 수
+
+    // 이전에 재생 중이던 사운드들을 찾아 부드럽게 멈춥니다.
+    // 모든 사운드 객체를 순회하여 재생 중인 것이 있으면 멈춥니다.
+    hitSounds.forEach(sound => {
+        if (!sound.paused) {
+            let currentVolume = sound.volume;
+            const volumeStep = currentVolume / steps;
+
+            const fadeOutInterval = setInterval(() => {
+                currentVolume -= volumeStep;
+                sound.volume = Math.max(0, currentVolume);
+
+                if (currentVolume <= 0) {
+                    clearInterval(fadeOutInterval);
+                    sound.pause();
+                    sound.currentTime = 0;
+                    sound.volume = VOLUME_RATIO; // 볼륨을 원래대로 복구
+                }
+            }, fadeInterval);
+        }
+    });
+
+    // 새로운 사운드를 재생합니다.
+    nextSound.currentTime = 0;
+    nextSound.volume = VOLUME_RATIO; // 볼륨을 0.2로 설정 (80% 감소)
+    nextSound.play().catch(e => {
+        console.warn("사운드 재생 실패:", e);
+    });
+}
+
 // 업적 달성 배너 표시 함수
 function showAchievementBanner(title) {
     achievementText.textContent = `업적 달성: ${title}`;
@@ -214,19 +249,16 @@ function checkUnlocks() {
 
 // 클릭 이벤트를 처리하는 함수 (handleHit)
 function handleHit(event) {
-    // 이벤트가 활성화된 상태면 클릭 무시
-    if (isEventActive) {
-        return;
-    }
-    
-    // 1. 랜덤 타격 사운드 재생 (이전 오류 해결을 위해 복구)
+    // 이벤트가 활성화된 상태면 클릭 무시
+    if (isEventActive) {
+        return;
+    }
+    
+    // 💥 1. 랜덤 타격 사운드 재생 (수정된 부분)
     const soundIndex = Math.floor(Math.random() * hitSounds.length);
     const soundToPlay = hitSounds[soundIndex];
 
-    soundToPlay.currentTime = 0; 
-    soundToPlay.play().catch(e => {
-        console.warn("사운드 재생 실패:", e);
-    });
+    smoothlyFadeOutAndPlay(soundToPlay); // 👈 새로운 함수로 대체!
 
     // 💥 2. 1010 타격 초과 처리 로직 복원 및 수정
     const potentialHitCount = hitCount + currentDamage;
