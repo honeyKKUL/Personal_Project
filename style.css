@@ -2,307 +2,305 @@
 /* 기본 및 배경 스타일 */
 /* ------------------------------------ */
 body {
-    font-family: Arial, sans-serif;
-    background-color: #333;
-    color: #333;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; 
-    min-height: 100vh; 
-    padding-top: 50px; 
-    position: relative; 
-    overflow: hidden; 
+font-family: Arial, sans-serif;
+background-color: #333;
+color: #333;
+margin: 0;
+padding: 0;
+display: flex;
+justify-content: center;
+align-items: flex-start; 
+min-height: 100vh; 
+padding-top: 50px; 
+position: relative; 
+overflow: hidden; 
 }
 
 .main-content {
-    display: flex;
-    width: 90%; 
-    max-width: 900px; 
-    background-color: #f4f4f4;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
-    overflow: hidden; 
-    /* 컨테이너 최소 높이 유지 (게임 컨테이너 영역이 짧아지는 문제 해결) */
-    min-height: 80vh;
+display: flex;
+width: 90%; 
+max-width: 900px; 
+background-color: #f4f4f4;
+border-radius: 10px;
+box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+overflow: hidden; 
+/* 컨테이너 최소 높이 유지 (게임 컨테이너 영역이 짧아지는 문제 해결) */
+min-height: 80vh;
 }
 
 /* ------------------------------------ */
 /* 게임 컨테이너 (몬스터 영역) */
 /* ------------------------------------ */
 .game-container {
-    flex: 2;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background-color: white; 
+flex: 2;
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+padding: 20px;
+background-color: white; 
 }
 
 #hit-count {
-    font-size: 3em;
-    margin-bottom: 20px;
-    font-weight: bold;
-    color: #2c3e50;
+font-size: 3em;
+margin-bottom: 20px;
+font-weight: bold;
+color: #2c3e50;
 }
 
 /* 💥 #monster 스타일 복구 (원본 이미지 비율 유지) */
 #monster {
-    width: 300px; /* 너비는 300px로 고정 */
-    height: auto; /* 💥 높이를 'auto'로 설정하여 원본 비율(1360:2016) 유지 */
-    max-height: 70vh; /* 과도하게 커지는 것을 방지하기 위한 최대 높이 설정 (선택 사항) */
-    transition: transform 0.1s ease-out;
-    user-select: none;
+width: 300px; /* 너비는 300px로 고정 */
+height: auto; /* 💥 높이를 'auto'로 설정하여 원본 비율(1360:2016) 유지 */
+max-height: 70vh; /* 과도하게 커지는 것을 방지하기 위한 최대 높이 설정 (선택 사항) */
+transition: transform 0.1s ease-out;
+user-select: none;
 }
 
 #monster:active {
-    transform: scale(0.98);
+transform: scale(0.98);
 }
 
 /* ------------------------------------ */
 /* 커서 컨트롤 및 설정 메뉴 */
 /* ------------------------------------ */
 .cursor-controls {
-    flex: 1;
-    padding: 20px;
-    background-color: #e0e0e0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+flex: 1;
+padding: 20px;
+background-color: #e0e0e0;
+display: flex;
+flex-direction: column;
+align-items: center;
 }
 
 /* 💥 설정 버튼 크기 확대 */
 #settings-button {
-    width: 40px; 
-    height: 40px; 
-    padding: 0; 
-    border: none;
-    background: none; 
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 15px; 
-    transition: transform 0.1s;
+width: 40px; 
+height: 40px; 
+padding: 0; 
+border: none;
+background: none; 
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+margin-bottom: 15px; 
+transition: transform 0.1s;
 }
 
 #settings-button:hover {
-    transform: scale(1.05);
+transform: scale(1.05);
 }
 
 #settings-icon-img {
-    width: 100%; 
-    height: 100%; 
-    object-fit: contain;
+width: 100%; 
+height: 100%; 
+object-fit: contain;
 }
 
 
 /* 설정 메뉴 버튼 스타일 */
 .sub-setting-button, .dev-feature-button {
-    background-color: #f4f4f4;
-    color: #333;
-    border: 1px solid #ccc;
-    padding: 8px 15px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 0.9em;
-    transition: background-color 0.2s, border-color 0.2s;
-    width: 100%;
+background-color: #f4f4f4;
+color: #333;
+border: 1px solid #ccc;
+padding: 8px 15px;
+border-radius: 5px;
+cursor: pointer;
+font-size: 0.9em;
+transition: background-color 0.2s, border-color 0.2s;
+width: 100%;
 }
 
 .sub-setting-button:hover, .dev-feature-button:hover {
-    background-color: #d0d0d0;
-    border-color: #aaa;
+background-color: #d0d0d0;
+border-color: #aaa;
 }
 
 
 /* 커서 선택 영역 */
 .cursor-selector {
-    margin-top: 30px;
-    width: 100%;
-    /* 💥 모바일 스크롤 추가를 위한 설정 */
-    overflow-x: auto; 
-    padding-bottom: 10px; /* 스크롤바 공간 확보 */
+margin-top: 30px;
+width: 100%;
 }
-
-/* 💥 모바일에서 이미지 선택 방지 */
-.cursor-selector * {
-    -webkit-user-select: none; /* Safari */
-    -ms-user-select: none;     /* IE/Edge */
-    user-select: none;         /* Non-prefixed version */
-    -webkit-touch-callout: none; /* iOS Safari */
-}
-
 
 .button-group {
-    /* flex-wrap: wrap; 대신 nowrap으로 설정하여 스크롤 유도 */
-    display: flex;
-    flex-wrap: nowrap; 
-    gap: 10px;
-    /* 💥 스크롤을 위해 justify-content 제거 또는 left 정렬 */
-    justify-content: flex-start; 
-    padding: 0 5px; /* 양 끝단 여백 */
+display: flex;
+flex-wrap: wrap;
+gap: 10px;
+justify-content: center;
 }
 
 .cursor-button {
-    min-width: 45px; /* 버튼의 최소 너비 설정 (스크롤 시) */
-    width: 45px; 
-    height: 45px;
-    background-color: #f4f4f4;
-    border: 3px solid transparent; 
-    border-radius: 8px;
-    cursor: pointer;
-    padding: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: border-color 0.2s, box-shadow 0.2s;
-    position: relative;
-    /* 이미지 선택 방지 속성은 상위 요소에서 상속받음 */
+width: 45px; 
+height: 45px;
+background-color: #f4f4f4;
+border: 3px solid transparent; 
+border-radius: 8px;
+cursor: pointer;
+padding: 0;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: border-color 0.2s, box-shadow 0.2s;
+position: relative;
 }
 
+.cursor-button:hover {
+box-shadow: 0 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.cursor-button img {
+width: 100%;
+height: 100%;
+object-fit: contain;
+pointer-events: none; /* 이미지를 클릭해도 부모 버튼 이벤트가 발생하도록 설정 */
+}
+
+.cursor-button.selected {
+border-color: #007bff; 
+box-shadow: 0 0 8px rgba(0, 123, 255, 0.8);
+}
 
 /* ------------------------------------ */
 /* 이펙트 스타일 */
 /* ------------------------------------ */
 .hit-effect {
-    /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
-    --scale: 0.5; 
-    --frame-count: 4;
-    --frame-width: calc(500px * var(--scale));
-    --frame-height: calc(500px * var(--scale));
-    --sheet-width: calc(2000px * var(--scale));
-    --move-distance: calc(var(--sheet-width) - var(--frame-width));
+/* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
+--scale: 0.5; 
+--frame-count: 4;
+--frame-width: calc(500px * var(--scale));
+--frame-height: calc(500px * var(--scale));
+--sheet-width: calc(2000px * var(--scale));
+--move-distance: calc(var(--sheet-width) - var(--frame-width));
 
-    position: absolute;
-    width: var(--frame-width);
-    height: var(--frame-height);
-    pointer-events: none;
-    z-index: 9999;
+position: absolute;
+width: var(--frame-width);
+height: var(--frame-height);
+pointer-events: none;
+z-index: 9999;
 
-    background-image: url('hit_effect.png');
-    background-repeat: no-repeat;
-    background-size: var(--sheet-width) var(--frame-height);
-    background-position: 0 0;
-    transform: translate(-50%, -50%) scale(var(--scale));
-    opacity: 1;
+background-image: url('hit_effect.png');
+background-repeat: no-repeat;
+background-size: var(--sheet-width) var(--frame-height);
+background-position: 0 0;
+transform: translate(-50%, -50%) scale(var(--scale));
+opacity: 1;
 
-    /* 디버깅 시각화용 스타일 제거 */
+/* 디버깅 시각화용 스타일 제거 */
 }
 
 @keyframes playEffect {
-    from { background-position: 0 0; }
-    to { background-position: calc(-1 * var(--move-distance)) 0; }
+from { background-position: 0 0; }
+to { background-position: calc(-1 * var(--move-distance)) 0; }
 }
 
 .animate {
-    /* 애니메이션 재생 시간을 0.2초로 단축 */
-    animation: playEffect 0.2s steps(3) forwards;
-    opacity: 1;
-    /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
-    transition: opacity 0.05s 0.2s; 
+/* 애니메이션 재생 시간을 0.2초로 단축 */
+animation: playEffect 0.2s steps(3) forwards;
+opacity: 1;
+/* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
+transition: opacity 0.05s 0.2s; 
 }
 /* ------------------------------------ */
 /* 모달 스타일 */
 /* ------------------------------------ */
 .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 10; 
-    left: 0;
-    top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgba(0,0,0,0.4); 
+display: none; 
+position: fixed; 
+z-index: 10; 
+left: 0;
+top: 0;
+width: 100%; 
+height: 100%; 
+overflow: auto; 
+background-color: rgba(0,0,0,0.4); 
 }
 
 .modal-content {
-    background-color: #fefefe;
-    margin: 10% auto; 
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%; 
-    max-width: 500px;
-    border-radius: 10px;
-    position: relative;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+background-color: #fefefe;
+margin: 10% auto; 
+padding: 20px;
+border: 1px solid #888;
+width: 80%; 
+max-width: 500px;
+border-radius: 10px;
+position: relative;
+box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
 }
 
 .close-button {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
+color: #aaa;
+float: right;
+font-size: 28px;
+font-weight: bold;
 }
 
 .close-button:hover,
 .close-button:focus {
-    color: #000;
-    text-decoration: none;
-    cursor: pointer;
+color: #000;
+text-decoration: none;
+cursor: pointer;
 }
 
 /* 업적 목록 스타일 */
 #achievement-list {
-    list-style: none;
-    padding: 0;
+list-style: none;
+padding: 0;
 }
 
 .achievement-item {
-    display: flex;
-    align-items: center;
-    padding: 10px 0;
-    border-bottom: 1px solid #eee;
-    opacity: 0.6; /* 기본적으로 비활성화된 것처럼 표시 */
-    transition: opacity 0.3s;
+display: flex;
+align-items: center;
+padding: 10px 0;
+border-bottom: 1px solid #eee;
+opacity: 0.6; /* 기본적으로 비활성화된 것처럼 표시 */
+transition: opacity 0.3s;
 }
 
 .achievement-item.unlocked {
-    opacity: 1; /* 달성 시 활성화 */
+opacity: 1; /* 달성 시 활성화 */
 }
 
 .achievement-text-group {
-    display: flex;
-    align-items: center;
-    width: 100%;
+display: flex;
+align-items: center;
+width: 100%;
 }
 
 .achievement-icon {
-    margin-right: 15px;
-    min-width: 40px; 
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: 1.2;
+margin-right: 15px;
+min-width: 40px; 
+display: flex;
+flex-direction: column;
+justify-content: center;
+line-height: 1.2;
 }
 
 .achievement-icon img {
-    width: 40px;     
-    height: 40px;    
-    display: block;
+width: 40px;     
+height: 40px;    
+display: block;
 }
 
 .achievement-title-status {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    line-height: 1.2;
+display: flex;
+flex-direction: column;
+justify-content: center;
+line-height: 1.2;
 }
 
 .achievement-title-status span:first-child {
-    font-size: 1.05em;
-    font-weight: bold; 
-    color: #333;
-    margin-bottom: 1px;
+font-size: 1.05em;
+font-weight: bold; 
+color: #333;
+margin-bottom: 1px;
 }
 
 .achievement-status {
-    font-size: 0.85em;
-    color: #555; 
-    font-style: italic;
+font-size: 0.85em;
+color: #555; 
+font-style: italic;
 }
 
 /* ------------------------------------ */
@@ -312,31 +310,31 @@ body {
 /* 업적 달성 배너 (중앙 하단 위치 유지) */
 /* ------------------------------------ */
 #achievement-banner {
-    position: fixed;
-    bottom: 20px; 
-    left: 50%; 
-    transform: translateX(-50%) translateY(50px); 
-    
-    background-color: #2ecc71;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 5px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
-    z-index: 20;
+position: fixed;
+bottom: 20px; 
+left: 50%; 
+transform: translateX(-50%) translateY(50px); 
+
+background-color: #2ecc71;
+color: white;
+padding: 10px 20px;
+border-radius: 5px;
+box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+opacity: 0;
+visibility: hidden;
+transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
+z-index: 20;
 }
 
 #achievement-banner.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateX(-50%) translateY(0); 
+opacity: 1;
+visibility: visible;
+transform: translateX(-50%) translateY(0); 
 }
 
 #achievement-text {
-    margin: 0;
-    font-weight: bold;
+margin: 0;
+font-weight: bold;
 }
 
 /* ------------------------------------ */
