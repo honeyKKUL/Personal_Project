@@ -274,6 +274,11 @@ body {
     transition: opacity 0.3s;
 }
 
+/* 💥 핵심 수정: 미달성(locked) 상태일 때 제목/문구 영역 숨기기 */
+.achievement-item.locked .achievement-title-status {
+    display: none;
+}
+
 .achievement-item.unlocked {
     opacity: 1; /* 달성 시 활성화 */
 }
@@ -291,6 +296,12 @@ body {
     flex-direction: column;
     justify-content: center;
     line-height: 1.2;
+    
+    /* 💥 추가: locked 상태에서 아이콘이 중앙에 오도록 여백 조정 */
+    /* locked 상태에서 .achievement-title-status가 사라져 margin-right가 불필요해집니다. */
+    /* 이를 위해 유연한 레이아웃을 유지합니다. */
+    margin-right: auto; /* 아이콘이 왼쪽에 고정되도록 설정 */
+    margin-left: 0;
 }
 
 .achievement-icon img {
@@ -299,11 +310,13 @@ body {
     display: block;
 }
 
+/* 💥 unlocked 상태에서만 제목/문구가 표시되도록 함 */
 .achievement-title-status {
-    display: flex;
+    display: flex; /* 기본적으로는 flex 상태를 유지 */
     flex-direction: column;
     justify-content: center;
     line-height: 1.2;
+    flex-grow: 1; /* 남은 공간을 채우도록 설정 */
 }
 
 .achievement-title-status span:first-child {
