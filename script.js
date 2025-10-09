@@ -466,9 +466,10 @@ function handleHit(event) {
     
     const potentialHitCount = hitCount + currentDamage;
     
+    
     // 💥 1010 이벤트 발생 조건 체크
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
-        // --- 💥 이벤트 발생 블록 (단일 커서 업적 독점 사용 조건 적용) 💥 ---
+        // --- 💥 이벤트 발생 블록 (수정 시작) 💥 ---
         
         // 1. 단일 커서 타격 수에 최종 데미지를 반영합니다.
         singleCursorHitCounts[currentCursor] += currentDamage; 
@@ -480,7 +481,7 @@ function handleHit(event) {
         hitCount = eventThreshold;
         counterDisplay.textContent = hitCount;
         
-        // 4. 단일 커서 업적 조건 검사: '해당 커서로만' 이벤트를 달성했는지 확인
+        // 4. 단일 커서 업적 조건 검사... (중략)
         const currentAchKey = `single_cursor_${currentCursor.slice(-2)}`;
         const currentSingleAch = ACHIEVEMENTS[currentAchKey];
         
@@ -490,9 +491,14 @@ function handleHit(event) {
              singleCursorHitCounts[currentCursor] = Math.max(singleCursorHitCounts[currentCursor], currentSingleAch.condition);
         }
         
-        playEventAnimation(); 
-        checkAchievements(); // 이 시점에 업적이 해제됩니다.
-        saveState(); 
+        // 💥 핵심 수정: 애니메이션 시작을 약간 지연시켜 연타 충돌을 방지합니다.
+        // 이로 인해 연타 중이더라도 이벤트 애니메이션이 확실히 실행될 시간을 벌 수 있습니다.
+        setTimeout(() => {
+            playEventAnimation(); 
+            checkAchievements(); // 이벤트 애니메이션 후 업적 확인
+            saveState(); 
+        }, 50); // 50ms 지연 (충분히 짧고 충돌을 피할 수 있는 시간)
+        
         return; 
         
         // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
