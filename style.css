@@ -188,32 +188,39 @@ body {
 /* 타격 이펙트 (CSS 애니메이션) */
 /* ------------------------------------ */
 .hit-effect {
-    width: 250px;             /* 1/2 크기로 축소 */
-    height: 250px;
+    --scale: 0.5; /* 🔧 크기 조절용 스케일 (0.5 = 절반 크기) */
+    --frame-count: 4;
+    --frame-width: calc(500px * var(--scale));   /* 각 프레임 크기 */
+    --frame-height: calc(500px * var(--scale));  /* 프레임 높이 */
+    --sheet-width: calc(2000px * var(--scale));  /* 전체 시트 폭 */
+    --move-distance: calc(var(--sheet-width) - var(--frame-width)); /* 총 이동 거리 */
+
+    width: var(--frame-width);
+    height: var(--frame-height);
     position: absolute;
     pointer-events: none;
     background-image: url('hit_effect.png');
     background-repeat: no-repeat;
-    background-size: 1000px 250px; /* 전체 크기 절반 비율 */
+    background-size: var(--sheet-width) var(--frame-height);
     background-position: 0 0;
     transform: translate(-50%, -50%);
     opacity: 0;
     z-index: 10;
+
+    border: 1px solid red;
 }
 
 @keyframes playEffect {
-    0%   { background-position:    0px 0; }
-    25%  { background-position: -250px 0; }
-    50%  { background-position: -500px 0; }
-    75%  { background-position: -750px 0; }
-    100% { background-position: -750px 0; } /* 마지막 프레임에서 멈춤 */
+    from { background-position: 0 0; }
+    to { background-position: calc(-1 * var(--move-distance)) 0; }
 }
 
 .animate {
-    animation: playEffect 0.4s steps(4, end) forwards;
+    animation: playEffect 0.4s steps(4) forwards;
     opacity: 1;
     transition: opacity 0.1s 0.4s;
 }
+
 
 
 
