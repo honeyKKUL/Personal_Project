@@ -1,79 +1,75 @@
-/* style.css (최종 디자인 및 레이아웃 복구) */
+/* style.css (레이아웃 복구 및 이펙트 포함 최종본) */
 
 body {
-    display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
-    align-items: center; /* 세로 중앙 정렬 */
-    min-height: 100vh; /* 화면 전체 높이 사용 */
-    margin: 0;
-    background-color: #282c34; /* 배경색 유지 */
-    color: white;
-    font-family: sans-serif;
-    text-align: center;
-    -webkit-user-select: none;
-    user-select: none;
+    display: flex;
+    justify-content: center; /* 가로 중앙 정렬 */
+    align-items: center; /* 세로 중앙 정렬 */
+    min-height: 100vh; /* 화면 전체 높이 사용 */
+    margin: 0;
+    background-color: #282c34;
+    color: white;
+    font-family: sans-serif;
+    text-align: center;
+    -webkit-user-select: none;  
+    -moz-user-select: none;     
+    user-select: none;          
 }
 
 .main-content {
     display: flex;
-    flex-direction: row;  /* 몬스터 영역과 버튼 영역을 가로로 나란히 배치 */
-    align-items: flex-start; /* 상단 정렬 */
+    flex-direction: row;  /* 몬스터 영역과 버튼 영역을 가로로 배치 */
+    align-items: flex-start; /* 위쪽 정렬 */
     gap: 50px; 
-    max-width: 1200px; /* 전체 콘텐츠 최대 너비 */
+    max-width: 1200px; 
     width: 90%; 
     padding: 20px;
     box-sizing: border-box;
-    justify-content: center; /* 중앙 정렬 */
+    justify-content: center; 
 }
 
-/* 1. 몬스터 컨테이너 (가장 중요한 부분: 흰색 박스) */
+/* 몬스터 영역 */
 .game-container {
-    flex-grow: 1; /* 남은 공간을 차지 */
-    padding: 20px;
-    border-radius: 15px; /* 모서리를 둥글게 */
-    background-color: #ffffff;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.6); /* 더 깊고 부드러운 그림자 */
-    max-width: 700px; /* 게임 영역의 최대 너비 제한 */
+    flex-grow: 1;
+    padding: 20px;
+    border-radius: 10px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); 
+    max-width: 700px; 
     width: 100%; 
-    min-width: 300px; 
-    display: flex;
-    flex-direction: column;
-    align-items: center;
 }
 
 #hit-count {
-    margin-bottom: 20px;
-    color: #c0392b; /* 붉은색 카운트 */
-    font-size: 5em; /* 카운트 크기 키움 */
-    font-weight: bold;
+    margin-bottom: 20px;
+    color: #c0392b;
+    font-size: 4em;
+    font-weight: bold;
 }
 
 #monster {
-    width: 100%; 
-    max-width: 550px; /* 몬스터 크기 제어 */
+    width: 100%; 
+    max-width: 500px; /* 몬스터 크기 제어 */
     cursor: url('cursor01.png'), pointer;
-    transition: transform 0.1s ease-out;
+    transition: transform 0.1s ease-out;
     height: auto; 
     display: block; 
     margin: 0 auto; 
 }
 
 #monster:active {
-    transform: scale(0.98);
+    transform: scale(0.98);
 }
 
 /* ------------------------------------ */
-/* 2. 커서 컨트롤 및 설정 영역 (오른쪽 패널) */
+/* 커서 컨트롤 및 설정 영역 */
 /* ------------------------------------ */
 .cursor-controls {
     display: flex;
     flex-direction: column;
-    gap: 20px;  /* 간격 증가 */
+    gap: 15px; 
     align-items: center;
     flex-shrink: 0; 
-    min-width: 160px; /* 너비 확보 */
+    min-width: 150px;
     position: relative;
-    padding-top: 10px; /* 몬스터 영역과 수직 위치 맞추기 */
 }
 
 #settings-button {
@@ -85,11 +81,12 @@ body {
     border: none;
     border-radius: 5px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    transition: background-color 0.2s;
     width: 100%;
 }
 
+/* 설정 메뉴 드롭다운 스타일 */
 .settings-menu {
-    /* 기존 스타일 유지 (드롭다운 위치) */
     display: flex;
     flex-direction: column;
     position: absolute; 
@@ -102,29 +99,37 @@ body {
     padding: 5px;
 }
 
-/* 커서 선택기 (오른쪽 흰색 박스) */
+.settings-menu button {
+    padding: 8px 15px;
+    margin: 2px 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    color: #333;
+    white-space: nowrap;
+}
+
+.settings-menu button:hover {
+    background-color: #f0f0f0;
+}
+
+/* 커서 선택기 스타일 */
 .cursor-selector {
     padding: 15px;
     border-radius: 10px;
     background-color: #ffffff;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
     color: #333;
-    width: 100%; /* 부모 너비에 맞춤 */
+    width: 100px;
 }
 
-.cursor-selector p {
-    font-size: 0.95em;
-    font-weight: 600;
-    margin-top: 0;
-    margin-bottom: 10px;
-    color: #555;
-}
-
+/* 커서 버튼 스타일 */
 .button-group {
     display: flex;
     flex-direction: column; 
-    gap: 8px; /* 버튼 간 간격 좁게 */
-    align-items: stretch; /* 버튼을 가로로 꽉 채우도록 변경 */
+    gap: 10px;
+    align-items: center;
 }
 
 .cursor-button {
@@ -134,33 +139,82 @@ body {
     padding: 5px;
     cursor: pointer;
     transition: all 0.2s;
-    width: 100%; /* 컨테이너 너비에 맞춤 */
-    height: 55px; /* 높이 확보 */
+    width: 50px; 
+    height: 50px;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-/* 선택된 버튼 스타일을 더 명확하게 */
 .cursor-button.selected {
     border-color: #c0392b; 
     background-color: #c0392b; 
-    box-shadow: 0 0 10px rgba(192, 57, 43, 0.9);
-    transform: scale(1.02); /* 선택 시 약간 확대 */
+    box-shadow: 0 0 8px rgba(192, 57, 43, 0.8);
 }
 
 .cursor-button img {
-    width: 80%; /* 이미지 크기 조절 */
-    height: 80%;
+    width: 100%;
+    height: 100%;
     object-fit: contain;
 }
 
 /* ------------------------------------ */
-/* 이펙트 및 모달 (기존 코드 유지) */
+/* 모달 및 이펙트 스타일 */
 /* ------------------------------------ */
+.modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1001; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgba(0,0,0,0.7); 
+}
 
-.modal { /* ... 모달 스타일 유지 ... */ }
-.modal-content { /* ... 모달 콘텐츠 스타일 유지 ... */ }
-.hit-effect { /* ... 타격 이펙트 스타일 유지 ... */ }
-@keyframes playEffect { /* ... 애니메이션 유지 ... */ }
-.hit-effect.animate { /* ... 애니메이션 유지 ... */ }
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%; 
+    max-width: 400px;
+    border-radius: 10px;
+    color: #333;
+}
+
+.close-button {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+/* 타격 이펙트 스타일 */
+.hit-effect {
+    width: 125px; 
+    height: 125px;
+    position: absolute;
+    pointer-events: none;
+    z-index: 10000;
+    
+    background-image: url('hit_effect.png'); 
+    background-repeat: no-repeat;
+    background-size: 500px 125px; 
+    background-position: 0 0;
+    
+    opacity: 1; 
+    
+    transform: translate(-50%, -50%); 
+}
+
+@keyframes playEffect {
+    0% { background-position: 0 0; opacity: 1; }
+    100% { background-position: -500px 0; opacity: 0; } 
+}
+
+.hit-effect.animate {
+    animation: playEffect 0.3s steps(4) forwards; 
+    transition: none; 
+}
