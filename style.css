@@ -1,4 +1,4 @@
-/* style.css (최종 수정본 - UI 복구 및 배너 위치 반영) */
+/* style.css (최종 수정본 - 게임 컨테이너 세로 길이 복구) */
 
 /* ------------------------------------ */
 /* 기본 및 배경 스타일 */
@@ -26,6 +26,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     overflow: hidden; 
+    /* 🌟 추가: 전체 컨테이너의 최소 높이를 지정하여 세로가 짧아지는 현상 방지 */
+    min-height: 80vh;
 }
 
 /* ------------------------------------ */
@@ -48,7 +50,7 @@ body {
     color: #2c3e50;
 }
 
-/* 💥 #monster 스타일 복구 (이미지 찌그러짐 방지) */
+/* 몬스터 이미지 크기 복구 */
 #monster {
     width: 300px; 
     height: 300px; 
@@ -65,13 +67,13 @@ body {
 /* ------------------------------------ */
 .cursor-controls {
     flex: 1;
-    background-color: #2c3e50; /* 색상 통일 */
+    background-color: #2c3e50;
     color: white;
     padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    border-left: 1px solid #34495e; /* 색상 통일 */
+    border-left: 1px solid #34495e;
 }
 
 /* 설정 버튼 및 메뉴 */
@@ -177,13 +179,13 @@ body {
 }
 
 /* ------------------------------------ */
-/* 타격 이펙트 (디버깅 스타일 복구) */
+/* 타격 이펙트 */
 /* ------------------------------------ */
 .hit-effect {
     position: absolute;
     width: 20px;
     height: 20px;
-    background-color: #e74c3c; /* 붉은색 */
+    background-color: #e74c3c;
     border-radius: 50%;
     opacity: 0;
     pointer-events: none;
@@ -195,7 +197,6 @@ body {
     opacity: 0.8;
     width: 50px;
     height: 50px;
-    /* transform은 script.js에서 translate(-50%, -50%) rotate(Ndeg)로 설정됨 */
 }
 
 
@@ -267,17 +268,17 @@ body {
     border-bottom: 1px solid #eee;
 }
 
-/* 💥 달성되지 않은 업적: 제목, 내용 숨김 */
+/* 달성되지 않은 업적: 제목, 내용 숨김 */
 .achievement-item.locked .achievement-title-status {
     display: none;
 }
 
-/* 💥 달성되지 않은 업적: 아이콘을 흐릿하게 표시 */
+/* 달성되지 않은 업적: 아이콘을 흐릿하게 표시 */
 .achievement-item.locked .achievement-icon img {
     opacity: 0.3;
 }
 
-/* 달성된 업적: 아이콘을 선명하게 표시 (옵션) */
+/* 달성된 업적: 아이콘을 선명하게 표시 */
 .achievement-item.unlocked .achievement-icon img {
     opacity: 1;
 }
@@ -318,13 +319,13 @@ body {
 
 
 /* ------------------------------------ */
-/* 업적 달성 배너 (💥 중앙 하단 위치 복구) */
+/* 업적 달성 배너 (중앙 하단 위치 유지) */
 /* ------------------------------------ */
 #achievement-banner {
     position: fixed;
-    bottom: 20px; /* 아래쪽에서 시작 */
-    left: 50%; /* 중앙 정렬을 위해 50% 이동 */
-    transform: translateX(-50%) translateY(50px); /* X축 중앙 정렬 및 아래로 숨기기 */
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%) translateY(50px); 
     
     background-color: #2ecc71;
     color: white;
@@ -340,7 +341,7 @@ body {
 #achievement-banner.show {
     opacity: 1;
     visibility: visible;
-    transform: translateX(-50%) translateY(0); /* X축 중앙 정렬 유지하며 제자리로 이동 */
+    transform: translateX(-50%) translateY(0); 
 }
 
 #achievement-text {
