@@ -183,7 +183,8 @@ body {
 /* 💥 타격 이펙트 (디버깅 스타일 제거됨) */
 /* ------------------------------------ */
 .hit-effect {
-    --scale: 0.5; /* 🔧 크기 비율 (0.5 = 절반 크기, 0.3 더 작게 가능) */
+    /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
+    --scale: 0.5; 
     --frame-count: 4;
     --frame-width: calc(500px * var(--scale));
     --frame-height: calc(500px * var(--scale));
@@ -212,9 +213,11 @@ body {
 }
 
 .animate {
-    animation: playEffect 0.4s steps(var(--frame-count)) forwards;
+    /* 애니메이션 재생 시간을 0.2초로 단축 */
+    animation: playEffect 0.2s steps(var(--frame-count)) forwards;
     opacity: 1;
-    transition: opacity 0.1s 0.4s;
+    /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
+    transition: opacity 0.05s 0.2s; 
 }
 
 /* ------------------------------------ */
