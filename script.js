@@ -319,6 +319,16 @@ function checkCursorLevels(cursorName, singleHitCount) {
     if (allMaxLevel) {
          checkAchievements('ALL_CURSOR_MAX_LEVEL');
     }
+    
+    // 💥 [복원] 레벨 1 달성 시 커서 잠금 해제
+    cursorButtons.forEach(b => {
+        if (cursorLevels[b.dataset.cursor] >= 1) {
+            b.classList.remove('locked');
+        } else if (b.dataset.cursor !== 'cursor01') {
+            // cursor01을 제외한 나머지 커서는 레벨 1 미만이면 locked 상태 유지
+            b.classList.add('locked');
+        }
+    });
 }
 
 
@@ -551,8 +561,9 @@ function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
     
-    // 잠금 상태면 클릭 무시 (index.html에서 locked 클래스가 제거되어야 함)
+    // 💥 [복원] 잠금 상태면 클릭 무시
     if (clickedButton.classList.contains('locked')) {
+        alert("이 커서는 아직 잠금 해제되지 않았습니다. 레벨 1을 달성하세요!");
         return;
     }
     
@@ -695,6 +706,13 @@ function initializeCursors() {
         // 툴팁 초기화 (강화 정보 포함)
         updateCursorButtonTooltip(button);
 
+        // 💥 [복원] 레벨 1 미만인 커서는 locked 클래스 추가 (cursor01은 제외)
+        if (cursorName !== 'cursor01' && (cursorLevels[cursorName] || 0) < 1) {
+            button.classList.add('locked');
+        } else {
+             button.classList.remove('locked');
+        }
+
         // 선택된 커서 UI 업데이트
         if (button.dataset.cursor === currentCursor) {
             button.classList.add('selected');
@@ -702,6 +720,7 @@ function initializeCursors() {
                 iconImg.src = `${cursorName}_icon_on.png`;
             }
         } else if (iconImg) {
+            button.classList.remove('selected');
             iconImg.src = `${cursorName}_icon_off.png`;
         }
     });
