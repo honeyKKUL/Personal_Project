@@ -186,14 +186,14 @@ body {
     /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
     --scale: 0.5; 
     --frame-count: 4;
-    --frame-width: calc(500px * var(--scale));
-    --frame-height: calc(500px * var(--scale));
-    --sheet-width: calc(2000px * var(--scale));
+      --frame-width: 500px;       
+      --frame-height: 500px;    
+      --sheet-width: 2000px; 
     --move-distance: calc(var(--sheet-width) - var(--frame-width));
 
     position: absolute;
-    width: var(--frame-width);
-    height: var(--frame-height);
+    width: calc(var(--frame-width) * var(--scale));
+    height: calc(var(--frame-height) * var(--scale));
     pointer-events: none;
     z-index: 9999;
 
