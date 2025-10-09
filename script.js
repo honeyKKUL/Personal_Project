@@ -1,4 +1,4 @@
-// script.js (전체 코드 - 최종 오류 수정 완료)
+// script.js (전체 코드 - 사운드 겹치기 방식 적용)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -148,19 +148,6 @@ function createHitEffect(x, y) {
     }, effectDuration); // 👈 effectDuration(250ms)로 바로 사용
 }
 
-
-// 사운드를 부드럽게 페이드 아웃하고, 새로운 사운드를 재생하는 함수
-function smoothlyFadeOutAndPlay(nextSound) {
-    // ... (함수 내용 전체 삭제) ...
-}
-
-    // 새로운 사운드를 재생합니다.
-    nextSound.currentTime = 0;
-    nextSound.volume = VOLUME_RATIO; // 볼륨을 0.2로 설정 (80% 감소)
-    nextSound.play().catch(e => {
-        console.warn("사운드 재생 실패:", e);
-    });
-
 // 업적 달성 배너 표시 함수
 function showAchievementBanner(title) {
     achievementText.textContent = `업적 달성: ${title}`;
@@ -227,16 +214,20 @@ function checkUnlocks() {
 
 // 클릭 이벤트를 처리하는 함수 (handleHit)
 function handleHit(event) {
-    // 이벤트가 활성화된 상태면 클릭 무시
-    if (isEventActive) {
-        return;
-    }
-    
-    // 💥 1. 랜덤 타격 사운드 재생 (수정된 부분)
+    // 이벤트가 활성화된 상태면 클릭 무시
+    if (isEventActive) {
+        return;
+    }
+    
+    // 1. 랜덤 타격 사운드 재생 (겹치기 방식)
     const soundIndex = Math.floor(Math.random() * hitSounds.length);
     const soundToPlay = hitSounds[soundIndex];
 
-    smoothlyFadeOutAndPlay(soundToPlay); // 👈 새로운 함수로 대체!
+    // 💥 핵심: 현재 재생 위치를 0으로 설정하여 사운드가 겹치도록 합니다.
+    soundToPlay.currentTime = 0; 
+    soundToPlay.play().catch(e => {
+        console.warn("사운드 재생 실패:", e);
+    });
 
     // 💥 2. 1010 타격 초과 처리 로직 복원 및 수정
     const potentialHitCount = hitCount + currentDamage;
@@ -271,7 +262,6 @@ function handleHit(event) {
     checkAchievements();
 
     // 6. 랜덤 타격 이미지 변경
-    // 💥 266줄 오류 해결: 'randomIndex'가 이미 선언되었으므로, 다른 이름 (imageIndex) 사용
     const imageIndex = Math.floor(Math.random() * hitImages.length); 
     monsterImage.src = hitImages[imageIndex]; 
     
@@ -284,8 +274,6 @@ function handleHit(event) {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
     }, displayTime); 
-    // 💥 277줄 오류 해결: 불필요한 닫는 중괄호 제거
-
 }
 
 // ------------------------------------
