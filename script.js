@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 배너 텍스트 출력 수정 반영)
+// script.js (최종 수정본 - 타격수 초기화 기능 및 독점 업적 조건 반영)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -10,6 +10,8 @@ const cursorButtons = document.querySelectorAll('.cursor-button');
 const settingsButton = document.getElementById('settings-button');
 const settingsMenu = document.getElementById('settings-menu'); 
 const achievementButton = document.getElementById('achievement-button'); 
+// 💥 추가: 타격수 초기화 버튼
+const resetHitsButton = document.getElementById('reset-hits-button'); 
 const devButton = document.getElementById('dev-button'); 
 const modal = document.getElementById('achievement-modal');
 const closeButton = document.querySelector('.close-button');
@@ -361,13 +363,27 @@ function createHitEffect(x, y) {
 
 // 업적 달성 배너 표시 함수
 function showAchievementBanner(title) {
-    // 💥 수정: 배너 텍스트를 달성한 업적의 제목으로 설정하여 표시합니다.
     achievementText.textContent = title; 
     achievementBanner.classList.add('show');
     
     setTimeout(() => {
         achievementBanner.classList.remove('show');
     }, 2500);
+}
+
+
+/**
+ * 현재 커서 외에 다른 커서가 한 번이라도 사용되었는지 확인합니다.
+ * @returns {boolean} true: 현재 커서만 사용됨, false: 다른 커서도 사용됨
+ */
+function isOnlyCurrentCursorUsed() {
+    for (const cursorName in singleCursorHitCounts) {
+        // 현재 커서가 아니면서, 타격 횟수가 0보다 큰 경우 (즉, 한 번이라도 사용된 경우)
+        if (cursorName !== currentCursor && singleCursorHitCounts[cursorName] > 0) {
+            return false;
+        }
+    }
+    return true;
 }
 
 
@@ -388,7 +404,8 @@ function checkAchievements(type = 'GENERAL') {
             
         } else if (ach.type === 'singleHit') {
             const cursorKey = ach.cursor;
-            if (singleCursorHitCounts[cursorKey] >= ach.condition) {
+            // 단일 커서 업적 조건: 해당 커서의 타격수가 조건(1010) 이상일 경우 (이벤트 발생 시 handleHit에서 강제 설정됨)
+            if (singleCursorHitCounts[cursorKey] >= ach.condition) { 
                 ach.achieved = true;
                 showAchievementBanner(ach.title);
                 newlyAchieved = true;
@@ -430,22 +447,45 @@ function handleHit(event) {
     
     const potentialHitCount = hitCount + currentDamage;
     
+    // 💥 1010 이벤트 발생 조건 체크
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
+        // --- 💥 이벤트 발생 블록 (단일 커서 업적 독점 사용 조건 적용) 💥 ---
+        
+        // 1. 단일 커서 타격 수에 최종 데미지를 반영합니다.
+        singleCursorHitCounts[currentCursor] += currentDamage; 
+        
+        // 2. 현재 커서의 레벨을 체크하여 업데이트합니다.
+        checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
+        
+        // 3. 글로벌 타격 수를 1010으로 설정합니다.
         hitCount = eventThreshold;
         counterDisplay.textContent = hitCount;
         
+        // 4. 단일 커서 업적 조건 검사: '해당 커서로만' 이벤트를 달성했는지 확인
+        const currentAchKey = `single_cursor_${currentCursor.slice(-2)}`;
+        const currentSingleAch = ACHIEVEMENTS[currentAchKey];
+        
+        // 💥 오직 현재 커서로만 이벤트를 달성했고 아직 업적을 달성하지 않았다면
+        if (currentSingleAch && !currentSingleAch.achieved && isOnlyCurrentCursorUsed()) { 
+             // 업적 목록 렌더링을 위해 단일 타격수를 조건 이상으로 설정하여 강제 달성 처리
+             singleCursorHitCounts[currentCursor] = Math.max(singleCursorHitCounts[currentCursor], currentSingleAch.condition);
+        }
+        
         playEventAnimation(); 
-        checkAchievements();
+        checkAchievements(); // 이 시점에 업적이 해제됩니다.
         saveState(); 
         return; 
+        
+        // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
     }
 
     createHitEffect(event.clientX, event.clientY);
     
     hitCount += currentDamage;
     counterDisplay.textContent = hitCount;
-    singleCursorHitCounts[currentCursor] += currentDamage; 
     
+    // 💥 비-이벤트 발생 시 단일 타격 수 업데이트 및 레벨 체크
+    singleCursorHitCounts[currentCursor] += currentDamage; 
     checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
     
     checkAchievements();
@@ -462,6 +502,41 @@ function handleHit(event) {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
     }, displayTime); 
+}
+
+
+// ------------------------------------
+// 💥 타격수 초기화 기능 추가
+// ------------------------------------
+/**
+ * 총 타격수와 단일 커서 타격수만 0으로 초기화하고, 강화 레벨과 업적은 유지합니다.
+ */
+function handleHitCountReset() {
+    if (!confirm("총 타격수와 각 커서의 타격수를 초기화하시겠습니까? 커서 강화 레벨과 업적 달성 기록은 유지됩니다.")) {
+        return;
+    }
+    
+    // 1. 총 타격수 초기화
+    hitCount = 0;
+    counterDisplay.textContent = hitCount;
+    
+    // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        singleCursorHitCounts[cursorName] = 0; 
+        updateCursorButtonTooltip(button);
+    });
+    
+    // 3. 현재 피해량 재계산 (레벨은 유지되므로 현재 피해량은 바뀌지 않지만, 명시적으로 재계산)
+    currentDamage = calculateDamage(currentCursor);
+    
+    // 4. 이벤트 상태 및 이미지 초기화
+    isEventActive = false;
+    monsterImage.src = normalImage;
+    updateMonsterCursor(); 
+    
+    closeModal(); 
+    alert("타격수가 성공적으로 초기화되었습니다.");
 }
 
 
@@ -647,10 +722,15 @@ function handleHitJump() {
         return;
     }
 
+    // 💥 현재 커서 외 사용 기록이 있다면, 해당 커서로만 1000타를 추가합니다.
+    singleCursorHitCounts[currentCursor] += 1000;
+    checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
+    
     const newHitCount = Math.min(hitCount + 1000, targetHitCount); 
     hitCount = newHitCount;
     counterDisplay.textContent = hitCount;
     
+    // 개발자 기능은 업적 달성 조건을 충족시키지 않으므로, 일반적인 업적 체크만 수행합니다.
     checkAchievements();
     saveState(); 
 
@@ -676,6 +756,9 @@ cursorButtons.forEach(button => {
 settingsButton.addEventListener('click', toggleSettingsMenu);
 
 achievementButton.addEventListener('click', () => openModal('achievement'));
+// 💥 타격수 초기화 버튼 이벤트 리스너 연결
+resetHitsButton.addEventListener('click', handleHitCountReset);
+
 devButton.addEventListener('click', () => openModal('developer'));
 
 // 개발자 기능 버튼 이벤트 리스너
