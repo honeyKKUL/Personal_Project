@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 강화 사운드 제거 및 모든 기능 반영)
+// script.js (최종 수정본 - 배너 텍스트 제거 및 사운드 볼륨 조절 반영)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -32,6 +32,12 @@ const HIT_SOUNDS = [
     new Audio('hit_sound_05.mp3')
 ];
 
+// 💥 사운드 볼륨 설정 (20%)
+const DEFAULT_VOLUME = 0.2; 
+HIT_SOUNDS.forEach(sound => {
+    sound.volume = DEFAULT_VOLUME;
+});
+
 
 // ------------------------------------
 // 💥 이벤트 및 상태 변수 (초기값으로 고정)
@@ -60,23 +66,23 @@ let singleCursorHitCounts = {};
 const ACHIEVEMENTS = {
     // 1. 첫 타격 업적 
     'first_hit': { 
-        title: '첫 클릭!', 
+        title: '첫 타격', 
         description: '총 1회 타격', 
         condition: 1, 
         achieved: false, 
         type: 'hitCount', 
         icon: 'icon_first_hit.png',
-        custom_status_text_achieved: '첫 타격을 기념합니다.' // 💥 달성 문구
+        custom_status_text_achieved: '그만둬주십시오...' // 💥 달성 문구
     },
     // 2. 모든 커서 강화 업적 추가 
     'ACH_ALL_CURSOR_LEVEL_5': { 
-        title: '궁극의 무기', 
+        title: '공략완료', 
         description: '모든 커서를 5단계까지 강화', 
         condition: MAX_LEVEL,
         achieved: false, 
         type: 'allMaxLevel', 
         icon: 'icon_amateur_striker.png',
-        custom_status_text_achieved: '모든 커서가 5단계에 도달했습니다.' // 💥 달성 문구
+        custom_status_text_achieved: '모든 히로인을 강화했습니다' // 💥 달성 문구
     },
     
     // 3. 단일 커서 사용 업적 (여기의 'title'과 'custom_status_text_achieved'를 수정하세요!)
@@ -87,7 +93,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor01', 
         icon: 'icon_single_cursor_01.png',
-        custom_status_text_achieved: '당신의 선택에 감사합니다.' // 💥 달성 문구
+        custom_status_text_achieved: '아리아케로만 1010타격 달성' // 💥 달성 문구
     }, 
     'single_cursor_02': { 
         title: '큭큭, 바보같을 정도로 성실하신 분...', 
@@ -96,16 +102,16 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor02', 
         icon: 'icon_single_cursor_02.png',
-        custom_status_text_achieved: '당신의 성실함에 찬사를 보냅니다.' // 💥 달성 문구
+        custom_status_text_achieved: '신바시로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_03': { 
-        title: '당신에게 선택받는다고 해서 무엇이 달라지지는...', 
+        title: '당신에게 선택받는다고 해서 무엇이 달라지나요.', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
         cursor: 'cursor03', 
         icon: 'icon_single_cursor_03.png',
-        custom_status_text_achieved: '달라진 것은 바로 당신의 마음.' // 💥 달성 문구
+        custom_status_text_achieved: '아오미로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_04': { 
         title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', 
@@ -114,7 +120,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor04', 
         icon: 'icon_single_cursor_04.png',
-        custom_status_text_achieved: '오직 나뿐인 탐정씨의 마음을 확인했습니다.' // 💥 달성 문구
+        custom_status_text_achieved: '타케시바로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_05': { 
         title: '이히히!!!! 벌써 끝인가요~?', 
@@ -123,7 +129,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor05', 
         icon: 'icon_single_cursor_05.png',
-        custom_status_text_achieved: '당신의 타격은 끝이 없군요!' // 💥 달성 문구
+        custom_status_text_achieved: '시오도메로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_06': { 
         title: '그야말로 일로매진이로군, 오오사키 군!', 
@@ -132,7 +138,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor06', 
         icon: 'icon_single_cursor_06.png',
-        custom_status_text_achieved: '오오사키 군, 자네는 해냈네!' // 💥 달성 문구
+        custom_status_text_achieved: '시죠마에로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_07': { 
         title: '오오사키 님, 해내셨군요. 훌륭하십니다.', 
@@ -141,7 +147,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor07', 
         icon: 'icon_single_cursor_07.png',
-        custom_status_text_achieved: '훌륭한 선택입니다.' // 💥 달성 문구
+        custom_status_text_achieved: '토요스로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_08': { 
         title: '...❤️', 
@@ -150,25 +156,25 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor08', 
         icon: 'icon_single_cursor_08.png',
-        custom_status_text_achieved: '이 커서에 담긴 마음을 받았습니다.' // 💥 달성 문구
+        custom_status_text_achieved: '히노데로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_09': { 
-        title: '아, 아앗... 저, 저로도 괜찮으시다면...', 
+        title: '사, 사용될 수 있어서 영광이었습니다...', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
         cursor: 'cursor09', 
         icon: 'icon_single_cursor_09.png',
-        custom_status_text_achieved: '저는 당신의 선택이 맞습니다.' // 💥 달성 문구
+        custom_status_text_achieved: '후네노로만 1010타격 달성' // 💥 달성 문구
     },
     'single_cursor_10': { 
-        title: '나로만 달성했다는 건가? 무겁네~ 네 마음은!', 
+        title: '나로만 달성했다는 건가? 이거 무거운 걸, 오오사키 군.', 
         condition: 1010, 
         achieved: false, 
         type: 'singleHit', 
         cursor: 'cursor10', 
         icon: 'icon_single_cursor_10.png',
-        custom_status_text_achieved: '무거운 네 마음, 인정할 수밖에 없네~' // 💥 달성 문구
+        custom_status_text_achieved: '시즈마로만 1010타격 달성' // 💥 달성 문구
     },
 };
 
@@ -293,8 +299,6 @@ function checkCursorLevels(cursorName, singleHitCount) {
             cursorLevels[cursorName] = newLevel;
             console.log(`[강화] ${cursorName}이(가) 레벨 ${newLevel}이 되었습니다!`);
             
-            // 💥 강화 사운드 재생 로직 제거
-            
             // 툴팁 UI 업데이트
             if (button) updateCursorButtonTooltip(button);
 
@@ -357,7 +361,8 @@ function createHitEffect(x, y) {
 
 // 업적 달성 배너 표시 함수
 function showAchievementBanner(title) {
-    achievementText.textContent = `업적 달성: ${title}`;
+    // 💥 배너 텍스트를 빈 문자열로 설정하여 제거합니다.
+    achievementText.textContent = ''; 
     achievementBanner.classList.add('show');
     
     setTimeout(() => {
@@ -418,7 +423,7 @@ function handleHit(event) {
         return;
     }
     
-    // 💥 타격 사운드 재생 (5개 중 랜덤)
+    // 💥 타격 사운드 재생 (5개 중 랜덤, 볼륨 20% 적용됨)
     const randomSound = HIT_SOUNDS[Math.floor(Math.random() * HIT_SOUNDS.length)];
     randomSound.currentTime = 0;
     randomSound.play();
@@ -534,7 +539,6 @@ function renderAchievements() {
             }
         } else {
             // 💥 미달성 시 텍스트 제거 (statusText는 빈 문자열로 유지됨)
-            // 커스텀 문구 표시 안 함
         }
         
         // 커서 강화 레벨을 업적 제목 옆에 표시
