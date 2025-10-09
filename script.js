@@ -107,6 +107,25 @@ function playEventAnimation() {
     }, eventDuration);
 }
 
+// ------------------------------------
+// 💥 사운드 추가 설정 (추가)
+// ------------------------------------
+const HIT_SOUND_FILES = [
+    'hit_sound_01.mp3',
+    'hit_sound_02.mp3',
+    'hit_sound_03.mp3',
+    'hit_sound_04.mp3',
+    'hit_sound_05.mp3'
+];
+const VOLUME_RATIO = 0.2; // 80% 감소 = 20% 볼륨 (0.2)
+
+// 사운드 객체들을 미리 생성하여 재생 지연을 줄입니다.
+const hitSounds = HIT_SOUND_FILES.map(file => {
+    const audio = new Audio(file);
+    audio.volume = VOLUME_RATIO;
+    return audio;
+});
+
 
 // 타격 이펙트 생성 및 재생 함수
 function createHitEffect(x, y) {
@@ -196,11 +215,20 @@ function checkUnlocks() {
 
 // 클릭 이벤트를 처리하는 함수 (handleHit)
 function handleHit(event) {
-    // 이벤트가 활성화된 상태면 클릭 무시
-    if (isEventActive) {
-        return;
-    }
-    
+    // 이벤트가 활성화된 상태면 클릭 무시
+    if (isEventActive) {
+        return;
+    }
+    
+    // 💥 1. 랜덤 타격 사운드 재생 (추가된 부분)
+    const randomIndex = Math.floor(Math.random() * hitSounds.length);
+    const soundToPlay = hitSounds[randomIndex];
+
+    soundToPlay.currentTime = 0; // 사운드를 처음부터 다시 재생 (연속 클릭 대응)
+    soundToPlay.play().catch(e => {
+        // 자동 재생 제한 등으로 인해 재생 실패 시 콘솔에만 기록
+        console.warn("사운드 재생 실패:", e);
+
     // 💥 1. 1010 타격 초과 처리 로직 복원 및 수정
     const potentialHitCount = hitCount + currentDamage;
     
