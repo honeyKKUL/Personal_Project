@@ -182,30 +182,42 @@ body {
 /* 타격 이펙트 (💥 스프라이트 애니메이션 복구) */
 /* ------------------------------------ */
 .hit-effect {
+    /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
+    --scale: 0.5; 
+    --frame-count: 4;
+    --frame-width: calc(500px * var(--scale));
+    --frame-height: calc(500px * var(--scale));
+    --sheet-width: calc(2000px * var(--scale));
+    --move-distance: calc(var(--sheet-width) - var(--frame-width));
+
     position: absolute;
-    width: 64px; /* 스프라이트 시트 내 프레임 하나의 너비 (가정) */
-    height: 64px; /* 스프라이트 시트 내 프레임 하나의 높이 (가정) */
-    background-image: url('hit_effect.png'); /* 💥 스프라이트 이미지 파일 경로 (가정) */
-    background-repeat: no-repeat;
-    background-position: 0 0; /* 초기 위치 */
-    opacity: 0;
+    width: var(--frame-width);
+    height: var(--frame-height);
     pointer-events: none;
-    transition: opacity 0.1s ease-out; /* 투명도 전환만 유지 */
-}
+    z-index: 9999;
 
-.hit-effect.animate {
+    background-image: url('hit_effect.png');
+    background-repeat: no-repeat;
+    background-size: var(--sheet-width) var(--frame-height);
+    background-position: 0 0;
+    transform: translate(-50%, -50%) scale(var(--scale));
     opacity: 1;
-    /* 💥 애니메이션 실행. 8 프레임, 각 프레임 당 250ms/8 = 31.25ms (총 250ms) */
-    animation: hit-sprite 0.25s steps(8) forwards; 
+
+    /* 디버깅 시각화용 스타일 제거 */
 }
 
-/* 💥 스프라이트 애니메이션 키프레임 (8 프레임 가정) */
-@keyframes hit-sprite {
-    to {
-        background-position: -512px 0; /* 8 프레임 * 64px = 512px */
-    }
+@keyframes playEffect {
+    from { background-position: 0 0; }
+    to { background-position: calc(-1 * var(--move-distance)) 0; }
 }
 
+.animate {
+    /* 애니메이션 재생 시간을 0.2초로 단축 */
+    animation: playEffect 0.2s steps(3) forwards;
+    opacity: 1;
+    /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
+    transition: opacity 0.05s 0.2s; 
+}
 
 /* ------------------------------------ */
 /* 모달 (업적/개발자 기능 팝업) */
