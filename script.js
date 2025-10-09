@@ -376,15 +376,21 @@ function createHitEffect(x, y) {
 }
 
 // 업적 달성 배너 표시 함수
-function showAchievementBanner(title) {
-    achievementText.textContent = title; 
-    achievementBanner.classList.add('show');
+function showAchievementBanner(achievement) {
+    const banner = document.getElementById('achievement-banner');
+    const bannerText = document.getElementById('achievement-text');
     
-    setTimeout(() => {
-        achievementBanner.classList.remove('show');
-    }, 2500);
-}
+    // 💥 핵심 수정: '업적달성' + 업적의 제목(title)을 조합하여 표시
+    bannerText.textContent = `업적달성 "${achievement.title}"`; 
 
+    // 배너 표시
+    banner.classList.add('show');
+
+    // 2초 후 배너 숨김
+    setTimeout(() => {
+        banner.classList.remove('show');
+    }, 2000); 
+}
 
 /**
  * 현재 커서 외에 다른 커서가 한 번이라도 사용되었는지 확인합니다.
@@ -407,7 +413,14 @@ function checkAchievements(type = 'GENERAL') {
     
     // 1. Hit Count Achievements ('first_hit') 및 기타 일반 업적
     for (const key in ACHIEVEMENTS) {
+    
         const ach = ACHIEVEMENTS[key];
+        
+        if (conditionMet && !ACHIEVEMENTS[key].achieved) {
+            ACHIEVEMENTS[key].achieved = true;
+    
+            // 💥 수정: 업적 객체 전체를 전달하도록 변경 (기존에 key만 전달했다면)
+            showAchievementBanner(ACHIEVEMENTS[key]); 
         
         if (ach.achieved) continue;
         
