@@ -438,10 +438,15 @@ function handleHit(event) {
         return;
     }
     
-    // 💥 타격 사운드 재생 
-    const randomSound = HIT_SOUNDS[Math.floor(Math.random() * HIT_SOUNDS.length)];
-    randomSound.currentTime = 0;
-    randomSound.play();
+    // 💥 1. 랜덤 타격 사운드 재생 
+    const randomIndex = Math.floor(Math.random() * HIT_SOUNDS.length);
+    const soundToPlay = HIT_SOUNDS[randomIndex];
+    soundToPlay.currentTime = 0;
+    soundToPlay.play().catch(e => {
+        // 자동 재생 제한 등으로 인해 재생 실패 시 콘솔에만 기록
+        console.warn("사운드 재생 실패.", e);
+    });
+
     
     const potentialHitCount = hitCount + currentDamage;
     
@@ -482,16 +487,16 @@ function handleHit(event) {
     hitCount += currentDamage;
     counterDisplay.textContent = hitCount;
     
-    // 💥 비-이벤트 발생 시 단일 타격 수 업데이트 및 레벨 체크
+    // 💥 오류 수정 5: 단일 커서 타격 횟수를 피해량만큼 증가
     singleCursorHitCounts[currentCursor] += currentDamage; 
     checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
     
     checkAchievements();
     saveState();
 
-
-    const randomIndex = Math.floor(Math.random() * hitImages.length);
-    monsterImage.src = hitImages[randomIndex];
+    // 💥 오류 수정 2: 변수 이름 중복 수정 (randomIndex -> randomImageIndex)
+    const randomImageIndex = Math.floor(Math.random() * hitImages.length);
+    monsterImage.src = hitImages[randomImageIndex];
     
     const hitCursorPath = getCursorPaths(currentCursor).hit;
     monsterImage.style.cursor = hitCursorPath; 
@@ -500,8 +505,7 @@ function handleHit(event) {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
     }, displayTime); 
-}
-
+} // 💥 오류 수정 1: 닫는 중괄호 '}' 복구
 
 // ------------------------------------
 // 💥 타격수 초기화 기능 
@@ -548,11 +552,6 @@ function handleHitCountReset() {
 function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
-    
-    // 💥 (수정) locked 클래스 체크를 제거하여 모든 커서가 선택 가능하도록 함.
-    // if (clickedButton.classList.contains('locked')) {
-    //     return;
-    // }
     
     // 이전 커서의 아이콘을 _off 상태로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
@@ -676,7 +675,7 @@ function closeModal() {
  * 설정 메뉴 토글 함수
  */
 function toggleSettingsMenu() {
-    // 💥 CSS에서 display: none을 초기값으로 설정하지 않았으므로, 'none'인지 체크
+    // CSS에서 display: none을 초기값으로 설정하지 않았으므로, 'none'인지 체크
     settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
         ? 'flex' 
         : 'none';
@@ -691,7 +690,6 @@ function initializeCursors() {
         const cursorName = button.dataset.cursor;
         const iconImg = button.querySelector('img');
         
-        // 💥 (수정) HTML에서 locked 클래스를 제거했으므로, 여기서도 제거
         button.classList.remove('locked');
         
         // 툴팁 초기화 (강화 정보 포함)
@@ -772,9 +770,12 @@ window.addEventListener('click', (event) => {
         closeModal();
     }
     
-    // 설정 버튼이 아니면서, 메뉴 영역도 아니고, 메뉴가 열려있을 때만 닫음
     const settingsAreaContainer = document.getElementById('settings-area-container');
-    if (event.target !== settingsButton && !settingsAreaContainer.contains(event.target) && settingsMenu.style.display === 'flex') {
-        settingsMenu.style.display = 'none';
+    
+    // 💥 오류 수정 3: settingsAreaContainer가 존재하는지 Null 체크
+    if (settingsAreaContainer) { 
+        if (event.target !== settingsButton && !settingsAreaContainer.contains(event.target) && settingsMenu.style.display === 'flex') {
+            settingsMenu.style.display = 'none';
+        }
     }
 });
