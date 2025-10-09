@@ -273,7 +273,8 @@ function handleHit(event) {
     setTimeout(() => {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
-    }, displayTime); 
+    }, displayTime
+    );
 }
 
 // ------------------------------------
