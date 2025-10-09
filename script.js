@@ -160,7 +160,6 @@ function smoothlyFadeOutAndPlay(nextSound) {
     nextSound.play().catch(e => {
         console.warn("사운드 재생 실패:", e);
     });
-}
 
 // 업적 달성 배너 표시 함수
 function showAchievementBanner(title) {
