@@ -214,7 +214,7 @@ body {
 
 .animate {
     /* 애니메이션 재생 시간을 0.2초로 단축 */
-    animation: playEffect 0.2s steps(var(--frame-count)-1) forwards;
+    animation: playEffect 1s steps(var(--frame-count)-1) forwards;
     opacity: 1;
     /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
     transition: opacity 0.05s 0.2s; 
