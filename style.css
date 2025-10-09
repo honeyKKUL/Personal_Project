@@ -1,7 +1,7 @@
-/* style.css (최종본) */
+/* style.css (수정본) */
 
 /* ------------------------------------ */
-/* 전역 스타일 및 이미지 선택 방지 */
+/* 기본 및 배경 스타일 */
 /* ------------------------------------ */
 body {
     font-family: Arial, sans-serif;
@@ -14,15 +14,6 @@ body {
     align-items: flex-start; 
     min-height: 100vh; 
     padding-top: 50px; 
-    
-    /* 이미지 및 텍스트 선택 방지 (모바일 하이라이트 방지) */
-    -webkit-user-select: none;  
-    -moz-user-select: none;     
-    -ms-user-select: none;      
-    user-select: none;          
-    
-    /* 터치 스크롤 동작 방지 (게임 플레이 영역 외) */
-    touch-action: pan-y; 
 }
 
 .main-content {
@@ -39,7 +30,7 @@ body {
 /* 게임 컨테이너 (몬스터 영역) */
 /* ------------------------------------ */
 .game-container {
-    flex: 2; 
+    flex: 2; /* 몬스터 영역을 더 넓게 */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -61,13 +52,10 @@ body {
     cursor: url('cursor.png'), pointer;
     transition: transform 0.1s ease-out;
     
+    /* GIF 색상 왜곡 방지 및 렌더링 최적화 */
     image-rendering: -webkit-optimize-contrast; 
     image-rendering: crisp-edges;               
     mix-blend-mode: normal; 
-    
-    /* 이미지 드래그 방지 */
-    -webkit-user-drag: none; 
-    -moz-user-drag: none;
 }
 
 #monster:active {
@@ -78,7 +66,7 @@ body {
 /* 커서 및 설정 컨트롤 영역 */
 /* ------------------------------------ */
 .cursor-controls {
-    flex: 1; 
+    flex: 1; /* 컨트롤 영역 크기 */
     background-color: #ecf0f1;
     padding: 20px;
     display: flex;
@@ -89,23 +77,28 @@ body {
 
 /* 설정 버튼 및 메뉴 */
 #settings-button {
+    /* 💥 40px 아이콘에 맞춰 크기 조정 */
     padding: 4px; 
     width: 48px;      
     height: 48px;
+    
     font-size: 1em;
     cursor: pointer;
     background-color: #3498db;
     color: white;
     border: none;
-    border-radius: 50%; 
+    border-radius: 50%; /* 원형 버튼 */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
     transition: background-color 0.2s;
     margin-bottom: 15px; 
+    
+    /* 이미지를 중앙에 배치 */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
+/* 설정 버튼 이미지 (HTML에서 인라인 스타일 제거됨) */
 #settings-icon-img {
     width: 40px;
     height: 40px;
@@ -145,14 +138,11 @@ body {
 .cursor-selector {
     margin-top: 20px;
     width: 100%;
-    /* 커서 목록 분리선 추가 */
-    border-top: 1px solid #bdc3c7; 
-    padding-top: 15px;
 }
 
 .button-group {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); 
+    grid-template-columns: repeat(5, 1fr); /* 5열 배치 */
     gap: 10px;
     padding: 0 5px;
 }
@@ -164,15 +154,15 @@ body {
     border-radius: 5px;
     cursor: pointer;
     transition: all 0.2s;
-    height: 45px; 
+    height: 45px; /* 버튼 높이 고정 */
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow: hidden; 
+    overflow: hidden; /* 이미지가 버튼을 넘어가지 않도록 */
 }
 
 .cursor-button img {
-    width: 35px; 
+    width: 35px; /* 커서 아이콘 크기 통일 */
     height: 35px;
     display: block;
     image-rendering: pixelated;
@@ -195,7 +185,7 @@ body {
 
 
 /* ------------------------------------ */
-/* 타격 이펙트 (CSS 애니메이션) - 최종 수정 */
+/* 타격 이펙트 (CSS 애니메이션) */
 /* ------------------------------------ */
 .hit-effect {
     position: absolute;
@@ -203,15 +193,15 @@ body {
     height: 20px;
     background-color: rgba(255, 0, 0, 0.8);
     border-radius: 50%;
-    opacity: 1; /* 초기에는 보이게 */
+    opacity: 0;
     pointer-events: none;
-    transform: translate(-50%, -50%); /* 클릭 지점 중앙에서 시작 */
+    transition: opacity 0.3s, transform 0.3s;
 }
 
 .hit-effect.animate {
-    opacity: 0; /* 투명하게 사라짐 */
-    /* 위로 이동하며 커지고 회전 */
-    transform: translate(-50%, -150%) scale(1.5) rotate(45deg); 
+    opacity: 0;
+    transform: translate(-50%, -150%) scale(1.5) rotate(45deg) !important; 
+    /* !important를 사용하여 다른 변환을 덮어씁니다. */
     transition: opacity 0.3s ease-out, transform 0.3s ease-out;
 }
 
@@ -268,6 +258,10 @@ body {
     color: #2c3e50;
 }
 
+
+/* ------------------------------------ */
+/* 모달 내부 업적 목록 스타일 조정 */
+/* ------------------------------------ */
 #achievement-list {
     list-style: none;
     padding: 0;
@@ -277,69 +271,90 @@ body {
 
 /* 업적 목록 항목 (li) */
 .achievement-list li {
+    /* 💥 수정: 세밀한 두께 조정 및 패딩 감소 */
     border: 1px solid #777; 
     border-radius: 4px;
-    padding: 8px 10px; /* 상하 패딩을 늘려 가독성 확보 */
-    margin-bottom: 6px; 
+    padding: 5px 10px; /* 상하 패딩을 5px로 줄여 항목 높이 감소 */
+    margin-bottom: 4px; /* 항목 간 간격 감소 */
+    
     display: flex;
     align-items: center; 
     transition: background-color 0.2s;
 }
 
+/* 달성된 업적 (unlocked) */
 .achievement-list li.unlocked {
     border-color: #27ae60; 
     background-color: #e8f5e9;
 }
 
+/* 잠긴 업적 (locked) */
 .achievement-list li.locked {
     border-color: #95a5a6; 
     opacity: 0.7;
 }
 
+/* 텍스트 그룹 (아이콘 옆 제목/상태) */
 .achievement-text-group {
     display: flex;
-    align-items: center; 
+    align-items: center; /* 아이콘과 텍스트 영역을 수직 중앙 정렬 */
     width: 100%;
 }
 
-/* 아이콘 크기 및 정렬 (40px 기준) */
+/* ------------------------------------ */
+/* 아이콘 크기 및 위치 조정 (40px 기준) */
+/* ------------------------------------ */
 .achievement-icon {
+    /* 💥 크기 40px 고정 */
     width: 40px;      
     height: 40px;     
+    /* 💥 수정: 아이콘과 텍스트 사이 여백을 8px로 줄임 */
     margin-right: 8px; 
     flex-shrink: 0;
+    
+    /* 💥 추가: 아이콘 이미지를 40px 영역 내에서 중앙 정렬 */
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
 .achievement-icon img {
+    /* 💥 크기 40px 고정 */
     width: 40px;     
     height: 40px;    
     display: block;
 }
 
-/* 업적 폰트 스타일 */
+
+/* ------------------------------------ */
+/* 업적 폰트 스타일 및 크기 조정 */
+/* ------------------------------------ */
+
 .achievement-title-status {
     display: flex;
     flex-direction: column; 
     flex-grow: 1; 
 }
 
+/* 업적 제목 */
 .achievement-title-status span:first-child {
-    font-size: 1.05em; 
+    font-size: 1.05em; /* 폰트 크기 미세 조정 */
     font-weight: bold; 
     color: #333;
-    margin-bottom: 1px; 
+    margin-bottom: 1px; /* 간격 줄임 */
 }
 
+/* 업적 상태 텍스트 */
 .achievement-status {
-    font-size: 0.85em; 
+    font-size: 0.85em; /* 폰트 크기 미세 조정 */
     color: #555; 
     font-style: italic;
 }
 
+
+/* ------------------------------------ */
 /* 업적 달성 배너 */
+/* ------------------------------------ */
 #achievement-banner {
     position: fixed;
     top: 20px;
@@ -367,7 +382,10 @@ body {
     font-weight: bold;
 }
 
+
+/* ------------------------------------ */
 /* 개발자 기능 패널 */
+/* ------------------------------------ */
 #developer-panel {
     display: flex;
     flex-direction: column;
@@ -386,48 +404,4 @@ body {
 
 .dev-feature-button:hover {
     background-color: #c0392b;
-}
-
-/* ------------------------------------ */
-/* 미디어 쿼리: 모바일 최적화 (Max-width 600px 이하) */
-/* ------------------------------------ */
-@media (max-width: 600px) {
-    .main-content {
-        flex-direction: column; 
-        width: 95%;
-    }
-
-    .cursor-controls {
-        flex: none; 
-        width: auto;
-        border-left: none;
-        border-top: 1px solid #bdc3c7;
-    }
-    
-    .modal-content {
-        margin: 5% auto;
-        width: 90%;
-        padding: 15px;
-    }
-    
-    /* 모바일용 아이콘 크기 확대 */
-    .achievement-icon,
-    .achievement-icon img {
-        width: 50px;
-        height: 50px;
-    }
-    
-    /* 모바일용 폰트 크기 확대 */
-    .achievement-title-status span:first-child {
-        font-size: 1.2em;
-    }
-    .achievement-status {
-        font-size: 1.0em;
-    }
-    
-    /* 커서 버튼 그룹 (4열로 변경) */
-    .button-group {
-        grid-template-columns: repeat(4, 1fr);
-        gap: 8px;
-    }
 }
