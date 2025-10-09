@@ -186,14 +186,14 @@ body {
     /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
     --scale: 0.5; 
     --frame-count: 4;
-      --frame-width: 500px;       
-      --frame-height: 500px;    
-      --sheet-width: 2000px; 
+    --frame-width: calc(500px * var(--scale));
+    --frame-height: calc(500px * var(--scale));
+    --sheet-width: calc(2000px * var(--scale));
     --move-distance: calc(var(--sheet-width) - var(--frame-width));
 
     position: absolute;
-    width: calc(var(--frame-width) * var(--scale));
-    height: calc(var(--frame-height) * var(--scale));
+    width: var(--frame-width);
+    height: var(--frame-height);
     pointer-events: none;
     z-index: 9999;
 
@@ -214,12 +214,12 @@ body {
 
 .animate {
     /* 애니메이션 재생 시간을 0.2초로 단축 */
+    animation: playEffect 0.2s steps(var(--frame-count)-1) forwards;
     animation: playEffect 1s steps(var(--frame-count)-1) forwards;
     opacity: 1;
     /* 애니메이션 완료 후 0.05초 뒤에 페이드 아웃 */
     transition: opacity 0.05s 0.2s; 
 }
-
 /* ------------------------------------ */
 /* 모달 (업적/개발자 기능 팝업) */
 /* ------------------------------------ */
