@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 타격수 초기화 기능 및 독점 업적 조건 반영)
+// script.js (최종 수정본 - 모든 커서 잠금 해제, 설정 버튼 활성화, 타격수 초기화 기능 반영)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -10,7 +10,6 @@ const cursorButtons = document.querySelectorAll('.cursor-button');
 const settingsButton = document.getElementById('settings-button');
 const settingsMenu = document.getElementById('settings-menu'); 
 const achievementButton = document.getElementById('achievement-button'); 
-// 💥 추가: 타격수 초기화 버튼
 const resetHitsButton = document.getElementById('reset-hits-button'); 
 const devButton = document.getElementById('dev-button'); 
 const modal = document.getElementById('achievement-modal');
@@ -24,7 +23,7 @@ const achievementBanner = document.getElementById('achievement-banner');
 const achievementText = document.getElementById('achievement-text');
 
 // ------------------------------------
-// 💥 사운드 파일 정의 (타격 사운드 5개만 사용)
+// 💥 사운드 파일 정의 
 // ------------------------------------
 const HIT_SOUNDS = [
     new Audio('hit_sound_01.mp3'),
@@ -42,11 +41,11 @@ HIT_SOUNDS.forEach(sound => {
 
 
 // ------------------------------------
-// 💥 이벤트 및 상태 변수 (초기값으로 고정)
+// 💥 이벤트 및 상태 변수 
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
+const eventGif = 'hit_event.gif'; 
 const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 let hitCount = 0;
@@ -54,17 +53,16 @@ let currentCursor = 'cursor01';
 let currentDamage = 1; 
 
 // ------------------------------------
-// 💥 커서 강화 시스템 변수 (초기값으로 고정)
+// 💥 커서 강화 시스템 변수 
 // ------------------------------------
 const LEVEL_UP_INTERVAL = 50; // 강화되는 타격 수 단위
 const MAX_LEVEL = 5; // 최대 강화 단계
 
-// 각 커서의 현재 레벨과 단일 타격 횟수를 저장하는 객체 (새로고침 시 초기화됨)
 let cursorLevels = {}; 
 let singleCursorHitCounts = {};
 
 
-// 💥 업적 데이터 정의 (사용자 지정 문구 반영)
+// 💥 업적 데이터 정의 
 const ACHIEVEMENTS = {
     // 1. 첫 타격 업적 
     'first_hit': { 
@@ -74,7 +72,7 @@ const ACHIEVEMENTS = {
         achieved: false, 
         type: 'hitCount', 
         icon: 'icon_first_hit.png',
-        custom_status_text_achieved: '그만둬주십시오...' // 💥 달성 문구
+        custom_status_text_achieved: '그만둬주십시오...' 
     },
     // 2. 모든 커서 강화 업적 추가 
     'ACH_ALL_CURSOR_LEVEL_5': { 
@@ -84,10 +82,10 @@ const ACHIEVEMENTS = {
         achieved: false, 
         type: 'allMaxLevel', 
         icon: 'icon_amateur_striker.png',
-        custom_status_text_achieved: '모든 히로인을 강화했습니다' // 💥 달성 문구
+        custom_status_text_achieved: '모든 히로인을 강화했습니다' 
     },
     
-    // 3. 단일 커서 사용 업적 (여기의 'title'과 'custom_status_text_achieved'를 수정하세요!)
+    // 3. 단일 커서 사용 업적 
     'single_cursor_01': { 
         title: '제대로 저로 개종해주셨나요?', 
         condition: 1010, 
@@ -95,7 +93,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor01', 
         icon: 'icon_single_cursor_01.png',
-        custom_status_text_achieved: '아리아케로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '아리아케로만 1010타격 달성' 
     }, 
     'single_cursor_02': { 
         title: '큭큭, 바보같을 정도로 성실하신 분...', 
@@ -104,7 +102,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor02', 
         icon: 'icon_single_cursor_02.png',
-        custom_status_text_achieved: '신바시로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '신바시로만 1010타격 달성' 
     },
     'single_cursor_03': { 
         title: '당신에게 선택받는다고 해서 무엇이 달라지나요.', 
@@ -113,7 +111,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor03', 
         icon: 'icon_single_cursor_03.png',
-        custom_status_text_achieved: '아오미로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '아오미로만 1010타격 달성' 
     },
     'single_cursor_04': { 
         title: '나, 나하하... 사용한 건 나 뿐? 탐정씨도 참...', 
@@ -122,7 +120,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor04', 
         icon: 'icon_single_cursor_04.png',
-        custom_status_text_achieved: '타케시바로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '타케시바로만 1010타격 달성' 
     },
     'single_cursor_05': { 
         title: '이히히!!!! 벌써 끝인가요~?', 
@@ -131,7 +129,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor05', 
         icon: 'icon_single_cursor_05.png',
-        custom_status_text_achieved: '시오도메로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '시오도메로만 1010타격 달성' 
     },
     'single_cursor_06': { 
         title: '그야말로 일로매진이로군, 오오사키 군!', 
@@ -140,7 +138,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor06', 
         icon: 'icon_single_cursor_06.png',
-        custom_status_text_achieved: '시죠마에로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '시죠마에로만 1010타격 달성' 
     },
     'single_cursor_07': { 
         title: '오오사키 님, 해내셨군요. 훌륭하십니다.', 
@@ -149,7 +147,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor07', 
         icon: 'icon_single_cursor_07.png',
-        custom_status_text_achieved: '토요스로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '토요스로만 1010타격 달성' 
     },
     'single_cursor_08': { 
         title: '...❤️', 
@@ -158,7 +156,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor08', 
         icon: 'icon_single_cursor_08.png',
-        custom_status_text_achieved: '히노데로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '히노데로만 1010타격 달성' 
     },
     'single_cursor_09': { 
         title: '사, 사용될 수 있어서 영광이었습니다...', 
@@ -167,7 +165,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor09', 
         icon: 'icon_single_cursor_09.png',
-        custom_status_text_achieved: '후네노로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '후네노로만 1010타격 달성' 
     },
     'single_cursor_10': { 
         title: '나로만 달성했다는 건가? 이거 무거운 걸, 오오사키 군.', 
@@ -176,7 +174,7 @@ const ACHIEVEMENTS = {
         type: 'singleHit', 
         cursor: 'cursor10', 
         icon: 'icon_single_cursor_10.png',
-        custom_status_text_achieved: '시즈마로만 1010타격 달성' // 💥 달성 문구
+        custom_status_text_achieved: '시즈마로만 1010타격 달성' 
     },
 };
 
@@ -187,7 +185,7 @@ const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
 const effectDuration = 250; 
 
-// 커서 파일 경로를 생성하는 함수 (PNG 파일명 규칙 복구)
+// 커서 파일 경로를 생성하는 함수 
 function getCursorPaths(cursorName) {
     return {
         normal: `url('${cursorName}.png'), pointer`, 
@@ -202,7 +200,7 @@ function updateMonsterCursor() {
 }
 
 // ------------------------------------
-// 유틸리티 및 상태 관리 (localStorage 제거)
+// 유틸리티 및 상태 관리
 // ------------------------------------
 
 /**
@@ -319,16 +317,6 @@ function checkCursorLevels(cursorName, singleHitCount) {
     if (allMaxLevel) {
          checkAchievements('ALL_CURSOR_MAX_LEVEL');
     }
-    
-    // 💥 [복원] 레벨 1 달성 시 커서 잠금 해제
-    cursorButtons.forEach(b => {
-        if (cursorLevels[b.dataset.cursor] >= 1) {
-            b.classList.remove('locked');
-        } else if (b.dataset.cursor !== 'cursor01') {
-            // cursor01을 제외한 나머지 커서는 레벨 1 미만이면 locked 상태 유지
-            b.classList.add('locked');
-        }
-    });
 }
 
 
@@ -450,7 +438,7 @@ function handleHit(event) {
         return;
     }
     
-    // 💥 타격 사운드 재생 (5개 중 랜덤, 볼륨 20% 적용됨)
+    // 💥 타격 사운드 재생 
     const randomSound = HIT_SOUNDS[Math.floor(Math.random() * HIT_SOUNDS.length)];
     randomSound.currentTime = 0;
     randomSound.play();
@@ -516,7 +504,7 @@ function handleHit(event) {
 
 
 // ------------------------------------
-// 💥 타격수 초기화 기능 추가
+// 💥 타격수 초기화 기능 
 // ------------------------------------
 /**
  * 총 타격수와 단일 커서 타격수만 0으로 초기화하고, 강화 레벨과 업적은 유지합니다.
@@ -537,7 +525,7 @@ function handleHitCountReset() {
         updateCursorButtonTooltip(button);
     });
     
-    // 3. 현재 피해량 재계산 (레벨은 유지되므로 현재 피해량은 바뀌지 않지만, 명시적으로 재계산)
+    // 3. 현재 피해량 재계산 
     currentDamage = calculateDamage(currentCursor);
     
     // 4. 이벤트 상태 및 이미지 초기화
@@ -561,11 +549,10 @@ function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
     
-    // 💥 [복원] 잠금 상태면 클릭 무시
-    if (clickedButton.classList.contains('locked')) {
-        alert("이 커서는 아직 잠금 해제되지 않았습니다. 레벨 1을 달성하세요!");
-        return;
-    }
+    // 💥 (수정) locked 클래스 체크를 제거하여 모든 커서가 선택 가능하도록 함.
+    // if (clickedButton.classList.contains('locked')) {
+    //     return;
+    // }
     
     // 이전 커서의 아이콘을 _off 상태로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
@@ -595,7 +582,7 @@ function handleCursorChange(event) {
 
 
 /**
- * 업적 목록을 모달에 렌더링하는 함수 (정렬 개선 및 미달성 문구 제거)
+ * 업적 목록을 모달에 렌더링하는 함수 
  */
 function renderAchievements() {
     achievementList.innerHTML = ''; 
@@ -631,7 +618,7 @@ function renderAchievements() {
                 statusText = '달성 완료';
             }
         } else {
-            // 💥 미달성 시 텍스트 제거 (statusText는 빈 문자열로 유지됨)
+            // 미달성 시 텍스트 제거 
         }
         
         // 커서 강화 레벨을 업적 제목 옆에 표시
@@ -689,6 +676,7 @@ function closeModal() {
  * 설정 메뉴 토글 함수
  */
 function toggleSettingsMenu() {
+    // 💥 CSS에서 display: none을 초기값으로 설정하지 않았으므로, 'none'인지 체크
     settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
         ? 'flex' 
         : 'none';
@@ -703,15 +691,11 @@ function initializeCursors() {
         const cursorName = button.dataset.cursor;
         const iconImg = button.querySelector('img');
         
+        // 💥 (수정) HTML에서 locked 클래스를 제거했으므로, 여기서도 제거
+        button.classList.remove('locked');
+        
         // 툴팁 초기화 (강화 정보 포함)
         updateCursorButtonTooltip(button);
-
-        // 💥 [복원] 레벨 1 미만인 커서는 locked 클래스 추가 (cursor01은 제외)
-        if (cursorName !== 'cursor01' && (cursorLevels[cursorName] || 0) < 1) {
-            button.classList.add('locked');
-        } else {
-             button.classList.remove('locked');
-        }
 
         // 선택된 커서 UI 업데이트
         if (button.dataset.cursor === currentCursor) {
@@ -720,7 +704,6 @@ function initializeCursors() {
                 iconImg.src = `${cursorName}_icon_on.png`;
             }
         } else if (iconImg) {
-            button.classList.remove('selected');
             iconImg.src = `${cursorName}_icon_off.png`;
         }
     });
@@ -741,7 +724,7 @@ function handleHitJump() {
         return;
     }
 
-    // 💥 현재 커서 외 사용 기록이 있다면, 해당 커서로만 1000타를 추가합니다.
+    // 현재 커서로만 1000타를 추가합니다.
     singleCursorHitCounts[currentCursor] += 1000;
     checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
     
@@ -749,7 +732,6 @@ function handleHitJump() {
     hitCount = newHitCount;
     counterDisplay.textContent = hitCount;
     
-    // 개발자 기능은 업적 달성 조건을 충족시키지 않으므로, 일반적인 업적 체크만 수행합니다.
     checkAchievements();
     saveState(); 
 
@@ -775,7 +757,6 @@ cursorButtons.forEach(button => {
 settingsButton.addEventListener('click', toggleSettingsMenu);
 
 achievementButton.addEventListener('click', () => openModal('achievement'));
-// 💥 타격수 초기화 버튼 이벤트 리스너 연결
 resetHitsButton.addEventListener('click', handleHitCountReset);
 
 devButton.addEventListener('click', () => openModal('developer'));
@@ -791,7 +772,9 @@ window.addEventListener('click', (event) => {
         closeModal();
     }
     
-    if (event.target !== settingsButton && !settingsMenu.contains(event.target) && settingsMenu.style.display === 'flex') {
+    // 설정 버튼이 아니면서, 메뉴 영역도 아니고, 메뉴가 열려있을 때만 닫음
+    const settingsAreaContainer = document.getElementById('settings-area-container');
+    if (event.target !== settingsButton && !settingsAreaContainer.contains(event.target) && settingsMenu.style.display === 'flex') {
         settingsMenu.style.display = 'none';
     }
 });
