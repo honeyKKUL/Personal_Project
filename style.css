@@ -169,11 +169,7 @@ body {
     background-color: #e6f7ef;
 }
 
-.cursor-button.locked {
-    background-color: #f4f4f4;
-    opacity: 0.5;
-    cursor: not-allowed;
-}
+
 
 .cursor-button:hover:not(.locked) {
     background-color: #e0e0e0;
