@@ -1,4 +1,4 @@
-// script.js (개발자 기능, 1010 이벤트, 커서 포함 복구 버전)
+// script.js (최종 디자인, 기능, 배너/이펙트 오류 수정 버전)
 
 // ------------------------------------
 // 1. DOM 요소 및 상태 변수 선언
@@ -19,10 +19,15 @@ const achievementPanel = document.getElementById('achievement-panel');
 const developerPanel = document.getElementById('developer-panel'); 
 const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
 
+// 배너 관련 DOM 요소 추가
+const achievementBanner = document.getElementById('achievement-banner');
+const achievementText = document.getElementById('achievement-text');
+
+
 // 이벤트 상태 변수 (1010 이벤트)
 let isEventActive = false; 
 const eventThreshold = 1010; 
-const eventGif = 'hit_event.gif'; // 4초짜리 이벤트 GIF가 필요합니다.
+const eventGif = 'hit_event.gif'; 
 const eventDuration = 4000; 
 
 let hitCount = 0;
@@ -32,7 +37,7 @@ let currentDamage = 1;
 const normalImage = 'Hit_01.png';
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png']; 
 const displayTime = 150; 
-const effectDuration = 300; 
+const effectDuration = 300; // CSS 애니메이션 지속 시간(0.3s)과 일치
 
 // ------------------------------------
 // 2. 핵심 함수
@@ -40,7 +45,6 @@ const effectDuration = 300;
 
 // 커서 경로 설정
 function getCursorPaths(cursorName) {
-    // 마우스 커서를 동적으로 변경합니다.
     return {
         normal: `url('${cursorName}.png'), pointer`,
     };
@@ -64,26 +68,45 @@ function playEventAnimation() {
         updateMonsterCursor(); 
     }, eventDuration);
 
+    // 이벤트 발생 시 배너를 사용하여 메시지 표시 (필요에 따라 활성화)
+    showAchievementBanner("1010 타격 달성!");
     console.log("🎉 1010 이벤트가 발생했습니다!");
 }
 
+/**
+ * 💥 문제 해결 1: 배너가 사라지도록 타이머 설정
+ */
+function showAchievementBanner(title) {
+    // 임시 배너이므로 타이틀은 고정하거나, 필요한 경우만 표시
+    achievementText.textContent = title;
+    achievementBanner.classList.add('show');
+    
+    // 2.5초 후 배너를 숨김
+    setTimeout(() => {
+        achievementBanner.classList.remove('show');
+    }, 2500); 
+}
 
-// 타격 이펙트 생성 및 재생 함수
+
+/**
+ * 💥 문제 해결 2: 타격 이펙트 생성 및 재생 로직 안정화
+ */
 function createHitEffect(x, y) {
     const effect = document.createElement('div');
     effect.className = 'hit-effect';
     
+    // 위치 설정 (클릭 지점 중앙)
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
     body.appendChild(effect);
     
-    // requestAnimationFrame을 사용하여 부드럽게 애니메이션 시작
+    // requestAnimationFrame을 사용하여 DOM이 완전히 업데이트된 후 애니메이션 클래스 적용
     requestAnimationFrame(() => {
         effect.classList.add('animate');
     });
 
-    // 이펙트 제거
+    // 이펙트 제거 (CSS 애니메이션 시간 + 여유 시간)
     setTimeout(() => {
         effect.remove();
     }, effectDuration + 50); 
@@ -107,7 +130,7 @@ function handleHit(event) {
         return;
     }
 
-    // 좌표 추출 (PC/모바일 환경 모두 대응)
+    // 좌표 추출
     let clientX = event.clientX;
     let clientY = event.touches && event.touches.length > 0 ? event.touches[0].clientY : event.clientY;
     
@@ -132,10 +155,9 @@ function handleHit(event) {
 }
 
 // ------------------------------------
-// 3. 커서 및 모달/설정 함수
+// 3. 커서 및 모달/설정 함수 (이전 코드와 동일)
 // ------------------------------------
 
-// 개발자 기능: 1000 타격 증가 핸들러
 function handleHitJump() {
     const targetHitCount = eventThreshold - 10; 
     
@@ -153,13 +175,11 @@ function handleHitJump() {
 }
 
 
-// 커서 버튼 클릭 핸들러
 function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
     const newDamage = parseInt(clickedButton.dataset.damage); 
     
-    // 기존 선택된 버튼 해제
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
     if (previouslySelectedButton) {
         previouslySelectedButton.classList.remove('selected');
@@ -170,7 +190,6 @@ function handleCursorChange(event) {
         }
     }
     
-    // 새 버튼 선택
     clickedButton.classList.add('selected');
     const newIconImg = clickedButton.querySelector('img');
     if (newIconImg) {
@@ -184,7 +203,6 @@ function handleCursorChange(event) {
 }
 
 
-// 모달 열기 함수
 function openModal(panelId) {
     if (panelId === 'achievement') {
         modalTitle.textContent = "업적 목록 (비활성화)";
@@ -206,7 +224,6 @@ function closeModal() {
 }
 
 
-// 설정 메뉴 토글 함수
 function toggleSettingsMenu() {
     settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
         ? 'flex' 
@@ -214,7 +231,6 @@ function toggleSettingsMenu() {
 }
 
 
-// 커서 아이콘 초기화 (선택된 것만 on, 나머지는 off)
 function initializeCursors() {
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
@@ -258,9 +274,7 @@ window.addEventListener('click', (event) => {
         closeModal();
     }
     
-    // 설정 메뉴 외부 클릭 시 닫기
     if (event.target !== settingsButton && !settingsMenu.contains(event.target) && settingsMenu.style.display !== 'none') {
-        // 단, 설정 메뉴 내 버튼(업적, 개발자) 클릭은 모달 열기 함수에서 처리되도록 예외 처리
         if (event.target.id !== 'achievement-button' && event.target.id !== 'dev-button') {
             settingsMenu.style.display = 'none';
         }
