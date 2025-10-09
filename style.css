@@ -351,7 +351,7 @@ body {
     left: 50%; /* 중앙 정렬을 위해 50% 이동 */
     transform: translateX(-50%) translateY(50px); /* 🌟 X축 중앙 정렬 및 아래로 숨기기 */
     
-    background-color: #2ecc71;
+    background-color: #e74c3c;
     color: white;
     padding: 10px 20px;
     border-radius: 5px;
