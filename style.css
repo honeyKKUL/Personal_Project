@@ -1,5 +1,3 @@
-/* style.css (수정본) */
-
 /* ------------------------------------ */
 /* 기본 및 배경 스타일 */
 /* ------------------------------------ */
@@ -14,8 +12,8 @@ body {
     align-items: flex-start; 
     min-height: 100vh; 
     padding-top: 50px; 
-    position: relative; /* 💥 이펙트 기준점을 body로 고정 */
-    overflow: hidden;   /* 💥 이펙트가 화면 밖으로 벗어나지 않도록 */
+    position: relative; 
+    overflow: hidden; 
 }
 
 .main-content {
@@ -26,6 +24,8 @@ body {
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
     overflow: hidden; 
+    /* 컨테이너 최소 높이 유지 (게임 컨테이너 영역이 짧아지는 문제 해결) */
+    min-height: 80vh;
 }
 
 /* ------------------------------------ */
@@ -44,12 +44,21 @@ body {
 #hit-count {
     font-size: 3em;
     margin-bottom: 20px;
+    font-weight: bold;
+    color: #2c3e50;
 }
 
+/* 💥 #monster 스타일 복구 (원본 이미지 비율 유지) */
 #monster {
-    width: 250px; 
-    height: 250px;
-    user-select: none; /* 드래그 방지 */
+    width: 300px; /* 너비는 300px로 고정 */
+    height: auto; /* 💥 높이를 'auto'로 설정하여 원본 비율(1360:2016) 유지 */
+    max-height: 70vh; /* 과도하게 커지는 것을 방지하기 위한 최대 높이 설정 (선택 사항) */
+    transition: transform 0.1s ease-out;
+    user-select: none;
+}
+
+#monster:active {
+    transform: scale(0.98);
 }
 
 /* ------------------------------------ */
