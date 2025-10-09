@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 모든 커서 잠금 해제, 설정 버튼 활성화, 타격수 초기화 기능 반영)
+// script.js (최종 수정본 - 모든 오류 수정, 모달 정보 제거, 타격수/단일 기록 초기화 기능 확인)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -487,14 +487,14 @@ function handleHit(event) {
     hitCount += currentDamage;
     counterDisplay.textContent = hitCount;
     
-    // 💥 오류 수정 5: 단일 커서 타격 횟수를 피해량만큼 증가
+    // 💥 단일 커서 타격 횟수를 피해량만큼 증가
     singleCursorHitCounts[currentCursor] += currentDamage; 
     checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
     
     checkAchievements();
     saveState();
 
-    // 💥 오류 수정 2: 변수 이름 중복 수정 (randomIndex -> randomImageIndex)
+    // 💥 변수 이름 중복 수정 (randomIndex -> randomImageIndex)
     const randomImageIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomImageIndex];
     
@@ -505,7 +505,7 @@ function handleHit(event) {
         monsterImage.src = normalImage;
         updateMonsterCursor(); 
     }, displayTime); 
-} // 💥 오류 수정 1: 닫는 중괄호 '}' 복구
+} 
 
 // ------------------------------------
 // 💥 타격수 초기화 기능 
@@ -522,10 +522,10 @@ function handleHitCountReset() {
     hitCount = 0;
     counterDisplay.textContent = hitCount;
     
-    // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트
+    // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트 💥 (요청 사항 반영 완료된 부분)
     cursorButtons.forEach(button => {
         const cursorName = button.dataset.cursor;
-        singleCursorHitCounts[cursorName] = 0; 
+        singleCursorHitCounts[cursorName] = 0; // 이 부분이 단일 커서 기록을 0으로 초기화합니다.
         updateCursorButtonTooltip(button);
     });
     
@@ -620,8 +620,9 @@ function renderAchievements() {
             // 미달성 시 텍스트 제거 
         }
         
-        // 커서 강화 레벨을 업적 제목 옆에 표시
+        // 💥 요청에 따라 커서 레벨 및 피해량 정보를 표시하는 로직을 제거했습니다.
         let cursorLevelInfo = '';
+        /* (이전 코드 주석 처리)
         if (ach.type === 'singleHit') {
             const level = cursorLevels[ach.cursor] || 0;
             cursorLevelInfo = ` (현재 ${level}Lv, 피해량 ${calculateDamage(ach.cursor)})`;
@@ -629,6 +630,7 @@ function renderAchievements() {
              const completed = Array.from(cursorButtons).filter(b => cursorLevels[b.dataset.cursor] >= MAX_LEVEL).length;
              cursorLevelInfo = ` (${completed} / ${cursorButtons.length}개 커서 ${MAX_LEVEL}단계 달성)`;
         }
+        */
 
 
         li.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
@@ -772,7 +774,7 @@ window.addEventListener('click', (event) => {
     
     const settingsAreaContainer = document.getElementById('settings-area-container');
     
-    // 💥 오류 수정 3: settingsAreaContainer가 존재하는지 Null 체크
+    // 💥 settingsAreaContainer가 존재하는지 Null 체크
     if (settingsAreaContainer) { 
         if (event.target !== settingsButton && !settingsAreaContainer.contains(event.target) && settingsMenu.style.display === 'flex') {
             settingsMenu.style.display = 'none';
