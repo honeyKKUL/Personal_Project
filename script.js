@@ -1,4 +1,4 @@
-// script.js (수정된 전체 코드)
+// script.js (전체 코드)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -27,7 +27,7 @@ const achievementText = document.getElementById('achievement-text');
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
 const eventGif = 'hit_event.gif'; // GIF 파일명 반영됨
-const eventDuration = 4000; // GIF 재생 시간 (4초) 👈 이대로 유지
+const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 
 // 💥 업적 데이터 정의
@@ -72,7 +72,7 @@ let currentDamage = 1; 
 const normalImage = 'Hit_01.png';
 const hitImages = ['Hit_02.png', 'Hit_03.png', 'Hit_04.png', 'Hit_05.png'];
 const displayTime = 150; 
-const effectDurationMs = 250; // 👈 변수명을 effectDurationMs로 변경했습니다.
+const effectDuration = 250; // 👈 0.25초로 변경
 
 
 // 커서 파일 경로를 생성하는 함수
@@ -104,7 +104,7 @@ function playEventAnimation() {
         updateMonsterCursor(); 
         
         console.log("1010 이벤트 종료. 게임 플레이 재개.");
-    }, eventDuration); // 👈 eventDuration 사용 (4000ms)
+    }, eventDuration);
 }
 
 
@@ -127,7 +127,7 @@ function createHitEffect(x, y) {
 
     setTimeout(() => {
         effect.remove();
-    }, effectDurationMs); // 👈 수정된 effectDurationMs 사용 (250ms)
+    }, effectDuration); // 👈 effectDuration(250ms)로 바로 사용
 }
 
 // 업적 달성 배너 표시 함수
@@ -366,3 +366,91 @@ function renderAchievements() {
 }
 
 /**
+ * 모달 열기 함수 (패널 선택 기능)
+ */
+function openModal(panelId) {
+    if (panelId === 'achievement') {
+        renderAchievements();
+        modalTitle.textContent = "업적 목록";
+        achievementPanel.style.display = 'block';
+        developerPanel.style.display = 'none';
+    } else if (panelId === 'developer') {
+        modalTitle.textContent = "개발자 기능";
+        achievementPanel.style.display = 'none';
+        developerPanel.style.display = 'block';
+    }
+    
+    settingsMenu.style.display = 'none'; 
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+}
+
+
+/**
+ * 설정 메뉴 토글 함수
+ */
+function toggleSettingsMenu() {
+    settingsMenu.style.display = settingsMenu.style.display === 'none' || settingsMenu.style.display === '' 
+        ? 'flex' 
+        : 'none';
+}
+
+
+/**
+ * 초기화 함수
+ */
+function initializeCursors() {
+    cursorButtons.forEach(button => {
+        const cursorName = button.dataset.cursor;
+        const iconImg = button.querySelector('img');
+
+        if (button.classList.contains('selected')) {
+            if (iconImg) {
+                iconImg.src = `${cursorName}_icon_on.png`;
+            }
+        } else if (iconImg) {
+            iconImg.src = `${cursorName}_icon_off.png`;
+        }
+    });
+
+    updateMonsterCursor(); 
+}
+
+
+// ------------------------------------
+// 이벤트 리스너 설정
+// ------------------------------------
+
+monsterImage.addEventListener('mousedown', handleHit);
+
+cursorButtons.forEach(button => {
+    button.addEventListener('click', handleCursorChange);
+});
+
+// 설정 메뉴 관련 이벤트 리스너
+settingsButton.addEventListener('click', toggleSettingsMenu);
+
+achievementButton.addEventListener('click', () => openModal('achievement'));
+devButton.addEventListener('click', () => openModal('developer'));
+
+// 개발자 기능 버튼 이벤트 리스너
+jump1000HitsButton.addEventListener('click', handleHitJump);
+
+closeButton.addEventListener('click', closeModal);
+
+// 외부 클릭 시 모달 또는 메뉴 닫기 로직
+window.addEventListener('click', (event) => {
+    if (event.target == modal) {
+        closeModal();
+    }
+    
+    if (event.target !== settingsButton && !settingsMenu.contains(event.target)) {
+        settingsMenu.style.display = 'none';
+    }
+});
+
+// 페이지 로드 시 초기화 함수 실행
+initializeCursors();
