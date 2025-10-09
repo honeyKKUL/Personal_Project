@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 문법 오류 수정 및 강화 시스템 반영)
+// script.js (최종 수정본 - 문법 오류 수정, 강화 시스템 반영, 커서 파일명/확장자 복구)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -44,13 +44,13 @@ let cursorLevels = {};
 let singleCursorHitCounts = {};
 
 
-// 💥 업적 데이터 정의 (타격 횟수 해금 대신 '특정 커서로 1010회 타격'으로 변경)
+// 💥 업적 데이터 정의
 const ACHIEVEMENTS = {
     'ACH_CURSOR_01': { 
         title: '기본 커서 마스터', 
         description: '커서 01로 1010회 타격 달성', 
         condition: { type: 'HIT_WITH_CURSOR', target: 'cursor01', count: 1010 },
-        icon: 'icon_cursor_01_master.png' // 새로운 아이콘 파일명 가정
+        icon: 'icon_cursor_01_master.png' 
     },
     'ACH_CURSOR_02': { 
         title: '황금 커서 마스터', 
@@ -247,7 +247,7 @@ function handleHit(event) {
     
     const damage = getCurrentDamage(); 
 
-    // 💥 1. 1010 타격 초과 처리 로직
+    // 💥 1. 1010 타격 초과 처리 로직 (이벤트)
     const potentialHitCount = hitCount + damage;
     
     if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
@@ -261,43 +261,41 @@ function handleHit(event) {
         // 타격수 업적 확인 (1타, 50타 등)
         checkAchievements('TOTAL_HIT');
         saveState();
-        return; // 나머지 타격 로직 실행 중지
+        return; 
     }
 
-    // 이펙트 생성 및 재생
+    // 2. 이펙트 생성 및 재생
     createHitEffect(event.clientX, event.clientY);
     
-    // 2. 타격 횟수를 damage 값만큼 증가시키고 화면을 업데이트합니다.
+    // 3. 타격 횟수를 damage 값만큼 증가시키고 화면을 업데이트합니다.
     hitCount += damage;
     counterDisplay.textContent = hitCount;
     
     // 현재 커서의 단일 타격 횟수를 증가시킵니다.
-    singleCursorHitCounts[currentCursor] += damage; // 💥 damage만큼 증가
+    singleCursorHitCounts[currentCursor] += damage; 
     
-    // 3. 커서 강화 상태를 확인합니다.
+    // 4. 커서 강화 상태를 확인합니다.
     checkCursorLevels(hitCount);
     
-    // 4. 업적 상태를 확인합니다.
+    // 5. 업적 상태를 확인합니다.
     checkAchievements('TOTAL_HIT');
     checkAchievements('HIT_WITH_CURSOR', currentCursor);
     
     saveState();
 
-    // 5. 랜덤 타격 이미지 변경
+    // 6. 랜덤 타격 이미지 변경
     const randomIndex = Math.floor(Math.random() * hitImages.length);
     monsterImage.src = hitImages[randomIndex];
     
-    // 6. 🖱️ 커서를 선택된 타격 커서로 변경
-    const hitCursorPath = getCursorPaths(currentCursor).hit;
-    monsterImage.style.cursor = hitCursorPath; 
+    // 7. 🖱️ 커서를 **타격 시 커서 파일**로 변경 (💥 _hit.png)
+    monsterImage.style.cursor = `url('${currentCursor}_hit.png'), auto`;
 
-    // 7. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
+    // 8. 일정 시간 후 몬스터 이미지와 커서를 원래대로 되돌립니다.
     setTimeout(() => {
         monsterImage.src = normalImage;
-        updateMonsterCursor(); 
+        updateMonsterCursor(); // 평상시 커서로 복구
     }, displayTime); 
 }
-// 👈 💥 handleHit 함수 닫는 중괄호 복구
 
 /**
  * 커서 버튼 클릭 핸들러
@@ -305,8 +303,6 @@ function handleHit(event) {
 function handleCursorChange(event) {
     const clickedButton = event.currentTarget;
     const newCursorName = clickedButton.dataset.cursor;
-    
-    // 💥 잠금 해제 로직 제거. 모든 커서는 처음부터 활성화됨.
     
     // 1. 이전 커서의 아이콘을 _off 상태로 변경
     const previouslySelectedButton = document.querySelector('.cursor-button.selected');
@@ -339,20 +335,11 @@ function handleCursorChange(event) {
 // ------------------------------------
 
 /**
- * 커서 파일 경로를 생성하는 함수
- */
-function getCursorPaths(cursorName) {
-    return {
-        normal: `url('${cursorName}_cursor.cur'), pointer`, // 💥 .cur 파일로 수정
-        hit: `url('${cursorName}_hit_cursor.cur'), pointer` // 💥 .cur 파일로 수정 (가정)
-    };
-}
-
-/**
- * 몬스터 이미지의 기본 커서를 업데이트하는 함수
+ * 몬스터 이미지의 기본 커서를 업데이트하는 함수 (💥 파일명 복구)
  */
 function updateMonsterCursor() {
-    const cursorPath = getCursorPaths(currentCursor).normal;
+    // 💥 경로를 [cursorName].png로 설정
+    const cursorPath = `url('${currentCursor}.png'), auto`;
     monsterImage.style.cursor = cursorPath; 
 }
 
@@ -383,7 +370,7 @@ function createHitEffect(x, y) {
     effect.style.left = `${x}px`;
     effect.style.top = `${y}px`;
 
-    // 💥 랜덤 회전 설정 (이펙트가 단순한 네모가 아님을 가정)
+    // 랜덤 회전 설정 (이펙트가 단순한 네모가 아님을 가정)
     const randomRotation = Math.floor(Math.random() * 360); 
     effect.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
     
@@ -570,10 +557,12 @@ function initializeCursors() {
 
         if (button.dataset.cursor === currentCursor) {
             button.classList.add('selected');
+            // 버튼 아이콘은 이미 `_on.png` 규칙을 따르고 있음
             if (iconImg) {
                 iconImg.src = `${cursorName}_icon_on.png`;
             }
         } else if (iconImg) {
+            // 버튼 아이콘은 이미 `_off.png` 규칙을 따르고 있음
             iconImg.src = `${cursorName}_icon_off.png`;
         }
     });
