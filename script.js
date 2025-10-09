@@ -148,32 +148,11 @@ function createHitEffect(x, y) {
     }, effectDuration); // 👈 effectDuration(250ms)로 바로 사용
 }
 
+
 // 사운드를 부드럽게 페이드 아웃하고, 새로운 사운드를 재생하는 함수
 function smoothlyFadeOutAndPlay(nextSound) {
-    const fadeDuration = 50; // 페이드 아웃 시간 (100ms)
-    const fadeInterval = 5;  // 볼륨 감소 간격 (10ms)
-    const steps = fadeDuration / fadeInterval; // 총 스텝 수
-
-    // 이전에 재생 중이던 사운드들을 찾아 부드럽게 멈춥니다.
-    // 모든 사운드 객체를 순회하여 재생 중인 것이 있으면 멈춥니다.
-    hitSounds.forEach(sound => {
-        if (!sound.paused) {
-            let currentVolume = sound.volume;
-            const volumeStep = currentVolume / steps;
-
-            const fadeOutInterval = setInterval(() => {
-                currentVolume -= volumeStep;
-                sound.volume = Math.max(0, currentVolume);
-
-                if (currentVolume <= 0) {
-                    clearInterval(fadeOutInterval);
-                    sound.pause();
-                    sound.currentTime = 0;
-                    sound.volume = VOLUME_RATIO; // 볼륨을 원래대로 복구
-                }
-            }, fadeInterval);
-        }
-    });
+    // ... (함수 내용 전체 삭제) ...
+}
 
     // 새로운 사운드를 재생합니다.
     nextSound.currentTime = 0;
