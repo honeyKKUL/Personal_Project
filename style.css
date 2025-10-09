@@ -306,10 +306,15 @@ body {
 /* ------------------------------------ */
 /* 업적 달성 배너 */
 /* ------------------------------------ */
+/* ------------------------------------ */
+/* 업적 달성 배너 (중앙 하단 위치 유지) */
+/* ------------------------------------ */
 #achievement-banner {
     position: fixed;
-    top: 20px;
-    right: 20px;
+    bottom: 20px; 
+    left: 50%; 
+    transform: translateX(-50%) translateY(50px); 
+    
     background-color: #2ecc71;
     color: white;
     padding: 10px 20px;
@@ -318,12 +323,16 @@ body {
     opacity: 0;
     visibility: hidden;
     transition: opacity 0.5s, visibility 0.5s, transform 0.5s;
-    transform: translateY(-50px);
     z-index: 20;
 }
 
 #achievement-banner.show {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    transform: translateX(-50%) translateY(0); 
+}
+
+#achievement-text {
+    margin: 0;
+    font-weight: bold;
 }
