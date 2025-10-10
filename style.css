@@ -376,25 +376,3 @@ body {
     font-weight: bold;
 }
 
-/* ------------------------------------ */
-/* 개발자 기능 패널 */
-/* ------------------------------------ */
-#developer-panel {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.dev-feature-button {
-    padding: 10px;
-    background-color: #e74c3c;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.2s;
-}
-
-.dev-feature-button:hover {
-    background-color: #c0392b;
-}
