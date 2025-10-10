@@ -1,4 +1,4 @@
-// script.js (최종 수정본 - 모든 오류 수정, 모달 정보 제거, 타격수/단일 기록 초기화, 기본 피해량 1로 수정)
+// script.js (최종 수정본 - 개발자 기능 삭제)
 
 // DOM 요소
 const monsterImage = document.getElementById('monster');
@@ -11,13 +11,13 @@ const settingsButton = document.getElementById('settings-button');
 const settingsMenu = document.getElementById('settings-menu'); 
 const achievementButton = document.getElementById('achievement-button'); 
 const resetHitsButton = document.getElementById('reset-hits-button'); 
-const devButton = document.getElementById('dev-button'); 
+// 💥 삭제: const devButton = document.getElementById('dev-button');
 const modal = document.getElementById('achievement-modal');
 const closeButton = document.querySelector('.close-button');
 const modalTitle = document.getElementById('modal-title'); 
 const achievementPanel = document.getElementById('achievement-panel'); 
-const developerPanel = document.getElementById('developer-panel'); 
-const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
+// 💥 삭제: const developerPanel = document.getElementById('developer-panel'); 
+// 💥 삭제: const jump1000HitsButton = document.getElementById('jump-1000-hits'); 
 const achievementList = document.getElementById('achievement-list');
 const achievementBanner = document.getElementById('achievement-banner');
 const achievementText = document.getElementById('achievement-text');
@@ -380,8 +380,7 @@ function showAchievementBanner(achievement) {
     const banner = document.getElementById('achievement-banner');
     const bannerText = document.getElementById('achievement-text');
     
-    // 💥 핵심 수정: '업적달성' + 업적의 제목(title)을 조합하여 표시
-    // 이 함수는 이제 업적 객체 전체를 인수로 받습니다.
+    // '업적달성' + 업적의 제목(title)을 조합하여 표시
     bannerText.textContent = `업적달성 "${achievement.title}"`; 
 
     // 배너 표시
@@ -417,31 +416,19 @@ function checkAchievements(type = 'GENERAL') {
     
         const ach = ACHIEVEMENTS[key];
         
-        // 💥 로직 정리 시작: 이미 달성했거나 type이 allMaxLevel이면 건너뜁니다.
+        // 이미 달성했거나 type이 allMaxLevel이면 건너뜁니다. (ALL_CURSOR_MAX_LEVEL 체크는 루프 밖에서 별도로 진행)
         if (ach.achieved || ach.type === 'allMaxLevel') continue;
-        
-        // 💥 기존의 불필요한/오류 유발 블록 제거 (image_a7873c.png의 첫 번째 if 블록)
-        /*
-        if (conditionMet && !ACHIEVEMENTS[key].achieved) {
-            ACHIEVEMENTS[key].achieved = true;
-            // 💥 수정: 업적 객체 전체를 전달하도록 변경 (기존에 key만 전달했다면)
-            showAchievementBanner(ACHIEVEMENTS[key]); 
-        }
-        if (ach.achieved) continue;
-        */
         
         if (ach.type === 'hitCount' && hitCount >= ach.condition) {
             ach.achieved = true;
-            // 💥 수정: ach.title 대신 ach 객체 전체를 전달
             showAchievementBanner(ach);
             newlyAchieved = true;
             
         } else if (ach.type === 'singleHit') {
             const cursorKey = ach.cursor;
-            // 단일 커서 업적 조건: 해당 커서의 타격수가 조건(1010) 이상일 경우 (이벤트 발생 시 handleHit에서 강제 설정됨)
+            // 단일 커서 업적 조건: 해당 커서의 타격수가 조건(1010) 이상일 경우
             if (singleCursorHitCounts[cursorKey] >= ach.condition) { 
                 ach.achieved = true;
-                // 💥 수정: ach.title 대신 ach 객체 전체를 전달
                 showAchievementBanner(ach);
                 newlyAchieved = true;
             }
@@ -457,7 +444,6 @@ function checkAchievements(type = 'GENERAL') {
             });
             if (allMax) {
                 allMaxAch.achieved = true;
-                // 💥 수정: allMaxAch.title 대신 allMaxAch 객체 전체를 전달
                 showAchievementBanner(allMaxAch);
                 newlyAchieved = true;
             }
@@ -514,7 +500,6 @@ function handleHit(event) {
         }
         
         // 💥 핵심 수정: 애니메이션 시작을 약간 지연시켜 연타 충돌을 방지합니다.
-        // 이로 인해 연타 중이더라도 이벤트 애니메이션이 확실히 실행될 시간을 벌 수 있습니다.
         setTimeout(() => {
             playEventAnimation(); 
             checkAchievements(); // 이벤트 애니메이션 후 업적 확인
@@ -664,7 +649,7 @@ function renderAchievements() {
             // 미달성 시 텍스트 제거 
         }
         
-        // 💥 요청에 따라 커서 레벨 및 피해량 정보를 표시하는 로직을 제거했습니다.
+        // 요청에 따라 커서 레벨 및 피해량 정보를 표시하는 로직을 제거했습니다.
         let cursorLevelInfo = '';
 
         li.className = `achievement-item ${isUnlocked ? 'unlocked' : 'locked'}`;
@@ -691,12 +676,9 @@ function openModal(panelId) {
         renderAchievements();
         modalTitle.textContent = "업적 목록";
         achievementPanel.style.display = 'block';
-        developerPanel.style.display = 'none';
-    } else if (panelId === 'developer') {
-        modalTitle.textContent = "개발자 기능";
-        achievementPanel.style.display = 'none';
-        developerPanel.style.display = 'block';
-    }
+        // 💥 삭제: developerPanel.style.display = 'none';
+    } 
+    // 💥 삭제: else if (panelId === 'developer') { ... }
     
     settingsMenu.style.display = 'none'; 
     modal.style.display = 'block';
@@ -747,31 +729,8 @@ function initializeCursors() {
 
 
 // ------------------------------------
-// 개발자 기능: 1000 타격 증가 핸들러
+// 💥 개발자 기능 삭제: handleHitJump 함수 삭제
 // ------------------------------------
-function handleHitJump() {
-    const targetHitCount = eventThreshold - 10; 
-    
-    if (hitCount >= eventThreshold) {
-        alert(`이미 이벤트 타격수(${eventThreshold})를 달성했습니다.`);
-        closeModal();
-        return;
-    }
-
-    // 현재 커서로만 1000타를 추가합니다.
-    singleCursorHitCounts[currentCursor] += 1000;
-    checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
-    
-    const newHitCount = Math.min(hitCount + 1000, targetHitCount); 
-    hitCount = newHitCount;
-    counterDisplay.textContent = hitCount;
-    
-    checkAchievements();
-    saveState(); 
-
-    closeModal(); 
-    alert(`타격수가 ${hitCount}으로 설정되었습니다!`);
-}
 
 
 // ------------------------------------
@@ -793,10 +752,9 @@ settingsButton.addEventListener('click', toggleSettingsMenu);
 achievementButton.addEventListener('click', () => openModal('achievement'));
 resetHitsButton.addEventListener('click', handleHitCountReset);
 
-devButton.addEventListener('click', () => openModal('developer'));
+// 💥 삭제: devButton.addEventListener('click', () => openModal('developer'));
 
-// 개발자 기능 버튼 이벤트 리스너
-jump1000HitsButton.addEventListener('click', handleHitJump);
+// 💥 삭제: 개발자 기능 버튼 이벤트 리스너 삭제
 
 closeButton.addEventListener('click', closeModal);
 
@@ -808,7 +766,7 @@ window.addEventListener('click', (event) => {
     
     const settingsAreaContainer = document.getElementById('settings-area-container');
     
-    // 💥 settingsAreaContainer가 존재하는지 Null 체크
+    // settingsAreaContainer가 존재하는지 Null 체크
     if (settingsAreaContainer) { 
         if (event.target !== settingsButton && !settingsAreaContainer.contains(event.target) && settingsMenu.style.display === 'flex') {
             settingsMenu.style.display = 'none';
