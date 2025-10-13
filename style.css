@@ -234,23 +234,37 @@ body {
 
 #achievement-modal {
   display: none; /* JavaScript가 'block'으로 바꿔줄 때까지 숨김 */
-  position: fixed; /* 화면을 스크롤해도 중앙에 고정 */
-  z-index: 10000; /* 💥 모든 UI 요소보다 훨씬 높은 값으로 설정 */
-  left: 0;
-  top: 0;
+  z-index: 100; /* 💥 모든 UI 요소보다 훨씬 높은 값으로 설정 */
   width: 100%;
   height: 100%;
-  overflow: auto;
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
   background-color: rgba(0, 0, 0, 0.7); /* 반투명 배경 */
+}
+
+#achievement-panel {
+  width: 100%;
+  height: calc(80vh - 75px);
+  overflow-y: auto;
+}
+
+.modal-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 10px 0 20px;
+}
+
+.modal-title {
+  margin: 0;
 }
 
 .modal-content {
   background-color: #fefefe;
-  margin: 10% auto;
+  height: 80vh;
   padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 500px;
   border-radius: 10px;
   position: relative;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
@@ -279,10 +293,12 @@ body {
 .achievement-item {
   display: flex;
   align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid #eee;
-  opacity: 0.6; /* 기본적으로 비활성화된 것처럼 표시 */
+  padding: 15px 0;
+  opacity: 0.6;
   transition: opacity 0.3s;
+}
+.achievement-item:not(:last-child) {
+  border-bottom: 1px solid #eee;
 }
 
 /* 💥 핵심 수정: 미달성(locked) 상태일 때 제목/문구 영역 숨기기 */
@@ -297,54 +313,36 @@ body {
 .achievement-text-group {
   display: flex;
   align-items: center;
+  justify-content: flex-start;
+  gap: 20px;
   width: 100%;
 }
 
 .achievement-icon {
-  margin-right: 8px;
-  min-width: 20px;
+  width: 40px;
+  height: 40px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
-  line-height: 1.2;
-
-  /* 💥 추가: locked 상태에서 아이콘이 중앙에 오도록 여백 조정 */
-  /* locked 상태에서 .achievement-title-status가 사라져 margin-right가 불필요해집니다. */
-  /* 이를 위해 유연한 레이아웃을 유지합니다. */
-  margin-right: auto; /* 아이콘이 왼쪽에 고정되도록 설정 */
-  margin-left: 0;
-}
-
-.achievement-item.unlocked .achievement-icon {
-  margin-right: 0px;
+  align-items: center;
 }
 
 .achievement-icon img {
-  width: 40px;
-  height: 40px;
-  display: block;
-}
-
-.achievement-icon img {
-  width: 40px;
-  height: 40px;
-  display: block;
+  width: 100%;
+  height: 100%;
 }
 
 /* 💥 unlocked 상태에서만 제목/문구가 표시되도록 함 */
 .achievement-title-status {
-  display: flex; /* 기본적으로는 flex 상태를 유지 */
+  display: flex;
   flex-direction: column;
   justify-content: center;
-  line-height: 1.2;
-  flex-grow: 1; /* 남은 공간을 채우도록 설정 */
+  gap: 5px;
 }
 
-.achievement-title-status span:first-child {
+.achievement-title {
+  margin: 0;
   font-size: 1.05em;
   font-weight: bold;
-  color: #333;
-  margin-bottom: 1px;
 }
 
 .achievement-status {
