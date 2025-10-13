@@ -593,6 +593,7 @@ function openModal(panelId) {
 
 function closeModal() {
   modal.style.display = "none";
+  // 바디 스크롤 가능
   document.body.style.overflow = "";
 }
 
