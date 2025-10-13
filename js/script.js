@@ -21,7 +21,7 @@ const achievementList = document.getElementById("achievement-list");
 const achievementBanner = document.getElementById("achievement-banner");
 const achievementText = document.getElementById("achievement-text");
 
-const fileSrc = `https://honeykkul.github.io/Personal_Project/`;
+const fileSrc = `https://honeykkul.github.io/Personal_Project/assets/`;
 
 // ------------------------------------
 // 💥 사운드 파일 정의
