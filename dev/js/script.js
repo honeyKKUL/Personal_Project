@@ -21,15 +21,17 @@ const achievementList = document.getElementById("achievement-list");
 const achievementBanner = document.getElementById("achievement-banner");
 const achievementText = document.getElementById("achievement-text");
 
+const fileSrc = `https://honeykkul.github.io/Personal_Project/assets/`;
+
 // ------------------------------------
 // 💥 사운드 파일 정의
 // ------------------------------------
 const HIT_SOUNDS = [
-  new Audio("hit_sound_01.mp3"),
-  new Audio("hit_sound_02.mp3"),
-  new Audio("hit_sound_03.mp3"),
-  new Audio("hit_sound_04.mp3"),
-  new Audio("hit_sound_05.mp3"),
+  new Audio(`${fileSrc}hit_sound_01.mp3`),
+  new Audio(`${fileSrc}hit_sound_02.mp3`),
+  new Audio(`${fileSrc}hit_sound_03.mp3`),
+  new Audio(`${fileSrc}hit_sound_04.mp3`),
+  new Audio(`${fileSrc}hit_sound_05.mp3`),
 ];
 
 // 💥 사운드 볼륨 설정 (20%)
@@ -43,7 +45,7 @@ HIT_SOUNDS.forEach((sound) => {
 // ------------------------------------
 let isEventActive = false; // 이벤트 활성 상태 플래그
 const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = "hit_event.gif";
+const eventGif = fileSrc + "hit_event.gif";
 const eventDuration = 4000; // GIF 재생 시간 (4초)
 
 let hitCount = 0;
@@ -181,8 +183,8 @@ const effectDuration = 250;
 // 커서 파일 경로를 생성하는 함수
 function getCursorPaths(cursorName) {
   return {
-    normal: `url('${cursorName}.png'), pointer`,
-    hit: `url('${cursorName}_hit.png'), pointer`,
+    normal: `url('${fileSrc}${cursorName}.png'), pointer`,
+    hit: `url('${fileSrc}${cursorName}_hit.png'), pointer`,
   };
 }
 
@@ -304,29 +306,6 @@ function checkCursorLevels(cursorName, singleHitCount) {
   }
 }
 
-// 이벤트 좌표 리턴 함수
-function getEventCoords(event) {
-  // 터치 이벤트
-  if (event.touches && event.touches.length > 0) {
-    return {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY,
-    };
-  }
-  // touchend 단계에서는 touches가 비어있고 changedTouches만 존재함
-  if (event.changedTouches && event.changedTouches.length > 0) {
-    return {
-      x: event.changedTouches[0].clientX,
-      y: event.changedTouches[0].clientY,
-    };
-  }
-  // 마우스 이벤트
-  return {
-    x: event.clientX,
-    y: event.clientY,
-  };
-}
-
 // ------------------------------------
 // 이벤트 및 타격 로직
 // ------------------------------------
@@ -338,7 +317,7 @@ function playEventAnimation() {
 
   setTimeout(() => {
     isEventActive = false;
-    monsterImage.src = normalImage;
+    monsterImage.src = fileSrc + normalImage;
     updateMonsterCursor();
   }, eventDuration);
 }
@@ -467,8 +446,7 @@ function handleHit(event) {
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
 
-  const { x, y } = getEventCoords(event);
-  createHitEffect(x, y);
+  createHitEffect(event.clientX, event.clientY);
   hitCount += currentDamage;
   counterDisplay.textContent = hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
   singleCursorHitCounts[currentCursor] += currentDamage;
@@ -477,11 +455,11 @@ function handleHit(event) {
   saveState(); // 💥 변수 이름 중복 수정 (randomIndex -> randomImageIndex)
 
   const randomImageIndex = Math.floor(Math.random() * hitImages.length);
-  monsterImage.src = hitImages[randomImageIndex];
+  monsterImage.src = fileSrc + hitImages[randomImageIndex];
   const hitCursorPath = getCursorPaths(currentCursor).hit;
   monsterImage.style.cursor = hitCursorPath;
   setTimeout(() => {
-    monsterImage.src = normalImage;
+    monsterImage.src = fileSrc + normalImage;
     updateMonsterCursor();
   }, displayTime);
 }
@@ -532,13 +510,13 @@ function handleCursorChange(event) {
     const oldCursorName = previouslySelectedButton.dataset.cursor;
     const oldIconImg = previouslySelectedButton.querySelector("img");
     if (oldIconImg) {
-      oldIconImg.src = `${oldCursorName}_icon_off.png`;
+      oldIconImg.src = `${fileSrc}${oldCursorName}_icon_off.png`;
     }
   } // 새 커서의 아이콘을 _on 상태로 변경
   clickedButton.classList.add("selected");
   const newIconImg = clickedButton.querySelector("img");
   if (newIconImg) {
-    newIconImg.src = `${newCursorName}_icon_on.png`;
+    newIconImg.src = `${fileSrc}${newCursorName}_icon_on.png`;
   } // 게임 상태 업데이트
 
   currentCursor = newCursorName;
@@ -589,7 +567,7 @@ function renderAchievements() {
     li.innerHTML = `
 <div class="achievement-text-group">
     <div class="achievement-icon">
-        <img src="${iconSrc}" alt="아이콘"/>
+        <img src="${fileSrc}${iconSrc}" alt="아이콘"/>
     </div>
     <div class="achievement-title-status">
         <p class="achievement-title">${ach.title}${cursorLevelInfo}</p>
@@ -645,10 +623,10 @@ function initializeCursors() {
     if (button.dataset.cursor === currentCursor) {
       button.classList.add("selected");
       if (iconImg) {
-        iconImg.src = `${cursorName}_icon_on.png`;
+        iconImg.src = `${fileSrc}${cursorName}_icon_on.png`;
       }
     } else if (iconImg) {
-      iconImg.src = `${cursorName}_icon_off.png`;
+      iconImg.src = `${fileSrc}${cursorName}_icon_off.png`;
     }
   });
 

@@ -191,7 +191,7 @@ body {
   pointer-events: none;
   z-index: 9999;
 
-  background-image: url("hit_effect.png");
+  background-image: url("https://honeykkul.github.io/Personal_Project/assets/hit_effect.png");
   background-repeat: no-repeat;
   background-size: var(--sheet-width) var(--frame-height);
   background-position: 0 0;
