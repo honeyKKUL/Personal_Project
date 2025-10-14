@@ -317,8 +317,8 @@ function getPosition(event) {
   // // 모바일
   if (event.type.startsWith("touch")) {
     const touch = event.touches[0] || event.changedTouches[0];
-    x = touch.screenX;
-    y = touch.screenY;
+    x = touch.clientX;
+    y = touch.clientY;
     return { x, y };
   }
 
