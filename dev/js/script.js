@@ -312,7 +312,7 @@ function checkCursorLevels(cursorName, singleHitCount) {
 
 // 이벤트 좌표 리턴 함수
 function getEventCoords(event) {
-  // 터치 이벤트
+  // 터치
   if (event.touches && event.touches.length > 0) {
     return {
       x: event.touches[0].clientX,
@@ -326,7 +326,7 @@ function getEventCoords(event) {
       y: event.changedTouches[0].clientY,
     };
   }
-  // 마우스 이벤트
+  // 마우스
   return {
     x: event.clientX,
     y: event.clientY,
