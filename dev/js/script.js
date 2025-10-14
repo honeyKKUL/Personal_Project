@@ -469,10 +469,9 @@ function handleHit(event) {
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
 
-  const { x, y } = getEventCoords(event);
-  createHitEffect(x, y);
-
+  createHitEffect(event.clientX, event.clientY);
   hitCount += currentDamage;
+
   counterDisplay.textContent = hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
   singleCursorHitCounts[currentCursor] += currentDamage;
   checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
