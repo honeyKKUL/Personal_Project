@@ -468,10 +468,10 @@ function handleHit(event) {
     }, 50); // 50ms 지연 (충분히 짧고 충돌을 피할 수 있는 시간)
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
+  const { x, y } = getEventCoords(event);
+  createHitEffect(x, y);
 
-  createHitEffect(event.clientX, event.clientY);
   hitCount += currentDamage;
-
   counterDisplay.textContent = hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
   singleCursorHitCounts[currentCursor] += currentDamage;
   checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
