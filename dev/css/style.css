@@ -177,7 +177,6 @@ body {
 /* 이펙트 스타일 */
 /* ------------------------------------ */
 .hit-effect {
-  /* ... (생략: 기존 변수 설정 및 기본 스타일 유지) ... */
   --scale: 0.5;
   --frame-count: 4;
   --frame-width: calc(500px * var(--scale));
@@ -185,7 +184,7 @@ body {
   --sheet-width: calc(2000px * var(--scale));
   --move-distance: calc(var(--sheet-width) - var(--frame-width));
 
-  position: absolute;
+  position: fixed;
   width: var(--frame-width);
   height: var(--frame-height);
   pointer-events: none;
@@ -197,8 +196,6 @@ body {
   background-position: 0 0;
   transform: translate(-50%, -50%) scale(var(--scale));
   opacity: 1;
-
-  /* 디버깅 시각화용 스타일 제거 */
 }
 
 @keyframes playEffect {
