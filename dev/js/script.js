@@ -311,26 +311,21 @@ function checkCursorLevels(cursorName, singleHitCount) {
 // ------------------------------------
 
 // 이벤트 좌표 리턴 함수
-function getEventCoords(event) {
-  // 터치
-  if (event.touches && event.touches.length > 0) {
-    return {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY,
-    };
+function getPointerPosition(event) {
+  let x, y;
+
+  // 모바일
+  if (event.type.startsWith("touch")) {
+    const touch = event.touches[0] || event.changedTouches[0];
+    x = touch.clientX;
+    y = touch.clientY;
+    return { x, y };
   }
-  // touchend 단계에서는 touches가 비어있고 changedTouches만 존재함
-  if (event.changedTouches && event.changedTouches.length > 0) {
-    return {
-      x: event.changedTouches[0].clientX,
-      y: event.changedTouches[0].clientY,
-    };
-  }
-  // 마우스
-  return {
-    x: event.clientX,
-    y: event.clientY,
-  };
+
+  // PC
+  x = event.clientX;
+  y = event.clientY;
+  return { x, y };
 }
 
 function playEventAnimation() {
@@ -468,7 +463,7 @@ function handleHit(event) {
     }, 50); // 50ms 지연 (충분히 짧고 충돌을 피할 수 있는 시간)
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
-  const { x, y } = getEventCoords(event);
+  const { x, y } = getPointerPosition(event);
   createHitEffect(x, y);
 
   hitCount += currentDamage;
