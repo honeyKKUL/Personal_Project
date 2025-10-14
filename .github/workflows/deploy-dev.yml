@@ -1,41 +1,44 @@
-name: Deploy Dev to GitHub Pages
+name: Update Dev Folder for GitHub Pages
 
 on:
   push:
     branches:
-      - dev
+      - main # main 브랜치에 push될 때 자동 실행
 
 permissions:
   contents: write
 
 jobs:
-  deploy:
+  update-dev:
     runs-on: ubuntu-latest
 
     steps:
-      # 1. dev 브랜치 체크아웃
-      - name: Checkout dev branch
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
 
-      # 2. /dev 폴더 내 모든 파일을 커밋 준비
-      - name: Prepare dev folder for gh-pages
+      - name: 🧹 Clean dev folder
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          rm -rf dev/*
+          mkdir -p dev
 
-          # main 브랜치 가져오기
-          git fetch origin main
-          git checkout main
+      - name: 📦 Copy latest code into dev folder
+        run: |
+          cp -r index.html css js dev/
 
-          # /dev 폴더 삭제 후 dev 브랜치에서 복사
-          rm -rf dev
-          git checkout dev -- dev
+      - name: 🧾 Commit and push changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # 변경 사항 추가 및 커밋
           git add dev
-          git commit -m "Update dev site from dev branch" || echo "No changes to commit"
+          # 커밋할 변경사항이 있을 경우에만 커밋하도록 처리
+          if ! git diff --cached --quiet; then
+            git commit -m "🔄 Update dev test version (auto)"
+            git push origin main
+          else
+            echo "No changes to commit."
+          fi
 
-      # 3. main 브랜치에 push (Pages 자동 갱신)
-      - name: Push changes to main
+      - name: ✅ Done
         run: |
-          git push origin main
+          echo "✅ /dev 폴더가 업데이트되었습니다. https://honeykkul.github.io/Personal_Project/dev/"
