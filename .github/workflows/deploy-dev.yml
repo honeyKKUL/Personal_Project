@@ -1,0 +1,38 @@
+name: Deploy Dev to GitHub Pages
+
+on:
+  push:
+    branches:
+      - dev
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. dev 브랜치 체크아웃
+      - name: Checkout dev branch
+        uses: actions/checkout@v4
+
+      # 2. /dev 폴더 내 모든 파일을 커밋 준비
+      - name: Prepare dev folder for gh-pages
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          # main 브랜치 가져오기
+          git fetch origin main
+          git checkout main
+
+          # /dev 폴더 삭제 후 dev 브랜치에서 복사
+          rm -rf dev
+          git checkout dev -- dev
+
+          # 변경 사항 추가 및 커밋
+          git add dev
+          git commit -m "Update dev site from dev branch" || echo "No changes to commit"
+
+      # 3. main 브랜치에 push (Pages 자동 갱신)
+      - name: Push changes to main
+        run: |
+          git push origin main
