@@ -306,29 +306,6 @@ function checkCursorLevels(cursorName, singleHitCount) {
   }
 }
 
-// 이벤트 좌표 리턴 함수
-function getEventCoords(event) {
-  // 터치 이벤트
-  if (event.touches && event.touches.length > 0) {
-    return {
-      x: event.touches[0].clientX,
-      y: event.touches[0].clientY,
-    };
-  }
-  // touchend 단계에서는 touches가 비어있고 changedTouches만 존재함
-  if (event.changedTouches && event.changedTouches.length > 0) {
-    return {
-      x: event.changedTouches[0].clientX,
-      y: event.changedTouches[0].clientY,
-    };
-  }
-  // 마우스 이벤트
-  return {
-    x: event.clientX,
-    y: event.clientY,
-  };
-}
-
 // ------------------------------------
 // 이벤트 및 타격 로직
 // ------------------------------------
@@ -469,8 +446,7 @@ function handleHit(event) {
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
 
-  const { x, y } = getEventCoords(event);
-  createHitEffect(x, y);
+  createHitEffect(event.clientX, event.clientY);
   hitCount += currentDamage;
   counterDisplay.textContent = hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
   singleCursorHitCounts[currentCursor] += currentDamage;
