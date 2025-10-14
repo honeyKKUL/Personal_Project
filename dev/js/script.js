@@ -311,16 +311,16 @@ function checkCursorLevels(cursorName, singleHitCount) {
 // ------------------------------------
 
 // 이벤트 좌표 리턴 함수
-function getPointerPosition(event) {
+function getPosition(event) {
   let x, y;
-
-  // 모바일
-  if (event.type.startsWith("touch")) {
-    const touch = event.touches[0] || event.changedTouches[0];
-    x = touch.clientX;
-    y = touch.clientY;
-    return { x, y };
-  }
+  // console.log(event.type);
+  // // 모바일
+  // if (event.type.startsWith("touch")) {
+  //   const touch = event.touches[0] || event.changedTouches[0];
+  //   x = touch.clientX;
+  //   y = touch.clientY;
+  //   return { x, y };
+  // }
 
   // PC
   x = event.clientX;
@@ -463,7 +463,7 @@ function handleHit(event) {
     }, 50); // 50ms 지연 (충분히 짧고 충돌을 피할 수 있는 시간)
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
-  const { x, y } = getPointerPosition(event);
+  const { x, y } = getPosition(event);
   createHitEffect(x, y);
 
   hitCount += currentDamage;
@@ -663,7 +663,7 @@ function initializeCursors() {
 // 페이지 로드 시 상태 로드 및 초기화
 loadState();
 
-monsterImage.addEventListener("mousedown", handleHit);
+monsterImage.addEventListener("pointerdown", handleHit);
 
 cursorButtons.forEach((button) => {
   button.addEventListener("click", handleCursorChange);
