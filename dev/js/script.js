@@ -1,185 +1,46 @@
-// script.js (최종 수정본 - 개발자 기능 삭제)
+import {
+  monsterImage,
+  counterDisplay,
+  cursorButtons,
+  settingsButton,
+  settingsMenu,
+  achievementButton,
+  resetHitsButton,
+  modal,
+  closeButton,
+  achievementPanel,
+  achievementList,
+} from "./elements.js";
+import {
+  fileSrc,
+  HIT_SOUNDS,
+  LEVEL_UP_INTERVAL,
+  MAX_LEVEL,
+  BASE_DAMAGE,
+  eventThreshold,
+  eventGif,
+  eventDuration,
+  cursorLevels,
+  singleCursorHitCounts,
+  ACHIEVEMENTS,
+  normalImage,
+  hitImages,
+  displayTime,
+  initialState,
+} from "./static.js";
 
-// DOM 요소
-const monsterImage = document.getElementById("monster");
-const counterDisplay = document.getElementById("hit-count");
-const body = document.body;
-const cursorButtons = document.querySelectorAll(".cursor-button");
+import { getPosition, createHitEffect } from "./effect.js";
 
-// 💥 업적 및 설정 관련 DOM 요소
-const settingsButton = document.getElementById("settings-button");
-const settingsMenu = document.getElementById("settings-menu");
-const achievementButton = document.getElementById("achievement-button");
-const resetHitsButton = document.getElementById("reset-hits-button");
-// 💥 삭제: const devButton = document.getElementById('dev-button');
-const modal = document.getElementById("achievement-modal");
-const closeButton = document.querySelector(".close-button");
-const achievementPanel = document.getElementById("achievement-panel");
-// 💥 삭제: const developerPanel = document.getElementById('developer-panel');
-// 💥 삭제: const jump1000HitsButton = document.getElementById('jump-1000-hits');
-const achievementList = document.getElementById("achievement-list");
-const achievementBanner = document.getElementById("achievement-banner");
-const achievementText = document.getElementById("achievement-text");
-
-const fileSrc = `https://honeykkul.github.io/Personal_Project/assets/`;
-
-// ------------------------------------
-// 💥 사운드 파일 정의
-// ------------------------------------
-const HIT_SOUNDS = [
-  new Audio(`${fileSrc}hit_sound_01.mp3`),
-  new Audio(`${fileSrc}hit_sound_02.mp3`),
-  new Audio(`${fileSrc}hit_sound_03.mp3`),
-  new Audio(`${fileSrc}hit_sound_04.mp3`),
-  new Audio(`${fileSrc}hit_sound_05.mp3`),
-];
+let isEventActive = false; // 이벤트 활성 상태 플래그
+let state = initialState;
+let currentCursor = "cursor01";
+let currentDamage = 1; // 초기 피해량
 
 // 💥 사운드 볼륨 설정 (20%)
-const DEFAULT_VOLUME = 0.2;
 HIT_SOUNDS.forEach((sound) => {
-  sound.volume = DEFAULT_VOLUME;
+  sound.volume = 0.2;
 });
 
-// ------------------------------------
-// 💥 이벤트 및 상태 변수
-// ------------------------------------
-let isEventActive = false; // 이벤트 활성 상태 플래그
-const eventThreshold = 1010; // 이벤트 발동 타격 수
-const eventGif = fileSrc + "hit_event.gif";
-const eventDuration = 4000; // GIF 재생 시간 (4초)
-
-let hitCount = 0;
-let currentCursor = "cursor01";
-let currentDamage = 1; // 💥 초기 피해량은 1로 설정
-
-// ------------------------------------
-// 💥 커서 강화 시스템 변수
-// ------------------------------------
-const LEVEL_UP_INTERVAL = 50; // 강화되는 타격 수 단위
-const MAX_LEVEL = 4; // 최대 강화 단계
-// 💥 모든 커서의 고정 기본 피해량
-const BASE_DAMAGE = 1;
-let cursorLevels = {};
-let singleCursorHitCounts = {};
-
-// 💥 업적 데이터 정의
-const ACHIEVEMENTS = {
-  // 1. 첫 타격 업적
-  first_hit: {
-    title: "첫 타격",
-    description: "총 1회 타격",
-    condition: 1,
-    achieved: false,
-    type: "hitCount",
-    icon: "icon_first_hit.png",
-    custom_status_text_achieved: "그만둬주십시오...",
-  }, // 2. 모든 커서 강화 업적 추가
-  ACH_ALL_CURSOR_LEVEL_5: {
-    title: "공략 완료",
-    description: "모든 커서를 5단계까지 강화",
-    condition: MAX_LEVEL,
-    achieved: false,
-    type: "allMaxLevel",
-    icon: "icon_amateur_striker.png",
-    custom_status_text_achieved: "모든 히로인을 공략했습니다.",
-  }, // 3. 단일 커서 사용 업적
-  single_cursor_01: {
-    title: "쇼타로",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor01",
-    icon: "icon_single_cursor_01.png",
-    custom_status_text_achieved: "아리아케로만 1010타격 달성",
-  },
-  single_cursor_02: {
-    title: "메이",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor02",
-    icon: "icon_single_cursor_02.png",
-    custom_status_text_achieved: "신바시로만 1010타격 달성",
-  },
-  single_cursor_03: {
-    title: "카에데",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor03",
-    icon: "icon_single_cursor_03.png",
-    custom_status_text_achieved: "아오미로만 1010타격 달성",
-  },
-  single_cursor_04: {
-    title: "요조",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor04",
-    icon: "icon_single_cursor_04.png",
-    custom_status_text_achieved: "타케시바로만 1010타격 달성",
-  },
-  single_cursor_05: {
-    title: "미치오",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor05",
-    icon: "icon_single_cursor_05.png",
-    custom_status_text_achieved: "시오도메로만 1010타격 달성",
-  },
-  single_cursor_06: {
-    title: "기이치로",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor06",
-    icon: "icon_single_cursor_06.png",
-    custom_status_text_achieved: "시죠마에로만 1010타격 달성",
-  },
-  single_cursor_07: {
-    title: "로렌",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor07",
-    icon: "icon_single_cursor_07.png",
-    custom_status_text_achieved: "토요스로만 1010타격 달성",
-  },
-  single_cursor_08: {
-    title: "리이치",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor08",
-    icon: "icon_single_cursor_08.png",
-    custom_status_text_achieved: "히노데로만 1010타격 달성",
-  },
-  single_cursor_09: {
-    title: "쿠레이치로",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor09",
-    icon: "icon_single_cursor_09.png",
-    custom_status_text_achieved: "후네노로만 1010타격 달성",
-  },
-  single_cursor_10: {
-    title: "시즈마",
-    condition: 1010,
-    achieved: false,
-    type: "singleHit",
-    cursor: "cursor10",
-    icon: "icon_single_cursor_10.png",
-    custom_status_text_achieved: "다이바로만 1010타격 달성",
-  },
-};
-
-// 이미지 및 커서 경로 관리
-const normalImage = "Hit_01.png";
-const hitImages = ["Hit_02.png", "Hit_03.png", "Hit_04.png", "Hit_05.png"];
-const displayTime = 150;
-const effectDuration = 250;
 // 커서 파일 경로를 생성하는 함수
 function getCursorPaths(cursorName) {
   return {
@@ -202,30 +63,22 @@ function updateMonsterCursor() {
  * 페이지 새로고침 시 모든 상태를 0으로 초기화합니다.
  */
 function loadState() {
-  hitCount = 0;
-  currentCursor = "cursor01";
-  currentDamage = BASE_DAMAGE; // 💥 기본 피해량으로 초기화 // 💥 강화 레벨 및 단일 타격 수 초기화
+  state = initialState;
+
   cursorButtons.forEach((button) => {
     const cursorName = button.dataset.cursor;
     cursorLevels[cursorName] = 0; // 초기 레벨 0
     singleCursorHitCounts[cursorName] = 0; // 초기 타격 수 0
-  }); // 💥 업적 상태 초기화
+  });
+  // 💥 업적 상태 초기화
   for (const key in ACHIEVEMENTS) {
     ACHIEVEMENTS[key].achieved = false;
-  } // 초기 UI 렌더링
-
-  counterDisplay.textContent = hitCount;
+  }
+  counterDisplay.textContent = state.hitCount;
   initializeCursors(); // 💥 이벤트 GIF 사전 로딩
 
   const eventGifPreloader = new Image();
   eventGifPreloader.src = eventGif; // eventGif 변수는 'hit_event.gif' 경로를 담고 있습니다.
-}
-
-/**
- * 상태 저장 로직을 제거했습니다. 새로고침 시 모든 데이터가 사라집니다.
- */
-function saveState() {
-  // 아무것도 저장하지 않습니다.
 }
 
 // ------------------------------------
@@ -310,24 +163,6 @@ function checkCursorLevels(cursorName, singleHitCount) {
 // 이벤트 및 타격 로직
 // ------------------------------------
 
-// 이벤트 좌표 리턴 함수
-function getPosition(event) {
-  let x, y;
-
-  // // 모바일
-  if (event.type.startsWith("touch")) {
-    const touch = event.touches[0] || event.changedTouches[0];
-    x = touch.pageX;
-    y = touch.pageY;
-    return { x, y };
-  }
-
-  // PC
-  x = event.clientX;
-  y = event.clientY;
-  return { x, y };
-}
-
 function playEventAnimation() {
   isEventActive = true;
   monsterImage.src = eventGif;
@@ -338,25 +173,6 @@ function playEventAnimation() {
     monsterImage.src = fileSrc + normalImage;
     updateMonsterCursor();
   }, eventDuration);
-}
-
-// 타격 이펙트 생성 및 재생 함수
-function createHitEffect(x, y) {
-  const effect = document.createElement("div");
-  effect.className = "hit-effect";
-  effect.style.left = `${x}px`;
-  effect.style.top = `${y}px`;
-
-  const randomRotation = Math.floor(Math.random() * 360);
-  effect.style.transform = `translate(-50%, -50%) rotate(${randomRotation}deg)`;
-  body.appendChild(effect);
-  requestAnimationFrame(() => {
-    effect.classList.add("animate");
-  });
-
-  setTimeout(() => {
-    effect.remove();
-  }, effectDuration);
 }
 
 // 업적 달성 배너 표시 함수
@@ -391,7 +207,7 @@ function checkAchievements(type = "GENERAL") {
   for (const key in ACHIEVEMENTS) {
     const ach = ACHIEVEMENTS[key]; // 이미 달성했거나 type이 allMaxLevel이면 건너뜁니다. (ALL_CURSOR_MAX_LEVEL 체크는 루프 밖에서 별도로 진행)
     if (ach.achieved || ach.type === "allMaxLevel") continue;
-    if (ach.type === "hitCount" && hitCount >= ach.condition) {
+    if (ach.type === "hitCount" && state.hitCount >= ach.condition) {
       ach.achieved = true;
       showAchievementBanner(ach);
       newlyAchieved = true;
@@ -417,9 +233,6 @@ function checkAchievements(type = "GENERAL") {
       }
     }
   }
-  if (newlyAchieved) {
-    saveState(); // 저장 로직은 제거됨
-  }
 }
 
 // 클릭 이벤트를 처리하는 함수 (handleHit)
@@ -435,14 +248,14 @@ function handleHit(event) {
     console.warn("사운드 재생 실패.", e);
   });
 
-  const potentialHitCount = hitCount + currentDamage; // 💥 1010 이벤트 발생 조건 체크
-  if (hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
+  const potentialHitCount = state.hitCount + currentDamage; // 💥 1010 이벤트 발생 조건 체크
+  if (state.hitCount < eventThreshold && potentialHitCount >= eventThreshold) {
     // --- 💥 이벤트 발생 블록 (수정 시작) 💥 ---
     // 1. 단일 커서 타격 수에 최종 데미지를 반영합니다.
     singleCursorHitCounts[currentCursor] += currentDamage; // 2. 현재 커서의 레벨을 체크하여 업데이트합니다.
     checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]); // 3. 글로벌 타격 수를 1010으로 설정합니다.
-    hitCount = eventThreshold;
-    counterDisplay.textContent = hitCount; // 4. 단일 커서 업적 조건 검사... (중략)
+    state.hitCount = eventThreshold;
+    counterDisplay.textContent = state.hitCount; // 4. 단일 커서 업적 조건 검사... (중략)
     const currentAchKey = `single_cursor_${currentCursor.slice(-2)}`;
     const currentSingleAch = ACHIEVEMENTS[currentAchKey]; // 💥 오직 현재 커서로만 이벤트를 달성했고 아직 업적을 달성하지 않았다면
     if (
@@ -459,19 +272,17 @@ function handleHit(event) {
     setTimeout(() => {
       playEventAnimation();
       checkAchievements(); // 이벤트 애니메이션 후 업적 확인
-      saveState();
     }, 50); // 50ms 지연 (충분히 짧고 충돌을 피할 수 있는 시간)
     return; // --- 💥 이벤트 발생 블록 수정 끝 💥 ---
   }
   const { x, y } = getPosition(event);
   createHitEffect(x, y);
 
-  hitCount += currentDamage;
-  counterDisplay.textContent = hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
+  state.hitCount += currentDamage;
+  counterDisplay.textContent = state.hitCount; // 💥 단일 커서 타격 횟수를 피해량만큼 증가
   singleCursorHitCounts[currentCursor] += currentDamage;
   checkCursorLevels(currentCursor, singleCursorHitCounts[currentCursor]);
   checkAchievements();
-  saveState(); // 💥 변수 이름 중복 수정 (randomIndex -> randomImageIndex)
 
   const randomImageIndex = Math.floor(Math.random() * hitImages.length);
   monsterImage.src = fileSrc + hitImages[randomImageIndex];
@@ -496,8 +307,8 @@ function handleHitCountReset() {
   ) {
     return;
   } // 1. 총 타격수 초기화
-  hitCount = 0;
-  counterDisplay.textContent = hitCount; // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트
+  state.hitCount = 0;
+  counterDisplay.textContent = state.hitCount; // 2. 단일 커서 타격수 초기화 및 툴팁 업데이트
   cursorButtons.forEach((button) => {
     const cursorName = button.dataset.cursor;
     singleCursorHitCounts[cursorName] = 0;
@@ -541,7 +352,6 @@ function handleCursorChange(event) {
   currentCursor = newCursorName;
   currentDamage = calculateDamage(currentCursor); // 💥 수정된 함수 사용
   updateMonsterCursor();
-  saveState();
 }
 
 /**
@@ -674,10 +484,6 @@ settingsButton.addEventListener("click", toggleSettingsMenu);
 
 achievementButton.addEventListener("click", () => openModal("achievement"));
 resetHitsButton.addEventListener("click", handleHitCountReset);
-
-// 💥 삭제: devButton.addEventListener('click', () => openModal('developer'));
-
-// 💥 삭제: 개발자 기능 버튼 이벤트 리스너 삭제
 
 closeButton.addEventListener("click", closeModal);
 
